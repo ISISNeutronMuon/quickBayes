@@ -1,0 +1,10 @@
+# Ignore all library files
+*.so
+*.pyd
+**/build
+dist/**
+.DS_STORE
+*.whl
+*.dll
+bayesfitting.egg-info/
+**/__pycache__
