@@ -3,10 +3,15 @@ import numpy.distutils.core
 import sys
 
 if sys.platform == 'win32':
+    # Compile static libs on windows
     extra_link_args = ["-static", "-static-libgfortran", "-static-libgcc"]
-else:
+elif sys.platform == 'darwin':
     extra_compiler_args = ['-Wno-argument-mismatch']
     extra_link_args = ["-static", "-static-libgfortran", "-static-libgcc"]
+else:
+    # In the docker container there are no issues building the libraries, so we can assume we don't need any flags
+    extra_compiler_args = []
+    extra_link_args = []   
 
 ResNorm = numpy.distutils.core.Extension(name="bayesfitting.ResNorm",
                                          sources=['bayesfitting/ResNorm_main.f90',
@@ -69,10 +74,6 @@ class build_ext(_build_ext):
         if sys.platform == 'win32':
             self.fcompiler = 'gnu95'
             self.compiler = 'mingw32'
-        else:
-            self.fcompiler = 'gnu95'
-            self.compiler = 'unix'
-
 
 numpy.distutils.core.setup(
     name='bayesfitting',
