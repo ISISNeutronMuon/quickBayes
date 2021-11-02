@@ -64,6 +64,15 @@ QLdata = numpy.distutils.core.Extension(name="bayesfitting.QLdata",
                                         extra_link_args=extra_link_args,
                                         extra_compile_args=extra_compiler_args)
 
+QLwat = numpy.distutils.core.Extension(name="bayesfitting.QLwat",
+                                        sources=['bayesfitting/QLwat_main.f90',
+                                                 'bayesfitting/QLwat_subs.f90',
+                                                 'bayesfitting/BlrRes.f90',
+                                                 'bayesfitting/Bayes.f90',
+                                                 'bayesfitting/Four.f90',
+                                                 'bayesfitting/Util.f90'],
+                                        extra_link_args=extra_link_args,
+                                        extra_compile_args=extra_compiler_args)
 
 from numpy.distutils.command.build_ext import build_ext as _build_ext
 class build_ext(_build_ext):
@@ -83,10 +92,10 @@ numpy.distutils.core.setup(
     long_description='This package wraps fortran Bayesian fitting libraries using f2py. '\
                      'An application of this package is to fit quasi elastic neutron scattering data in Mantid (https://www.mantidproject.org)',
     author='Mantid Team',
-    ext_modules=[ResNorm, Quest, QLse, QLres, QLdata],
+    ext_modules=[ResNorm, Quest, QLse, QLres, QLdata, QLwat],
     author_email="mantid-help@mantidproject.org",
     url='https://www.mantidproject.org',
-    version="0.1.0",
+    version="0.2.0",
     license='BSD',
     cmdclass={'build_ext': build_ext}
 )
