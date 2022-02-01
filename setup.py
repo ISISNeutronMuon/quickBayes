@@ -25,6 +25,7 @@ def create_fortran_extension(fq_name: str, sources: Sequence[str]) -> FortranExt
     extra_compile_args, extra_link_args = compiler_flags()
     return FortranExtension(name=fq_name,
                             sources=sources,
+                            extra_f90_compile_args=["-O1"],
                             extra_link_args=extra_link_args,
                             extra_compile_args=extra_compile_args)
 
@@ -122,7 +123,7 @@ setup(
     ext_modules=extensions,
     author_email="mantid-help@mantidproject.org",
     url='https://www.mantidproject.org',
-    version="0.1.0",
+    version="0.1.1",
     license='BSD',
     cmdclass={'build_ext': FortranExtensionBuilder}
 )
