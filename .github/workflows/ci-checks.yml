@@ -3,7 +3,7 @@ name: CI Checks
 on: [push]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: windows-latest
 
     steps:
@@ -15,10 +15,6 @@ jobs:
     - name: Install dependencies
       run: |
         # CONDA is an environment variable pointing to the root of the miniconda directory
-        $Env:CONDA\bin\conda install numpy==1.16 pytest
-    - name: Build
-      run: |
-        "$env:CONDA/bin/pip" install --verbose --editable .
-    - name: Test with pytest
-      run: |
-        "$env:CONDA"\bin\pytest .
+        # $Env:CONDA\bin\conda install numpy==1.16 pytest
+        dir env:
+        dir $env:CONDA
