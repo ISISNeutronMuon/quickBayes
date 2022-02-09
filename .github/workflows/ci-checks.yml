@@ -15,6 +15,4 @@ jobs:
     - name: Install dependencies
       run: |
         # CONDA is an environment variable pointing to the root of the miniconda directory
-        # $Env:CONDA\bin\conda install numpy==1.16 pytest
-        dir env:
-        dir $env:CONDA
+        "$env:CONDA\bin\conda" install numpy==1.16 pytest -n base
