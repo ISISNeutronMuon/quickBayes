@@ -14,11 +14,11 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
-        # $CONDA is an environment variable pointing to the root of the miniconda directory
-        $CONDA/bin/conda install numpy==1.16 pytest
+        # CONDA is an environment variable pointing to the root of the miniconda directory
+        %CONDA%/bin/conda install numpy==1.16 pytest
     - name: Build
       run: |
-        $CONDA/bin/pip install --verbose --editable .
+        %CONDA%/bin/pip install --verbose --editable .
     - name: Test with pytest
       run: |
-        $CONDA/bin/pytest .
+        %CONDA%/bin/pytest .
