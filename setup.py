@@ -22,33 +22,36 @@ def create_fortran_extension(fq_name: str, sources: Sequence[str]) -> FortranExt
     :param sources: List of relative paths from this file to the sources
     :return: An Extension class to be built
     """
-    extra_compile_args, extra_link_args = compiler_flags()
+    extra_compile_args, extra_f90_compile_args, extra_link_args = compiler_flags()
     return FortranExtension(name=fq_name,
                             sources=sources,
-                            extra_f90_compile_args=["-O1"],
+                            extra_f90_compile_args=extra_f90_compile_args,
                             extra_link_args=extra_link_args,
                             extra_compile_args=extra_compile_args)
 
 
-def compiler_flags() -> Tuple[Sequence[str], Sequence[str]]:
+def compiler_flags() -> Tuple[Sequence[str], Sequence[str], Sequence[str]]:
     """
     :return: The compiler flags appropriate for this platform
     """
     if sys.platform == 'win32':
         # Compile static libs on windows
         extra_compile_args = []
+        extra_f90_compile_args = ["-O0"]
         extra_link_args = ["-static", "-static-libgfortran", "-static-libgcc"]
     elif sys.platform == 'darwin':
         extra_compile_args = ['-Wno-argument-mismatch']
+        extra_f90_compile_args = ["-O1"]
         extra_link_args = ["-static", "-static-libgfortran", "-static-libgcc"]
     else:
         # On Linux we build a manylinux2010
         # (https://www.python.org/dev/peps/pep-0571/#the-manylinux2010-policy)
         # wheel that assumes compatible versions of bases libraries are installed.
         extra_compile_args = []
+        extra_f90_compile_args = ["-O1"]
         extra_link_args = []
 
-    return extra_compile_args, extra_link_args
+    return extra_compile_args, extra_f90_compile_args, extra_link_args
 
 
 def source_paths(dirname: PurePosixPath, filenames: Sequence[str]) -> Sequence[str]:
