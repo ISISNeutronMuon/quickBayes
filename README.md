@@ -29,7 +29,7 @@ Download and install the latest version of `mamba` for your platform from the li
 Create a minimal conda environment named `quasielasticbayes-dev` (you can use another name if you prefer):
 
 ```sh
-> mamba create --name quasielasticbayes-dev python=3.6 fortran-compiler numpy pytest
+> mamba env create -f quasielasticbayes-dev-win.yml
 > conda activate quasielasticbayes-dev
 > which python  # should produce something in $HOME/mambaforge
 ```
@@ -51,9 +51,46 @@ You should now be able to run the tests:
 ```
 
 **Note:** There is currently a single test for `QLdata` and the output is based
-on a version compiled with mingw 4.3 on Windows as this has been a version running
+on a version compiled with mingw 4.6 on Windows as this has been a version running
 in production for years. This test fails for any other version of the compiler and
 operating system.
+
+To recompile the Fortran after editing it rerun:
+
+```sh
+python -m pip install -v --editable .
+```
+
+### Windows
+
+We currently rely on an external fortran compiler as the current code is sensitive
+to the compiler version. Download the following files from the
+[tdm-gcc](https://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Old%20Releases/TDM-GCC%204.6%20series/4.6.1-tdm64-1/):
+
+- gcc-4.6.1-tdm64-1-core.zip
+- gcc-4.6.1-tdm64-1-fortran.zip
+
+Once downloaded extract each of the files to a directory, e.g. `C:\MinGW64\4.6.1`, and add this
+directory to your `PATH` environment variable (you will need to restart any prompts open).
+
+Create a minimal conda environment from the provided environment file:
+
+```bat
+> mamba env create -f quasielasticbayes-dev-win.yml
+> conda activate quasielasticbayes-dev
+> which python  # should produce something in ..\mambaforge\envs
+```
+
+Now the conda environment is activated, compile and install the library in development mode:
+
+```bat
+> cd <path-to-repository-clone>  # this directory containing setup.py
+> python -m pip install -v --editable .
+```
+
+```sh
+> python -m pytest .
+```
 
 To recompile the Fortran after editing it rerun:
 
