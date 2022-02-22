@@ -63,23 +63,26 @@ python -m pip install -v --editable .
 
 ### Windows
 
-We currently rely on an external fortran compiler as the current code is sensitive
-to the compiler version. Download the following files from the
-[tdm-gcc](https://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Old%20Releases/TDM-GCC%204.6%20series/4.6.1-tdm64-1/):
+We currently rely on an external fortran compiler, `tdm64-gcc 4.6.1`, as the current code is sensitive
+to the compiler version. To install:
 
-- gcc-4.6.1-tdm64-1-core.zip
-- gcc-4.6.1-tdm64-1-fortran.zip
-
-Once downloaded extract each of the files to a directory, e.g. `C:\MinGW64\4.6.1`, and add this
-directory to your `PATH` environment variable (you will need to restart any prompts open).
+- Download [tdm64-gcc-4.6.1.exe](https://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/Previous/1.1006.0/tdm64-gcc-4.6.1.exe/download) and install it to ``C:\MinGW64``
+- Download [gcc-4.6.1-tdm64-1-fortran.zip](https://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Old%20Releases/TDM-GCC%204.6%20series/4.6.1-tdm64-1/gcc-4.6.1-tdm64-1-fortran.zip/download)
+- Right-click on ``gcc-4.6.1-tdm64-1-fortran.zip``, select "Extract All" and enter the location as ``C:\MinGW64``
+- Add ``C:\MinGW64\bin`` to your ``PATH`` environment variable ([instructions here](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/))
+- Restart any terminal or powershell instances to capture the new environment variable settings
 
 Create a minimal conda environment from the provided environment file:
 
 ```bat
 > mamba env create -f quasielasticbayes-dev-win.yml
 > conda activate quasielasticbayes-dev
-> which python  # should produce something in ..\mambaforge\envs
+> where python  # should produce something in ..\mambaforge\envs
+> where gfortran
 ```
+
+*If the final command does not produce something in ``C:\MinGW64\bin`` try removing
+and adding ``C:\MinGW64\bin`` back to your ``PATH``, restart and reactivate your terminal*
 
 Now the conda environment is activated, compile and install the library in development mode:
 
