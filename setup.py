@@ -38,7 +38,7 @@ def compiler_flags() -> Tuple[Sequence[str], Sequence[str], Sequence[str]]:
         # Compile static libs on windows
         extra_compile_args = []
         extra_f90_compile_args = ["-O0"]
-        extra_link_args = ["-static", "-static-libgfortran", "-static-libgcc"]
+        extra_link_args = ["-static-libgfortran", "-static-libgcc"]
     elif sys.platform == 'darwin':
         extra_compile_args = ['-Wno-argument-mismatch']
         extra_f90_compile_args = ["-O1"]
