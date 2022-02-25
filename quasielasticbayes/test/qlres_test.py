@@ -2,7 +2,7 @@
 import os.path
 import unittest
 import numpy as np
-from quasielasticbayes.testing import load_json
+from quasielasticbayes.testing import load_json, add_path
 
 from quasielasticbayes.QLres import qlres
 
@@ -20,7 +20,7 @@ class QLresTest(unittest.TestCase):
         # reference inputs
         with open(os.path.join(DATA_DIR, 'qlres', 'qlres-input-spec-0.json'), 'r') as fh:
             inputs = load_json(fh)
-
+        inputs['wrks'] = add_path(inputs['wrks'])
         nd, xout, yout, eout, yfit, yprob = qlres(inputs['numb'], inputs['Xv'], inputs['Yv'], inputs['Ev'],
                                                   inputs['reals'], inputs['fitOp'],
                                                   inputs['Xdat'], inputs['Xb'], inputs['Yb'],
