@@ -27,8 +27,7 @@ def load_json(*args, **kwargs):
     return json.load(*args, **kwargs)
 	
 
-def add_path(file_name):
+def add_path(file_path, file_name):
     """Sets the path for a file
     """
-    file_path = os.path.realpath(__file__)
     return os.path.join(file_path,'..',file_name)

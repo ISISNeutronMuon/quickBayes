@@ -3,7 +3,7 @@ import os.path
 import unittest
 import numpy as np
 from quasielasticbayes.testing import load_json, add_path
-
+import tempfile
 from quasielasticbayes.QLres import qlres
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
@@ -20,7 +20,8 @@ class QLresTest(unittest.TestCase):
         # reference inputs
         with open(os.path.join(DATA_DIR, 'qlres', 'qlres-input-spec-0.json'), 'r') as fh:
             inputs = load_json(fh)
-        inputs['wrks'] = add_path(inputs['wrks'])
+        temp_dir = tempfile.TemporaryDirectory()	
+        inputs['wrks'] = add_path(temp_dir.name, inputs['wrks'])
         nd, xout, yout, eout, yfit, yprob = qlres(inputs['numb'], inputs['Xv'], inputs['Yv'], inputs['Ev'],
                                                   inputs['reals'], inputs['fitOp'],
                                                   inputs['Xdat'], inputs['Xb'], inputs['Yb'],
@@ -37,6 +38,6 @@ class QLresTest(unittest.TestCase):
         np.testing.assert_almost_equal(reference['eout'], eout)
         np.testing.assert_almost_equal(reference['yfit'], yfit)
         np.testing.assert_almost_equal(reference['yprob'], yprob)
-
+        temp_dir.cleanup()
 if __name__ == '__main__':
     unittest.main()
