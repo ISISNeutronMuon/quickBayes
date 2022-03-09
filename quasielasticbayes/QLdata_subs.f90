@@ -160,6 +160,7 @@ C***<set up blur function>**********************************************
         CALL VCOPY(FRES,FWRK,NFFT+2)
         CALL FOUR2(FWRK,NFFT,1,-1,-1)
       ENDIF
+
       LSTART=.TRUE.
       END
 C     -----------------------------------------

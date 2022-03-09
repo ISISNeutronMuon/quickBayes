@@ -253,9 +253,9 @@ def FOUR2 (DATA,N,NDIM,ISIGN,IFORM):
       WRITTEN BY NORMAN BRENNER OF MIT LINCOLN LABORATORY, JUNE 1968. 
       SEE-- IEEE AUDIO TRANSACTIONS (JUNE 1967), SPECIAL ISSUE ON FFT.
       """
-      #shoukd check with complex input
-      tmp = flatten(DATA.output())
-      ##print("p", DATA[0], DATA[1], DATA[2], DATA[3], DATA[4])
+      tmp = DATA.output()
+      if any(np.iscomplex(tmp)):
+        tmp=flatten(tmp)
       result = []
       if IFORM==-1:
           # N < len(DATA) since we dont actually use all of the data
@@ -270,5 +270,4 @@ def FOUR2 (DATA,N,NDIM,ISIGN,IFORM):
       elif ISIGN ==-1  and IFORM ==0:
           result = sc.fft(tmp[0:N])
           result = result[0:int(N/2)+1]
-      ##print("end", result[0], result[1])
       return np.asarray(result)

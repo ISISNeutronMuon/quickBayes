@@ -40,6 +40,7 @@ cf2py intent(out) :: yfit                                !fit values
 cf2py intent(out) :: yprob                               !probability values
       integer l_title,l_user
       character*80 user,title
+      character*140 dumpFile
       real xres(m_d),yres(m_d),eres(m_d),
      1 XBLR(m_d),YBLR(m_d)
       REAL  GRAD(m_p),HESS(m_p,m_p),DPAR(m_p),COVAR(m_p,m_p)
@@ -111,12 +112,14 @@ c     reals = [efix, theta[isp], rscl, bnorm]
       fileout1=''
       fileout2=''
       fileout3=''
+      dumpFile =''
       l_lpt=l_fn+8
       lptfile(1:l_lpt)=sfile(1:l_fn)//'_QLd.lpt'
       l_file=l_fn+8
       fileout1(1:l_lpt)=sfile(1:l_fn)//'_QLd.ql1'
       fileout2(1:l_lpt)=sfile(1:l_fn)//'_QLd.ql2'
       fileout3(1:l_lpt)=sfile(1:l_fn)//'_QLd.ql3'
+      dumpFile(1:l_lpt)=sfile(1:l_fn)//'_test.txt'
       l_title=9
       title='<unknown>'
       l_user=9
@@ -177,6 +180,13 @@ c     reals = [efix, theta[isp], rscl, bnorm]
 c
       CALL VLFILL(LGOOD,.TRUE.,m_sp)
       CALL BLRINT(XBLR,YBLR,NB,0,IDUF)
+
+      call open_f(1,dumpFile)
+      do n =1, 2000
+         write(1,*) XJ(n)
+      end do
+      close(unit=1)
+      return
       CALL DPINIT
       CALL GDINIT
       CALL DATIN(ISP,DTNORM,IDUF)

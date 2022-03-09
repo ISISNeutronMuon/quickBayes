@@ -158,11 +158,13 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
             store.close(unit=n)
        IDUF = 0
        XBLR,YBLR=BLRINT(NB,0,IDUF, COMS, store, lptfile) # rebin + FFT of splined data -> improves signal to noise ratio of res file
+
+       print("moo",XBLR.output()[0:5])
        store.open(1, sfile[:l_fn]+'_test.python.lpt')
-       vals =  COMS["FFT"].FRES.output()
-       vals2 =  COMS["FFT"].FWRK.output()
-       for v in range(2000): 
-           store.write(1,str(vals[v])+"  "+ str(vals2[v]))
+       #vals =  COMS["FFT"].FRES.output()
+       vals2 =  COMS["FFT"].XJ.output()
+       for v in range(len(vals2)): 
+           store.write(1,str(vals2[v]))
        store.close(1)
 
 
