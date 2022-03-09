@@ -4,6 +4,10 @@ import unittest
 import numpy as np
 from quasielasticbayes.testing import load_json
 from quasielasticbayes.Four import four
+from quasielasticbayes.python.four import FOUR2, compress, flatten
+from quasielasticbayes.python.fortran_python import *
+import matplotlib.pyplot as plt
+
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
 
@@ -14,6 +18,7 @@ class FFTTest(unittest.TestCase):
     with the inputs taken from the BayesQuasiTest unit test
     """
 	# P = +1, N = -1, Z = 0
+    """
     def test_FFT_PPN_Re(self):
         # reference inputs
         x = np.asarray([np.complex(0.0) for _ in range(4098)])
@@ -100,6 +105,27 @@ class FFTTest(unittest.TestCase):
         self.assertAlmostEqual(0.3780+5j, out[5], dp)
         self.assertAlmostEqual(0.9833+6j, out[6], dp)
         self.assertAlmostEqual(0.6845+7j, out[7], dp)	
+    """
 
+    def test_FFT_big(self):
+        # reference inputs
+        y = np.loadtxt("C:\\Users\\BTR75544\\work\\quasielasticbayes\\quasielasticbayes\\test\\data\\FFT_test.tx")
+        y = compress(y)
+        y=np.pad(y,[0, 4098-len(y)], mode="constant")
+        yy = vec(4098, True)
+        yy.copy(y)
+        N = 1024
+        out = flatten(four(y,N,1,-1,-1))
+        out2 = flatten(FOUR2(yy,N,1,-1,-1))
+        x = np.asarray([k for k in range(len(out))])
+        x2 = np.asarray([k for k in range(len(out2))])
+
+        s=0
+        msd = 0
+        for k in range(4098):
+            msd += np.sqrt(pow(out[k]-out2[k],2))
+        max_val = np.max(out)
+        tol = 0.1/100 # 0.1%
+        self.assertLessEqual(msd/4098,  tol*max_val)
 if __name__ == '__main__':
     unittest.main()
