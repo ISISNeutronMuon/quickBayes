@@ -38,6 +38,5 @@ class QLresTest(unittest.TestCase):
             np.testing.assert_almost_equal(reference['eout'], eout)
             np.testing.assert_almost_equal(reference['yfit'], yfit)
             np.testing.assert_almost_equal(reference['yprob'], yprob)
-        #tmp_dir.cleanup() done on exiting the with statment
 if __name__ == '__main__':
     unittest.main()
