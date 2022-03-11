@@ -3,7 +3,7 @@
 import base64
 import json
 import numpy as np
-
+import os
 
 def _json_numpy_obj_hook(dct):
     """
@@ -25,3 +25,9 @@ def load_json(*args, **kwargs):
     """
     kwargs.setdefault('object_hook', _json_numpy_obj_hook)
     return json.load(*args, **kwargs)
+	
+
+def add_path(file_path, file_name):
+    """Sets the path for a file
+    """
+    return os.path.join(file_path, file_name)
