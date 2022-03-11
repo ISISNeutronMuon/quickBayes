@@ -1,24 +1,20 @@
-"""Characterization tests for QLres module"""
-import os.path
+"""Characterization tests for Four module"""
 import unittest
 import numpy as np
-from quasielasticbayes.testing import load_json
+#from quasielasticbayes.testing import load_json will add this later
 from quasielasticbayes.Four import four
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
 
-class FFTTest(unittest.TestCase):
+class FourTest(unittest.TestCase):
     """
-    Characterization tests using inputs that have been accepted as correct.
-    The output is based on running BayesQuasi algorithm in mantid 6.2
-    with the inputs taken from the BayesQuasiTest unit test
+    Characterization tests for the four Fortran module
     """
 	# P = +1, N = -1, Z = 0
-    def test_FFT_PPN_Re(self):
+    def test_Four_PPN_Re(self):
         # reference inputs
-        x = np.asarray([np.complex(0.0) for _ in range(4098)])
-        for j in range(8):
-                x[j]=np.complex(np.cos(float(j)+0.1), 0)
+        x = np.zeros(4098, dtype=complex)
+        nonzero_entries = 8
+        x[:nonzero_entries] = [complex(np.cos(float(i)+0.1), 0.) for i in range(nonzero_entries)]
         y = x
         out = four(y,8,1,1,-1)
         dp= 3
@@ -33,11 +29,10 @@ class FFTTest(unittest.TestCase):
 
     # In the code it only seems to use 1,-1,-1 and 1,1,0
     # So these are the two we will test
-    def test_FFT_PNN_Re(self):
-        # reference inputs
-        x = np.asarray([np.complex(0.0) for _ in range(4098)])
-        for j in range(8):
-                x[j]=np.complex(np.cos(float(j)+0.1), 0)
+    def test_Four_PNN_Re(self):
+        x = np.zeros(4098, dtype=complex)
+        nonzero_entries = 8
+        x[:nonzero_entries] = [complex(np.cos(float(i)+0.1), 0.) for i in range(nonzero_entries)]
         y = x
         out = four(y,8,1,-1,-1)
         dp= 3
@@ -50,11 +45,10 @@ class FFTTest(unittest.TestCase):
         self.assertAlmostEqual(0.9833, out[6], dp)
         self.assertAlmostEqual(0.6845, out[7], dp)
 		
-    def test_FFT_PNN_Im(self):
-        # reference inputs
-        x = np.asarray([np.complex(0.0) for _ in range(4098)])
-        for j in range(8):
-                x[j]=np.complex(np.cos(float(j)+0.1), j)
+    def test_Four_PNN_Im(self):
+        x = np.zeros(4098, dtype=complex)
+        nonzero_entries = 8
+        x[:nonzero_entries] = [complex(np.cos(float(i)+0.1), i) for i in range(nonzero_entries)]
         y = x
         out = four(y,8,1,-1,-1)
         dp= 3
@@ -67,11 +61,10 @@ class FFTTest(unittest.TestCase):
         self.assertAlmostEqual(0.9833+6j, out[6], dp)
         self.assertAlmostEqual(0.6845+7j, out[7], dp)	
 		
-    def test_FFT_PPZ_Re(self):
-        # reference inputs
-        x = np.asarray([np.complex(0.0) for _ in range(4098)])
-        for j in range(8):
-                x[j]=np.complex(np.cos(float(j)+0.1), 0)
+    def test_Four_PPZ_Re(self):
+        x = np.zeros(4098, dtype=complex)
+        nonzero_entries = 8
+        x[:nonzero_entries] = [complex(np.cos(float(i)+0.1),0.) for i in range(nonzero_entries)]
         y = x
         out = four(y,8,1,1,0)
         dp= 3
@@ -84,11 +77,10 @@ class FFTTest(unittest.TestCase):
         self.assertAlmostEqual(0.9833, out[6], dp)
         self.assertAlmostEqual(0.6845, out[7], dp)		
 		
-    def test_FFT_PPZ_Im(self):
-        # reference inputs
-        x = np.asarray([np.complex(0.0) for _ in range(4098)])
-        for j in range(8):
-                x[j]=np.complex(np.cos(float(j)+0.1), j)
+    def test_Four_PPZ_Im(self):
+        x = np.zeros(4098, dtype=complex)
+        nonzero_entries = 8
+        x[:nonzero_entries] = [complex(np.cos(float(i)+0.1),i) for i in range(nonzero_entries)]
         y = x
         out = four(y,8,1,1,0)
         dp= 3
