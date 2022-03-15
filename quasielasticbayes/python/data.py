@@ -47,8 +47,8 @@ class FFTCom(object):
 
 class FitCom(object):
     def __init__(self, m_d,m_p,m_d1):
-        self.FIT = vec(m_d, True)
-        self.RESID = vec(m_d, True)
+        self.FIT = vec(m_d)
+        self.RESID = vec(m_d)
         self.NFEW =0
         self.FITP = vec(m_p)
         self.EXPF = matrix_2(m_d1,6)
@@ -56,8 +56,8 @@ class FitCom(object):
                      
 class GRDCom(object):
     def __init__(self,m_d2, m_d, m_p):
-        self.DDDPAR = matrix_2(m_d,m_p, True) # covar matrix?
-        self.FR2PIK = matrix_2(m_d2,2, True)
+        self.DDDPAR = matrix_2(m_d,m_p) # covar matrix?
+        self.FR2PIK = matrix_2(m_d2,2)
 
 class ModResidual(object):
     def __init__(self,m_d):
@@ -92,4 +92,4 @@ class STEXP(object):
 
 class WRKCom(object):
    def __init__(self, m_d2):
-       self.WORK = matrix_2(m_d2,2,True)
+       self.WORK = matrix_2(m_d2,2)

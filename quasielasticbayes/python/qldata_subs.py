@@ -282,7 +282,7 @@ def BLRINT(NB,IREAD,IDUF,COMS,store,lptfile):
         COMS["FFT"].FWRK.copy(tmp)
         #print( COMS["FFT"].FWRK(1), COMS["FFT"].FWRK(2), COMS["FFT"].FWRK(3), COMS["FFT"].FWRK(4))
         out = FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
-        COMS["FFT"].FWRK.copy(Re(out[0:m_d2]))
+        COMS["FFT"].FWRK.copy(flatten(out[0:m_d2]))
         #print( out[0], out[1], out[2], out[3])
         #print( COMS["FFT"].FWRK(1), COMS["FFT"].FWRK(2), COMS["FFT"].FWRK(3), COMS["FFT"].FWRK(4))
       LSTART= True

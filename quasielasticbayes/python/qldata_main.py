@@ -25,7 +25,7 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
       COMS["Params"] = ModParams()
       STExp = STEXP()
       store = storage()
-
+      print("PYTHON>>>>>")
       #real x_in(m_d), y_in(m_d), e_in(m_d)
       #intent(in) :: x_in, y_in, e_in                    !sample data
       #real reals(4)
@@ -159,16 +159,26 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
        IDUF = 0
        XBLR,YBLR=BLRINT(NB,0,IDUF, COMS, store, lptfile) # rebin + FFT of splined data -> improves signal to noise ratio of res file
 
-       print("moo",XBLR.output()[0:5])
-       store.open(1, sfile[:l_fn]+'_test.python.lpt')
-       #vals =  COMS["FFT"].FRES.output()
-       vals2 =  COMS["FFT"].XJ.output()
-       for v in range(len(vals2)): 
-           store.write(1,str(vals2[v]))
-       store.close(1)
+       debug_dump(sfile[:l_fn]+'_test.python.lpt', COMS["FFT"].FWRK.output(),  store) # keep this one
+
+       DPINIT(COMS) # subtracts the res from data in time domain
+       GDINIT(COMS) # normalised (by GRD) offset of XDAT values -> might be covar matrix
+       # seems to filter data -> if large errors assume they dominate the bin
+       # sample data into data, XDAT is binned sample data, DAT is binned sample y
+       IDUF = DATIN(ISP,DTNORM, efix, ntc, COMS, store, lptfile) 
+       # FFT of time binned sample data into FRES
+       XBLR, YBLR = BLRINT(NB,ISP,IDUF, COMS, store, lptfile) # back to real space? - print resolution range
+       if IDUF!=0:
+          LGOOD.set(ISP, False)
+
+       # this might not even do anything
+       DPINIT(COMS) # subtraction using sample time domain data
+       PRINIT(3,1, COMS, store, prog, lptfile, o_bgd) # seems to find the dominanat data - i.e. not BG and it records the BG
+       FileInit(3,ISP, COMS, store, [fileout1, fileout2, fileout3]) # dump data to file
 
 
-
+       debug_dump(sfile[:l_fn]+'_test.python2.lpt', COMS["SCL"].SCLVEC.output_col(3), store)
+       print("test", COMS["SCL"].ASCL, COMS["SCL"].WSCL, COMS["SCL"].BSCL)
       print("Hi It worked!!!!!!!!!!!!!! #actually doing QL data not res")
       nd_out=10
       store.dump()

@@ -40,7 +40,7 @@ cf2py intent(out) :: yfit                                !fit values
 cf2py intent(out) :: yprob                               !probability values
       integer l_title,l_user
       character*80 user,title
-      character*140 dumpFile
+      character*140 dumpFile, dumpFile2
       real xres(m_d),yres(m_d),eres(m_d),
      1 XBLR(m_d),YBLR(m_d)
       REAL  GRAD(m_p),HESS(m_p,m_p),DPAR(m_p),COVAR(m_p,m_p)
@@ -120,6 +120,7 @@ c     reals = [efix, theta[isp], rscl, bnorm]
       fileout2(1:l_lpt)=sfile(1:l_fn)//'_QLd.ql2'
       fileout3(1:l_lpt)=sfile(1:l_fn)//'_QLd.ql3'
       dumpFile(1:l_lpt)=sfile(1:l_fn)//'_test.txt'
+      dumpFile2(1:l_lpt)=sfile(1:l_fn)//'_test2.txt'
       l_title=9
       title='<unknown>'
       l_user=9
@@ -183,10 +184,11 @@ c
 
       call open_f(1,dumpFile)
       do n =1, 2000
-         write(1,*) XJ(n)
+         write(1,*) FWRK(n)
       end do
       close(unit=1)
-      return
+
+
       CALL DPINIT
       CALL GDINIT
       CALL DATIN(ISP,DTNORM,IDUF)
@@ -197,6 +199,16 @@ c
       CALL DPINIT
       CALL PRINIT(FITP,3,NFEW,1)
       CALL FileInit(3,ISP)
+
+      call open_f(1,dumpFile2)
+      do n =1, 2000
+         write(1,*) SCLVEC(n,3)
+      end do
+      close(unit=1)
+      write(*,*)'test',ASCL, WSCL, BSCL
+
+      return
+
       CALL REFINA(GRAD,HESS,DPAR,3+NFEW,DETLOG,INDX,COVAR)
       GOTO 2
    1  CALL SEARCH(GRAD,HESS,DPAR,NFEW,INDX,COVAR,FITP)

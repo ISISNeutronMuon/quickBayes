@@ -53,7 +53,7 @@ class vec(object):
         return self._vec
 
     def output_range(self,start=1,end=2):
-        return self._vec[start-1:end]
+        return self._vec[start-1:end+1]
 
     def fill(self, value, n,start=1):
         self._vec[start-1:n+start-2] = value
@@ -222,3 +222,10 @@ def find_index(data, start, end, condition, step =1):
         if condition(*data,j):
             return j
     return end
+
+
+def debug_dump(file_name, val, store):
+    store.open(1, file_name)
+    for k in range(len(val)):
+        store.write(1, val[k])
+    store.close(1)
