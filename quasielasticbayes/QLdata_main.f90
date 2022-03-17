@@ -199,17 +199,17 @@ c
       CALL DPINIT
       CALL PRINIT(FITP,3,NFEW,1)
       CALL FileInit(3,ISP)
+      CALL REFINA(GRAD,HESS,DPAR,3+NFEW,DETLOG,INDX,COVAR)
 
       call open_f(1,dumpFile2)
       do n =1, 2000
-         write(1,*) SCLVEC(n,3)
+         write(1,*) FWRK(n)
       end do
       close(unit=1)
       write(*,*)'test',ASCL, WSCL, BSCL
 
       return
 
-      CALL REFINA(GRAD,HESS,DPAR,3+NFEW,DETLOG,INDX,COVAR)
       GOTO 2
    1  CALL SEARCH(GRAD,HESS,DPAR,NFEW,INDX,COVAR,FITP)
    2  NPARMS=4+2*NFEW

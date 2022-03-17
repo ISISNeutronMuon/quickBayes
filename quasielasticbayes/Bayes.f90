@@ -92,7 +92,7 @@ C     ----------------------------------------------
         RKEXP(I)=RK(I)*XC
       end do
       CALL VMLTRC(TWOPIK,RKEXP,N,RKEXP2)
-      CALL VMLTIC(RKEXP2,N,RKEXP2)
+C     CALL VMLTIC(RKEXP2,N,RKEXP2)
       END
 C     ---------------------------
       SUBROUTINE VMLTRC(R,C,N,CC)
@@ -359,30 +359,31 @@ C     -------------------------------------------------------
       else
        CNORM=CCHI(FITP)
       endif
-      CALL VRFILL(HESS,0.0,NP*NP)
-      CALL VCOPY(FR2PIK,FWRK,NFFT+2)
-      CALL FOUR2(FWRK,NFFT,1,-1,-1)
-      CALL DEGRID(FWRK,DDDPAR(1,3))
-      do I=1,NFEW
-        CALL VMLTRC(EXPF(1,I),FR2PIK,NFT2,FWRK)
-        CALL FOUR2(FWRK,NFFT,1,-1,-1)
-        CALL DEGRID(FWRK,DDDPAR(1,3+I))
-      end do
-      CALL GRADPR(GRAD,RESID,NDAT,NP,SCLVEC)
-      CALL HESS1(HESS,NP,SCLVEC,0.3,NFEW)
-      if (prog.eq.'s'.OR.prog.eq.'q') then
-       CALL MTXINV(HESS,COVAR,NP,INDX,DETLOG)
-      else
-       CALL INVERT(HESS,COVAR,NP,INDX,DETLOG)
-      endif
-      CALL NEWEST(COVAR,GRAD,NP,NFEW,DPAR,FITP)
-      if (prog.eq.'s'.OR.prog.eq.'q') then
-       CNORM=CBCHI(FITP)
-      else
-       CNORM=CCHI(FITP)
-      endif
-      CALL GRADPR(GRAD,RESID,NDAT,NP,SCLVEC)
-      CALL NEWEST(COVAR,GRAD,NP,NFEW,DPAR,FITP)
+      write(*,*) 'chi', CNORM
+C      CALL VRFILL(HESS,0.0,NP*NP)
+C      CALL VCOPY(FR2PIK,FWRK,NFFT+2)
+C      CALL FOUR2(FWRK,NFFT,1,-1,-1)
+C      CALL DEGRID(FWRK,DDDPAR(1,3))
+C      do I=1,NFEW
+C        CALL VMLTRC(EXPF(1,I),FR2PIK,NFT2,FWRK)
+C        CALL FOUR2(FWRK,NFFT,1,-1,-1)
+C        CALL DEGRID(FWRK,DDDPAR(1,3+I))
+C      end do
+C      CALL GRADPR(GRAD,RESID,NDAT,NP,SCLVEC)
+C      CALL HESS1(HESS,NP,SCLVEC,0.3,NFEW)
+C      if (prog.eq.'s'.OR.prog.eq.'q') then
+C       CALL MTXINV(HESS,COVAR,NP,INDX,DETLOG)
+C      else
+C       CALL INVERT(HESS,COVAR,NP,INDX,DETLOG)
+C      endif
+C      CALL NEWEST(COVAR,GRAD,NP,NFEW,DPAR,FITP)
+C      if (prog.eq.'s'.OR.prog.eq.'q') then
+C       CNORM=CBCHI(FITP)
+C      else
+C       CNORM=CCHI(FITP)
+C      endif
+C      CALL GRADPR(GRAD,RESID,NDAT,NP,SCLVEC)
+C      CALL NEWEST(COVAR,GRAD,NP,NFEW,DPAR,FITP)
       END
 C     ---------------------------------------------
       SUBROUTINE MTXINV(HESS,COVAR,NP,INDX,DETLOG)

@@ -175,10 +175,13 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
        DPINIT(COMS) # subtraction using sample time domain data
        PRINIT(3,1, COMS, store, prog, lptfile, o_bgd) # seems to find the dominanat data - i.e. not BG and it records the BG
        FileInit(3,ISP, COMS, store, [fileout1, fileout2, fileout3]) # dump data to file
+       DETLOG = 0
+       REFINA(GRAD,HESS,DPAR,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, CCHI, prog, o_bgd,o_w1, o_el, store, lptfile)
 
 
-       debug_dump(sfile[:l_fn]+'_test.python2.lpt', COMS["SCL"].SCLVEC.output_col(3), store)
-       print("test", COMS["SCL"].ASCL, COMS["SCL"].WSCL, COMS["SCL"].BSCL)
+       debug_dump(sfile[:l_fn]+'_test.python2.lpt', COMS["FFT"].FWRK.output(), store)
+
+
       print("Hi It worked!!!!!!!!!!!!!! #actually doing QL data not res")
       nd_out=10
       store.dump()

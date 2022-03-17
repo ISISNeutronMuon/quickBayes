@@ -287,3 +287,53 @@ def BLRINT(NB,IREAD,IDUF,COMS,store,lptfile):
         #print( COMS["FFT"].FWRK(1), COMS["FFT"].FWRK(2), COMS["FFT"].FWRK(3), COMS["FFT"].FWRK(4))
       LSTART= True
       return XB, YB
+
+
+def CCHI(V,COMS, o_bgd, o_w1):
+      CHI=0.0
+      B1=COMS["SCL"].BSCL*V(1)
+      B2=COMS["SCL"].BSCL*V(2)
+      A0=COMS["SCL"].ASCL*V(3)
+      DELTAX=V(4)
+      NFT2=int(COMS["FFT"].NFFT/2+1)
+      fres = compress(COMS["FFT"].FRES.output_range(end=COMS["FFT"].NFFT+4)) # this length gets halved in compress
+      twopik = COMS["FFT"].TWOPIK.output_range(end=NFT2)
+      RKEXP, RKEXP2 = CXSHFT(fres, DELTAX, twopik)#,FR2PIK,FR2PIK(1,2),NFT2)
+      COMS["GRD"].FR2PIK.copy(flatten(RKEXP))
+      COMS["GRD"].FR2PIK.copy(flatten(RKEXP2), 1,2)
+      COMS["WORK"].WORK.fill(A0, NFT2+1)
+      XNSCL=-np.log(1.0E-7)/(COMS["FFT"].TWOPIK(2)-COMS["FFT"].TWOPIK(1))
+      for J in get_range(1,COMS["FIT"].NFEW):
+        AJ=COMS["SCL"].ASCL*V(3+J+J)
+        SIGJ=COMS["SCL"].WSCL*V(4+J+J)/COMS["SCL"].GSCL
+        COMS["FIT"].EXPF.fill(0.0, NFT2, 1,J)# this might need a plus 1 to N later
+        NXFT2=1+NINT(XNSCL/(np.abs(SIGJ)+1.0E-10))
+        if NXFT2 > NFT2:
+           NXFT2=NFT2
+        for I in get_range(1,NXFT2):
+          EXPIJ=EXP(-TWOPIK(I)*SIGJ)
+          COMS["FIT"].EXPF.set(I,J, EXPIJ)
+          COMS["WORK"].WORK.set(I,1, COMS["WORK"].WORK(I,1)+AJ*EXPIJ)
+
+      tmp = VMLTRC(COMS["WORK"].WORK.output_range(1,1,end=NFT2+1),RKEXP)#,NFT2,FWRK)
+      COMS["FFT"].FWRK.copy(flatten(tmp))
+      tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+      COMS["FFT"].FWRK.copy(flatten(tmp))
+      #CALL DEGRID(FWRK,FIT)
+      #X1=XDAT(1)
+      #if(o_bgd.eq.2) BNRM=(B2-B1)/(XDAT(NDAT)-X1)
+      #avoid conflict BNORM with ModPars
+      #do I=1,NDAT
+      #  FIT(I)=FIT(I)+B1
+      #   if(o_bgd.eq.2) FIT(I)=FIT(I)+BNRM*(XDAT(I)-X1)
+      #  DIF=FIT(I)-DAT(I)
+      #  RESID(I)=DIF*SIG(I)
+      #  CHI=CHI+DIF*RESID(I)
+      #end do
+      #if(o_w1.eq.1)then
+      # if(NFEW.GE.1) then
+      #    RESW1D=(WSCL*V(6)-QW1(ISPEC))/SIGQW1(ISPEC)
+      #    CHI=CHI+2.0*RESW1D**2
+      # endif
+      #endif
+      CCHI=0#CHI/(2.0*FLOAT(NDAT))

@@ -259,7 +259,7 @@ def FOUR2 (DATA,N,NDIM,ISIGN,IFORM):
       result = []
       if IFORM==-1:
           # N < len(DATA) since we dont actually use all of the data
-          result = FOUR2_NEG_IFORM(tmp,[N],NDIM,ISIGN,IFORM) # N < len(DATA) since we dont actually use all of the data
+          result = FOUR2_NEG_IFORM(tmp,[N],NDIM,ISIGN,IFORM) # This seems to take data of the form exp(-t*gamma)*cos(omega*t) and pick out the omega freq
       elif ISIGN ==1 and IFORM ==1:
           result = np.conj(sc.fft(tmp))
       elif ISIGN ==-1  and IFORM ==1:

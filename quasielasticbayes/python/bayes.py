@@ -36,6 +36,45 @@ def GDINIT(COMS):
         COMS["GRD"].DDDPAR.set(I,1, 1.0-XGNORM) # normalized offset of xdat
         COMS["GRD"].DDDPAR.set(I,2, XGNORM)
 
+
+def CXSHFT(RK,DX,TWOPIK):
+    XX = TWOPIK*DX
+    XC = np.cos(XX)+ 1j*np.sin(XX)
+    RKEXP = RK*XC
+    RKEXP2 = VMLTRC(TWOPIK,RKEXP)
+    #  CALL VMLTIC(RKEXP2,N,RKEXP2)
+    #  END
+    return RKEXP, RKEXP2
+
+def VMLTRC(R,C):
+    A = R*C.real
+    B = R*C.imag
+    return A + 1j*B
+
+#      do I=1,N
+#        A=R(I)*REAL(C(I))
+#        B=R(I)*AIMAG(C(I))
+#        CC(I)=CMPLX(A,B)
+#      end do
+#      END
+#C     -------------------------
+#      SUBROUTINE VMLTIC(C,N,CI)
+#      COMPLEX C(*),CI(*)
+#      do J=1,N
+#        A=REAL(C(J))
+#        B=AIMAG(C(J))
+#        CI(J)=CMPLX(-B,A)
+#      end do
+#      END
+
+
+
+def REFINA(GRAD,HESS,DPAR,NP,DETLOG,INDX,COVAR, COMS, CNORM_FUNC, prog, o_bgd,o_w1, o_el, store, lptfile):
+      NFT2=COMS["FFT"].NFFT/2+1
+      CNORM=CNORM_FUNC(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
+
+      print("chi", CNORM)
+
 """
 ***<read in the data>**************************************************
 """

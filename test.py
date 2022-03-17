@@ -2,7 +2,7 @@ import subprocess
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
-
+import os
 
 def install():
     subprocess.check_call([sys.executable, "-m", "pip", "install","-v","--editable","."])
@@ -28,8 +28,13 @@ def plot_data(f1, f2, c1 ,c2):
         x3.append(k)
     ax2.plot(x3, diff,c2)
 
-   
-
+try:   
+    os.remove("quasielastic_test.tx")
+    os.remove("quasielastic_test.python.lpt")
+    os.remove("quasielastic_test2.t")
+    os.remove("quasielastic_test.python2.lpt")
+except:
+    pass
 install()
 subprocess.call(["python", "quasielasticbayes\\test\\qldata_test.py"])
 
