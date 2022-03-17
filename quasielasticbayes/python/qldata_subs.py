@@ -319,21 +319,26 @@ def CCHI(V,COMS, o_bgd, o_w1):
       COMS["FFT"].FWRK.copy(flatten(tmp))
       tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
       COMS["FFT"].FWRK.copy(flatten(tmp))
-      #CALL DEGRID(FWRK,FIT)
-      #X1=XDAT(1)
-      #if(o_bgd.eq.2) BNRM=(B2-B1)/(XDAT(NDAT)-X1)
+      COMS["FIT"].FIT.copy(DEGRID(COMS["FFT"].FWRK,COMS))
+      X1=COMS["DATA"].XDAT(1)
+      BNRM = 0.0
+      if o_bgd==2:
+         BNRM=(B2-B1)/(COMS["DATA"].XDAT(COMS["DATA"].NDAT)-X1)
       #avoid conflict BNORM with ModPars
-      #do I=1,NDAT
-      #  FIT(I)=FIT(I)+B1
-      #   if(o_bgd.eq.2) FIT(I)=FIT(I)+BNRM*(XDAT(I)-X1)
-      #  DIF=FIT(I)-DAT(I)
-      #  RESID(I)=DIF*SIG(I)
-      #  CHI=CHI+DIF*RESID(I)
-      #end do
-      #if(o_w1.eq.1)then
-      # if(NFEW.GE.1) then
-      #    RESW1D=(WSCL*V(6)-QW1(ISPEC))/SIGQW1(ISPEC)
-      #    CHI=CHI+2.0*RESW1D**2
-      # endif
-      #endif
-      CCHI=0#CHI/(2.0*FLOAT(NDAT))
+      fit = COMS["FIT"].FIT.output_range(end=COMS["DATA"].NDAT)
+      xdat = COMS["DATA"].XDAT.output_range(end=COMS["DATA"].NDAT)
+      dat = COMS["DATA"].DAT.output_range(end=COMS["DATA"].NDAT)
+      sig = COMS["DATA"].SIG.output_range(end=COMS["DATA"].NDAT)
+      print("test", BNRM)
+      fit += B1+BNRM*(xdat-X1)
+      diff = fit - dat
+      resid = diff*sig
+      CHI = np.sum(diff*resid)
+
+      COMS["FIT"].FIT.copy(fit) # does not match at later indicies -> probably fine
+      COMS["FIT"].RESID.copy(resid)
+
+      if o_w1 == 1 and COMS["FIT"].NFEW>=1:
+         RESW1D=(COMS["SCL"].WSCL*V(6)-COMS["QW1"].QW1(COMS["QW1"].ISPEC))/COMS["QW1"].SIGQW1(COMS["QW1"].ISPEC)
+         CHI=CHI+2.0*pow(RESW1D,2)
+      return CHI/(2.0*float(COMS["DATA"].NDAT))

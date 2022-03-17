@@ -179,7 +179,7 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
        REFINA(GRAD,HESS,DPAR,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, CCHI, prog, o_bgd,o_w1, o_el, store, lptfile)
 
 
-       debug_dump(sfile[:l_fn]+'_test.python2.lpt', COMS["FFT"].FWRK.output(), store)
+       debug_dump(sfile[:l_fn]+'_test.python2.lpt', COMS["FIT"].RESID.output(), store)
 
 
       print("Hi It worked!!!!!!!!!!!!!! #actually doing QL data not res")

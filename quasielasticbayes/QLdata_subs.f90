@@ -309,27 +309,26 @@ C
       end do
       CALL VMLTRC(WORK,FR2PIK,NFT2,FWRK)
       CALL FOUR2(FWRK,NFFT,1,-1,-1)
-C     CALL DEGRID(FWRK,FIT)
-C     X1=XDAT(1)
-C     if(o_bgd.eq.2) BNRM=(B2-B1)/(XDAT(NDAT)-X1)
+      CALL DEGRID(FWRK,FIT)
+      X1=XDAT(1)
+      if(o_bgd.eq.2) BNRM=(B2-B1)/(XDAT(NDAT)-X1)
 C     avoid conflict BNORM with ModPars
-C     do I=1,NDAT
-C       FIT(I)=FIT(I)+B1
-C        if(o_bgd.eq.2) FIT(I)=FIT(I)+BNRM*(XDAT(I)-X1)
-C       DIF=FIT(I)-DAT(I)
-C       RESID(I)=DIF*SIG(I)
-C       CHI=CHI+DIF*RESID(I)
-C      end do
-C     if(o_w1.eq.1)then
-C      if(NFEW.GE.1) then
-C         RESW1D=(WSCL*V(6)-QW1(ISPEC))/SIGQW1(ISPEC)
-C         CHI=CHI+2.0*RESW1D**2
-C      endif
-C     endif
-      CCHI=0
-C     CHI/(2.0*FLOAT(NDAT))
+      do I=1,NDAT
+        FIT(I)=FIT(I)+B1
+         if(o_bgd.eq.2) FIT(I)=FIT(I)+BNRM*(XDAT(I)-X1)
+        DIF=FIT(I)-DAT(I)
+        RESID(I)=DIF*SIG(I)
+        CHI=CHI+DIF*RESID(I)
+       end do
+      if(o_w1.eq.1)then
+       if(NFEW.GE.1) then
+          RESW1D=(WSCL*V(6)-QW1(ISPEC))/SIGQW1(ISPEC)
+          CHI=CHI+2.0*RESW1D**2
+       endif
+      endif
+      CCHI= CHI/(2.0*FLOAT(NDAT))
       END
-C
+
 C**<search for one more & refine amplitudes>****************************
 C
       SUBROUTINE SEARCH(GRAD,HESS,DPAR,NFEW,INDX,COVAR,FITP)

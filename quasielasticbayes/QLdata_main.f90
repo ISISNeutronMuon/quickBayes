@@ -203,7 +203,7 @@ c
 
       call open_f(1,dumpFile2)
       do n =1, 2000
-         write(1,*) FWRK(n)
+         write(1,*) RESID(n)
       end do
       close(unit=1)
       write(*,*)'test',ASCL, WSCL, BSCL

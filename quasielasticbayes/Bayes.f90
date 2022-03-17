@@ -92,7 +92,7 @@ C     ----------------------------------------------
         RKEXP(I)=RK(I)*XC
       end do
       CALL VMLTRC(TWOPIK,RKEXP,N,RKEXP2)
-C     CALL VMLTIC(RKEXP2,N,RKEXP2)
+      CALL VMLTIC(RKEXP2,N,RKEXP2)
       END
 C     ---------------------------
       SUBROUTINE VMLTRC(R,C,N,CC)
