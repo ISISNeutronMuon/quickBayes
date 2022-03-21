@@ -20,7 +20,6 @@ def LUDCMP(A,N,NP):
       DUM=0
       IMAX=0
       INDX = vec(N)
-      #DIMENSION  A(NP,NP),INDX(N),VV(NMAX)
       D=1.0
       for I in get_range(1,N):
         AAMAX=0.0
@@ -78,25 +77,25 @@ def LUDCMP(A,N,NP):
       return INDX, D
 
 def LUBKSB(A,N,NP,INDX,B):
-      #DIMENSION A(NP,NP),INDX(N),B(N)
       # B is a numpy array
       II=0
       for I in get_range(1,N):
         LL=int(INDX(I))
-        SUM=B(LL)
-        B.set(LL, B(I))
+        SUM=B[LL-1]
+        B[LL-1]= B[I-1]
         if II!=0:
           for J in get_range(II,I-1):
-            SUM=SUM-A(I,J)*B(J)
+            SUM=SUM-A(I,J)*B[J-1]
           
         elif SUM!=0.0:
           II=I
         
-        B.set(I,SUM)
+        B[I-1] = SUM
       for I in get_range(N,1,-1):
-        SUM=B(I)
+        SUM=B[I-1]
         if I<N:
           for J in get_range(I+1,N):
-            SUM=SUM-A(I,J)*B(J)
+            SUM=SUM-A(I,J)*B[J-1]
 
-        B.set(I,SUM/A(I,I))
+        B[I-1] =SUM/A(I,I)
+      return B

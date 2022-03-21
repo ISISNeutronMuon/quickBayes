@@ -48,8 +48,8 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
       yprob = vec(4) #probability values
     
       XBLR,YBLR = vec(m_d), vec(m_d)
-      GRAD, DPAR = vec(m_p,True), vec(m_p)
-      HESS, COVAR = matrix_2(m_p,m_p,True), matrix_2(m_p,m_p)
+      GRAD = vec(m_p)
+      COVAR = matrix_2(m_p,m_p)
       DTNORM,XSCALE = vec(m_sp), vec(m_sp)
       PRBSV,POUT = matrix_2(4,m_sp), matrix_2(4,m_sp)
       PRMSV,SIGSV = matrix_3(7,4,m_sp), matrix_3(7,4,m_sp)
@@ -176,10 +176,10 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
        PRINIT(3,1, COMS, store, prog, lptfile, o_bgd) # seems to find the dominanat data - i.e. not BG and it records the BG
        FileInit(3,ISP, COMS, store, [fileout1, fileout2, fileout3]) # dump data to file
        DETLOG = 0
-       REFINA(GRAD,HESS,DPAR,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, CCHI, prog, o_bgd,o_w1, o_el, store, lptfile)
+       HESS, COVAR, DPAR=REFINA(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, CCHI, prog, o_bgd,o_w1, o_el, store, lptfile)
 
 
-       debug_dump(sfile[:l_fn]+'_test.python2.lpt', COMS["FIT"].RESID.output(), store)
+       debug_dump(sfile[:l_fn]+'_test.python2.lpt', COMS["FIT"].FITP.output(), store)
 
 
       print("Hi It worked!!!!!!!!!!!!!! #actually doing QL data not res")

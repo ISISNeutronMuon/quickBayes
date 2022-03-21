@@ -329,7 +329,6 @@ def CCHI(V,COMS, o_bgd, o_w1):
       xdat = COMS["DATA"].XDAT.output_range(end=COMS["DATA"].NDAT)
       dat = COMS["DATA"].DAT.output_range(end=COMS["DATA"].NDAT)
       sig = COMS["DATA"].SIG.output_range(end=COMS["DATA"].NDAT)
-      print("test", BNRM)
       fit += B1+BNRM*(xdat-X1)
       diff = fit - dat
       resid = diff*sig

@@ -8,9 +8,10 @@
 from quasielasticbayes.python.fortran_python import *
 #from quasielasticbayes.python.constants import *
 #from quasielasticbayes.python.four import *
-from math import pi
+from math import pi, log10
 import numpy as np
 from quasielasticbayes.python.four import *
+from quasielasticbayes.python.util import *
 
 
 
@@ -61,12 +62,123 @@ def DEGRID(YGRD, COMS):
         YDAT.append(YGRD(J)+COMS["Dintrp"].XPDAT(I)*(YGRD(J+1)-YGRD(J)))
       return np.asarray(YDAT)
 
+def VRDOTR(A,B):
+      C=A*B
+      return np.sum(C)
 
-def REFINA(GRAD,HESS,DPAR,NP,DETLOG,INDX,COVAR, COMS, CNORM_FUNC, prog, o_bgd,o_w1, o_el, store, lptfile):
+# weights the SCLVEC
+def GRADPR(RESID,NDAT,NP,SCLVEC, COMS):
+      GRAD = []
+      for I in get_range(1,NP):
+        SM=VRDOTR(RESID.output_range(end=NDAT),COMS["GRD"].DDDPAR.output_range(1,I, end=NDAT+1))#,NDAT,SM)
+        GRAD.append(SCLVEC(I,1)*SM)
+      return np.asarray(GRAD)
+
+# if HESS is None, then create an NP by NP Hessian matrix
+def HESS1(NP,SCLvec,STEPSZ,NFEW, prog, COMS, HESS=None):
+      if HESS is None:
+          HESS = matrix_2(NP,NP)
+      for J in get_range(1,NP):
+        for I in get_range(J,NP):
+          SM=np.sum(COMS["DATA"].SIG.output_range(end=COMS["DATA"].NDAT)*COMS["GRD"].DDDPAR.output_range(1,I,COMS["DATA"].NDAT+1)*COMS["GRD"].DDDPAR.output_range(1,J,COMS["DATA"].NDAT+1))
+          HESS.set(I,J, (HESS(I,J)+SM)*SCLvec[I-1]*SCLvec[J-1])
+          HESS.set(J,I, HESS(I,J)) # symmetric hessian
+
+      BEEFUP=2.0/(STEPSZ*STEPSZ)
+      for I in get_range(1,NP):
+        HESS.set(I,I, HESS(I,I)+BEEFUP)
+
+      if prog=='l' or prog=='s':
+       if NFEW>0: # option for elastic peak
+        if o_el==0:
+           HESS.set(3,3,2.0E8)
+      return HESS
+
+def INVERT(NP, INDX, covar_default, HESS=None, COVAR=None):
+    if HESS is None:
+        HESS = matrix_2(NP,NP)
+    if COVAR is None:
+        COVAR = matrix_2(NP,NP)
+    SMALL=1.E-20
+    DETLOG=0.0
+    COVAR.fill(0.0, NP*NP)
+    for I in get_range(1,NP):
+        COVAR.set(I,I, covar_default)
+    INDX,D=LUDCMP(HESS,NP,NP)
+    for I in get_range(1,NP):
+      DETLOG=DETLOG+log10(abs(HESS(I,I))+SMALL)
+        
+    for I in get_range(1,NP):
+        tmp = LUBKSB(HESS,NP,NP,INDX,COVAR.output_from(1,I))
+        COVAR.copy(tmp, 1,I)
+    return HESS, COVAR, DETLOG
+
+def MLTMXV(P,OP,N):
+      D = vec(N*N) # could be N long?
+      for K in get_range(1,N):
+        SM=0.#np.sum(p_vec)
+        for J in get_range(1,N):
+          SM=SM+OP(J,K)*P(J)
+        #end do
+        D.set(K,SM)
+      return D
+
+
+def NEWEST(COVAR,GRAD,NP,NFEW,FITP, prog, store,lptfile):
+
+      if prog=='w':
+       mp=3
+      else:
+       mp=2
+      
+      DPAR = MLTMXV(GRAD,COVAR,NP)# determinenet of grad and covar
+      if NP == 4+mp*NFEW:
+        for I in get_range(1,NP):
+          FITP.set(I, FITP(I)-DPAR(I))
+    
+      elif NP == 3+NFEW:
+        for I in get_range(1,3):
+          FITP.set(I,FITP(I)-DPAR(I))
+      
+        for I in get_range(1,NFEW):
+          J=I+3
+          FITP.set(J+I, FITP(J+I)-DPAR(J))
+      
+      else:
+         store.open(53,lptfile )
+         store.write(53,' NEWEST : Something wrong here folks!')
+         store.close(53)
+      return DPAR
+
+# should we define grad in here too?
+def REFINA(GRAD,NP,DETLOG,INDX,COVAR, COMS, CNORM_FUNC, prog, o_bgd,o_w1, o_el, store, lptfile):
       NFT2=COMS["FFT"].NFFT/2+1
       CNORM=CNORM_FUNC(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
+      #HESS.fill(0.0,NP*NP)
+      COMS["FFT"].FWRK.copy(COMS["GRD"].FR2PIK.output_range(1,1,COMS["FFT"].NFFT+2))
+      tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+      COMS["FFT"].FWRK.copy(flatten(tmp))
+      COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,3)
+      for I in get_range(1,COMS["FIT"].NFEW):
+        tmp = VMLTRC(COMS["FIT"].EXPF.output_range(1,I,end=NFT2+1),COMS["GRD"].FR2PIK.output_range(1,1,end=NFT2+1))#,NFT2,FWRK)
+        COMS["FFT"].FWRK.copy(flatten(tmp))
+        tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+        COMS["FFT"].FWRK.copy(flatten(tmp))
+        COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,3+I)
+      GRAD.copy(GRADPR(COMS["FIT"].RESID,COMS["DATA"].NDAT,NP,COMS["SCL"].SCLVEC, COMS))
+      HESS=HESS1(NP,COMS["SCL"].SCLVEC.output(),0.3,COMS["FIT"].NFEW, prog, COMS, HESS=None) # create HESS matrix
+      covar_default = 1
+      if prog == 's':
+          covar_default = 2
+      HESS, COVAR, DETLOG = INVERT(NP,INDX,covar_default, HESS)
+      # changes FITP
+      DPAR = NEWEST(COVAR,GRAD,NP,COMS["FIT"].NFEW,COMS["FIT"].FITP,prog,store, lptfile)
+      CNORM=CNORM_FUNC(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
+      print("test", CNORM)
+      GRAD.copy(GRADPR(COMS["FIT"].RESID,COMS["DATA"].NDAT,NP,COMS["SCL"].SCLVEC, COMS))
+      DPAR = NEWEST(COVAR,GRAD,NP,COMS["FIT"].NFEW,COMS["FIT"].FITP,prog,store, lptfile)
 
-      print("chi", CNORM)
+      return HESS, COVAR, DPAR
 
 """
 ***<read in the data>**************************************************
