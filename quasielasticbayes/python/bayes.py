@@ -8,7 +8,7 @@
 from quasielasticbayes.python.fortran_python import *
 #from quasielasticbayes.python.constants import *
 #from quasielasticbayes.python.four import *
-from math import pi, log10
+from math import pi, log10, sqrt
 import numpy as np
 from quasielasticbayes.python.four import *
 from quasielasticbayes.python.util import *
@@ -49,6 +49,7 @@ def CXSHFT(RK,DX,TWOPIK):
 def VMLTRC(R,C):
     A = R*C.real
     B = R*C.imag
+    C = A + 1j*B
     return A + 1j*B
 #C     -------------------------
 def VMLTIC(C):
@@ -63,16 +64,22 @@ def DEGRID(YGRD, COMS):
       return np.asarray(YDAT)
 
 def VRDOTR(A,B):
-      C=A*B
-      return np.sum(C)
+      return np.sum(A*B)
 
 # weights the SCLVEC
-def GRADPR(RESID,NDAT,NP,SCLVEC, COMS):
+def GRADPR(RESID,NDAT,NP,SCLVEC, COMS,col=1):
       GRAD = []
       for I in get_range(1,NP):
         SM=VRDOTR(RESID.output_range(end=NDAT),COMS["GRD"].DDDPAR.output_range(1,I, end=NDAT+1))#,NDAT,SM)
-        GRAD.append(SCLVEC(I,1)*SM)
+        GRAD.append(SCLVEC(I,col)*SM)
       return np.asarray(GRAD)
+
+
+def HESS0(HESS, RESID, DDDPAR,AJ,J):
+      SM = np.sum(-RESID*DDDPAR)
+      HESS.set(J,J+1, SM)
+      HESS(J+1,J,SM) # symmetric matrix
+      return -DDDPAR*AJ
 
 # if HESS is None, then create an NP by NP Hessian matrix
 def HESS1(NP,SCLvec,STEPSZ,NFEW, prog, COMS, HESS=None):
@@ -174,7 +181,6 @@ def REFINA(GRAD,NP,DETLOG,INDX,COVAR, COMS, CNORM_FUNC, prog, o_bgd,o_w1, o_el, 
       # changes FITP
       DPAR = NEWEST(COVAR,GRAD,NP,COMS["FIT"].NFEW,COMS["FIT"].FITP,prog,store, lptfile)
       CNORM=CNORM_FUNC(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
-      print("test", CNORM)
       GRAD.copy(GRADPR(COMS["FIT"].RESID,COMS["DATA"].NDAT,NP,COMS["SCL"].SCLVEC, COMS))
       DPAR = NEWEST(COVAR,GRAD,NP,COMS["FIT"].NFEW,COMS["FIT"].FITP,prog,store, lptfile)
 
@@ -349,9 +355,16 @@ def PRINIT(NQMAX,IXSCAL,COMS,store, prog,lptfile, o_bgd ):
        COMS["SCL"].SCLVEC.set(6,2, COMS["SCL"].WSCL/COMS["SCL"].GSCL)
        COMS["SCL"].SCLVEC.set(7,2, COMS["SCL"].WSCL/COMS["SCL"].GSCL)
       else:
-       print("hi", NQMAX)
        for I in get_range(1,NQMAX):
         COMS["SCL"].SCLVEC.set(3+I,1, COMS["SCL"].ASCL)
         COMS["SCL"].SCLVEC.set(3+I+I,2, COMS["SCL"].ASCL)
         COMS["SCL"].SCLVEC.set(4+I+I,2, COMS["SCL"].WSCL/COMS["SCL"].GSCL)
       COMS["FIT"].NFEW=0
+
+def ERRBAR(COVAR,NP):
+    # gets the error bars from the diag of the covarience matrix
+    SMALL=1.0E-20
+    SIGPAR = vec(NP)
+    for I in get_range(1,NP):
+        SIGPAR.set(I, sqrt(2.0*abs(COVAR(I,I))+SMALL))
+    return SIGPAR

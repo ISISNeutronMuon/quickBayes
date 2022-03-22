@@ -280,11 +280,8 @@ def BLRINT(NB,IREAD,IDUF,COMS,store,lptfile):
       if not LSTART:
         tmp = COMS["FFT"].FRES.output_range(end=COMS["FFT"].NFFT+2)
         COMS["FFT"].FWRK.copy(tmp)
-        #print( COMS["FFT"].FWRK(1), COMS["FFT"].FWRK(2), COMS["FFT"].FWRK(3), COMS["FFT"].FWRK(4))
         out = FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
         COMS["FFT"].FWRK.copy(flatten(out[0:m_d2]))
-        #print( out[0], out[1], out[2], out[3])
-        #print( COMS["FFT"].FWRK(1), COMS["FFT"].FWRK(2), COMS["FFT"].FWRK(3), COMS["FFT"].FWRK(4))
       LSTART= True
       return XB, YB
 
@@ -341,3 +338,153 @@ def CCHI(V,COMS, o_bgd, o_w1):
          RESW1D=(COMS["SCL"].WSCL*V(6)-COMS["QW1"].QW1(COMS["QW1"].ISPEC))/COMS["QW1"].SIGQW1(COMS["QW1"].ISPEC)
          CHI=CHI+2.0*pow(RESW1D,2)
       return CHI/(2.0*float(COMS["DATA"].NDAT))
+
+
+
+def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1, prog):
+      # FFT FWRK, WORK WORK, GRD DDDPAR
+      NFT2=int(COMS["FFT"].NFFT/2)+1
+      CNORM=CCHI(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
+      HESS = matrix_2(NP,NP)
+      tmp = VMLTRC(COMS["WORK"].WORK.output_range(1,1,end=NFT2+1),compress(COMS["GRD"].FR2PIK.output_range(1,2,end=2*NFT2+2)))
+      COMS["FFT"].FWRK.copy(flatten(tmp))
+      tmp = VMLTRC(COMS["FFT"].TWOPIK.output_range(end=NFT2+1),compress(COMS["FFT"].FWRK.output_range(end=2*(NFT2+2))))
+      COMS["WORK"].WORK.copy(flatten(tmp))
+      
+      tmp = compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2+1)))
+      COMS["WORK"].WORK.copy(flatten(VMLTIC(tmp)))
+      tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+      COMS["FFT"].FWRK.copy(flatten(tmp))    
+      COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,4)
+      tmp=FOUR2(COMS["WORK"].WORK,COMS["FFT"].NFFT,1,-1,-1)
+      COMS["WORK"].WORK.copy(flatten(tmp))
+
+      COMS["FFT"].FWRK.copy(DEGRID(COMS["WORK"].WORK.output_as_vec(),COMS))
+
+      HESS.set(4,4,VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["FFT"].FWRK.output_range(end=COMS["DATA"].NDAT)))
+      COMS["FFT"].FWRK.copy(COMS["GRD"].FR2PIK.output_range(1,1,end=COMS["FFT"].NFFT+2))
+      tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+      COMS["FFT"].FWRK.copy(flatten(tmp))    
+      COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,3)
+
+      COMS["FFT"].FWRK.copy(COMS["GRD"].FR2PIK.output_range(1,2,end=COMS["FFT"].NFFT+2))
+      tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+      COMS["FFT"].FWRK.copy(flatten(tmp))    
+      COMS["WORK"].WORK.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,1)
+      HESS.set(3,4,VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["WORK"].WORK.output_range(1,1,end=COMS["DATA"].NDAT+1)))
+      HESS.set(4,3, HESS(3,4))
+      for I in get_range(1,COMS["FIT"].NFEW): # not tested in here :(
+        print("boo")
+        J=3+I+I
+        AJ=COMS["FIT"].FITP(J)*COMS["SCL"].ASCL
+
+        #tmp= VMLTRC(COMS["FIT"].EXPF.output_range(1,I, end = NFT2+1),compress(COMS["GRD"].FR2PIK.output_range(1,1,2*(1+NFT2))))
+        #COMS["WORK"].WORK.copy(tmp)
+        #COMS["FFT"].FWRK.copy(COMS["WORK"].WORK.output_range(1,1,COMS["FFT"].NFFT+3))
+        #tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+        #COMS["FFT"].FWRK.copy(flatten(tmp))   
+        #COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J)
+
+        #tmp= VMLTRC(COMS["FFT"].TWOPIK.output_range(end = NFT2),compress(COMS["WORK"].WORK.output_range(1,1,2*(1+NFT2))))
+        #COMS["FFT"].FWRK.copy(tmp)
+        #COMS["WORK"].WORK.copy(COMS["FWRK"].FRWK.output_range(end=COMS["FFT"].NFFT+3))
+        #tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+        #COMS["FFT"].FWRK.copy(flatten(tmp))   
+        #COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J+1)
+        #print("hi python", J,HESS(J,J+1), HESS(J+1,J))
+        #HESS0(HESS,COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["GRD"].DDDPAR.output_range(1,J+1,COMS["DATA"].NDAT),AJ,J)
+        #print("bye python", J,HESS(J,J+1), HESS(J+1,J))
+        #CALL VMLTIC(WORK,NFT2,WORK)
+        #CALL VCOPY(WORK,FWRK,NFFT+2)
+        #CALL FOUR2(FWRK,NFFT,1,-1,-1)
+        #CALL DEGRID(FWRK,WORK(1,2))
+        #CALL VRDOTR(RESID,WORK(1,2),NDAT,HESS(4,J))
+        #HESS(J,4)=HESS(4,J)
+        #CALL VMLTRC(TWOPIK,WORK,NFT2,FWRK)
+        #CALL VCOPY(FWRK,WORK,NFFT+2)
+        #CALL FOUR2(FWRK,NFFT,1,-1,-1)
+        #CALL DEGRID(FWRK,WORK(1,2))
+        #CALL VRDOTR(RESID,WORK(1,2),NDAT,SM)
+        #HESS(4,J+1)=-AJ*SM
+        #HESS(J+1,4)=HESS(4,J+1)
+        #CALL VMLTIC(WORK,NFT2,WORK)
+        #CALL FOUR2(WORK,NFFT,1,-1,-1)
+        #CALL DEGRID(WORK,FWRK)
+        #CALL VRDOTR(RESID,FWRK,NDAT,SM)
+        #HESS(J+1,J+1)=-AJ*SM
+      GRAD.copy(GRADPR(COMS["FIT"].RESID,COMS["DATA"].NDAT,NP,COMS["SCL"].SCLVEC, COMS, col=2)) # Grad has different sign in index 3, I think it is "zero" (e-4)
+      HESS=HESS1(NP,COMS["SCL"].SCLVEC.output_col(2),STEPSZ,COMS["FIT"].NFEW, prog, COMS, HESS=HESS) 
+      if o_w1==1 and NP>6:
+          print("mksfdksfdksfdaksfd") # not tested in here
+          DIF=COMS["SCL"].WSCL*COMS["FIT"].FITP(6)-COMS["QW1"].QW1(COMS["QW1"].ISPEC)
+          SIG2=2.0/pow(COMS["QW"].SIGQW1(COMS["QW"].ISPEC),2)
+          GRAD.set(6, GRAD(6)+SIG2*DIF*COMS["SCL"].WSCL)
+          HESS.set(6,6, HESS(6,6)+SIG2*pow(COMS["SCL"].WSCL,2))
+      covar_default = 1.
+      if prog=='s':
+          cov=2.0
+      HESS, COVAR, DETLOG = INVERT(NP,INDX,covar_default, HESS)
+      return HESS, COVAR, DETLOG
+
+
+#***<see the fit>*******************************************************
+def SEEFIT(COMS, SIGPAR,CNORM, store, lptfile):
+      store.open(53, lptfile)
+      ERRSCL=sqrt(CNORM)
+      PRMSV = []
+      SIGSV = []
+
+      store.write(53, f' Best-fit assuming no. of quasi-elastic lines = { COMS["FIT"].NFEW}')
+      store.write(53,f' >>> Normalised Chi-squared = {CNORM}')
+      store.write(53, f' Background(Xmin) = {COMS["FIT"].FITP(1)*COMS["SCL"].BSCL} +- {SIGPAR(1)*COMS["SCL"].BSCL*ERRSCL}')
+      store.write(53, f' Background(Xmax) = {COMS["FIT"].FITP(2)*COMS["SCL"].BSCL}  +- {SIGPAR(2)*COMS["SCL"].BSCL*ERRSCL}')
+      store.write(53,f' Zero offset       = {COMS["FIT"].FITP(4)*COMS["SCL"].GSCL*1000.}  +- {SIGPAR(4)*COMS["SCL"].GSCL*ERRSCL*1000.}  ueV')
+      store.write(53,' Elastic line')
+      store.write(53, f'Amplitude  =   {COMS["FIT"].FITP(3)*COMS["SCL"].ASCL}  +- {SIGPAR(3)*COMS["SCL"].ASCL*ERRSCL} ')
+      PRMSV.append(COMS["FIT"].FITP(3)*COMS["SCL"].ASCL)
+      SIGSV.append(SIGPAR(3)*COMS["SCL"].ASCL*ERRSCL)
+      for I in get_range(1,COMS["FIT"].NFEW):
+        J=4+I+I
+        store.write(53,' Quasi-elastic line {I}')
+        store.write(53, f' FWHM        =   {2000*COMS["FIT"].FITP(J)*COMS["SCL"].WSCL}  +- {2000*SIGPAR(J)*COMS["SCL"].ASCL*ERRSCL} ueV')
+        store.write(53, f' Amplitude  =   {COMS["FIT"].FITP(J-1)*COMS["SCL"].ASCL}  +-  {SIGPAR(J-1)*COMS["SCL"].ASCL*ERRSCL}')
+        PRMSV.append(COMS["FIT"].FITP(J-1)*COMS["SCL"].ASCL)
+        SIGSV.append(SIGPAR(J-1)*COMS["SCL"].ASCL*ERRSCL)
+        PRMSV.append(2.0*COMS["FIT"].FITP(J)*COMS["SCL"].WSCL)
+        SIGSV.append(2.0*SIGPAR(J)*COMS["SCL"].WSCL*ERRSCL)
+      
+      store.close(53)
+      return np.asarray(PRMSV), np.asarray(SIGSV)
+
+def OUTPRM(P,C,NP,NFEW,CNORM, store, files):
+      # p = param, C = covar
+      print("outfsda", NFEW) # still needs testing
+      if NFEW<1 or NFEW>len(files):
+          return
+      for k in range(len(files)):
+          store.open(k+1, files[k])
+      store.write(NFEW, f'{P(3)}   {P(1)}   {P(2)}   {P(4)}')
+      
+      for I in get_ramge(5,NP,2):
+        store.write(NFEW,f'{P(I)}   {P(I+1)}')
+      
+      CSCALE=2.0*CNORM
+      for J in get_range(1,NP):
+        for I in get_range(1,NP):
+          C.set(I,J,CSCALE*C(I,J))
+      store.write(NFEW, f'{C(3,3)}')
+      store.write(NFEW, f'{C(3,5)}   {C(5,5)}')
+      WRITE(NFEW,f'{C(3,6)}   {C(5,6)}    {C(6,6)}')
+      if NFEW > 1:
+        store.write(NFEW, f'{C(3,7)}   {C(5,7)}   {C(6,7)}    {C(7,7)}')
+        store.write(NFEW, f'{C(3,8)}   {C(5,8)}   {C(6,8)}   {C(7,8)}   {C(8,8)}')
+      
+      elif NFEW>2:
+        store.write(NFEW, f'{C(3,9)}   {C(5,9)}   {C(6,9)}   {C(7,9)}   {C(8,9)}   {C(9,9)}')
+        store.write(NFEW, f'{C(3,10)}   {C(5,10)}   {C(6,10)}    {C(7,10)}     {C(8,10)}   {C(9,10)}    {C(10,10)}')
+      
+      store.write(NFEW,' -------------------------------------------------')
+      store.close(unit=1)
+      store.close(unit=2)
+      store.close(unit=3)
+

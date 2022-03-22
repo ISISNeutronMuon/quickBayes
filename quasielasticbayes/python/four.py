@@ -26,6 +26,14 @@ def Re(x):
         y.append(k.real)
     return np.asarray(y)
 
+
+def Im(x):
+    y = []
+    print(x[0:10])
+    for k in x:
+        y.append(k.imag)
+    return np.asarray(y)
+
 def flatten(x):
     y =[]
     if any(np.iscomplex(x)):
@@ -45,7 +53,7 @@ def compress(x):
         end -=1
     for k in range(0,end,2):
         y.append(np.complex(x[k], x[k+1]))
-    return y
+    return np.asarray(y)
     
 #@jit(nopython=True)
 def FOUR2_NEG_IFORM (DATA,N,NDIM,ISIGN,IFORM):

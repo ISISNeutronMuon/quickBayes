@@ -51,6 +51,7 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
       GRAD = vec(m_p)
       COVAR = matrix_2(m_p,m_p)
       DTNORM,XSCALE = vec(m_sp), vec(m_sp)
+      FITPSV = vec(m_p)
       PRBSV,POUT = matrix_2(4,m_sp), matrix_2(4,m_sp)
       PRMSV,SIGSV = matrix_3(7,4,m_sp), matrix_3(7,4,m_sp)
       INDX = vec(m_p)
@@ -177,10 +178,62 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
        FileInit(3,ISP, COMS, store, [fileout1, fileout2, fileout3]) # dump data to file
        DETLOG = 0
        HESS, COVAR, DPAR=REFINA(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, CCHI, prog, o_bgd,o_w1, o_el, store, lptfile)
+       #GOTO 2
+       # 1  CALL SEARCH(GRAD,HESS,DPAR,NFEW,INDX,COVAR,FITP)
+       NPARMS=4+2*COMS["FIT"].NFEW # 2
+       CHIOLD=CCHI(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
+       FITPSV.copy(COMS["FIT"].FITP.output_range(end=NPARMS))
+       STEPSZ=0.3
+       if COMS["FIT"].NFEW>1:
+          STEPSZ=STEPSZ/10.0
+       IAGAIN=0
+       CDIFMN=0.003
+       for I in get_range(1,200):
+        print("test", I)
+
+        HESS, COVAR, DETLOG = REFINE(COMS, GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1, prog)
+
+        DPAR = NEWEST(COVAR,GRAD,NPARMS,COMS["FIT"].NFEW,COMS["FIT"].FITP,prog,store, lptfile)
+        CNORM=CCHI(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
+        if CNORM<=CHIOLD:
+                CHIDIF=(CHIOLD-CNORM)/CNORM
+                if abs(CHIDIF)<=CDIFMN:
+                    if IAGAIN==0:
+                        print('option1')
+                        CDIFMN=0.00005
+                        STEPSZ=0.15
+                        IAGAIN=1
+                    else:
+                        print('go to 3')
+                        break
+             
+                CHIOLD=CNORM
+                FITPSV.copy(COMS["FIT"].FITP.output_range(end=NPARMS))
+        else:
+          COMS["FIT"].FITP.copy(FITPSV.output_range(end=NPARMS))
+          STEPSZ=STEPSZ*0.6
+          if STEPSZ<1.0E-10:
+             print("another go to 3")
+             break
+       
+       HESS, COVAR, DETLOG = REFINE(COMS, GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,0.7, o_bgd, o_w1, prog)
+       SIGPAR = ERRBAR(COVAR,NPARMS)
+
+       tmp_p, tmp_s = SEEFIT(COMS, SIGPAR,CNORM, store, lptfile)
+       PRMSV.copy(tmp_p, 1,COMS["FIT"].NFEW+1,ISP)
+       SIGSV.copy(tmp_s,1,COMS["FIT"].NFEW+1,ISP )
+       OUTPRM(COMS["FIT"].FITP,COVAR,NPARMS,COMS["FIT"].NFEW,CNORM, store, [fileout1, fileout2, fileout3])
+
+       HESS, COVAR, DETLOG = REFINE(COMS, GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,0.25, o_bgd, o_w1, prog)
 
 
-       debug_dump(sfile[:l_fn]+'_test.python2.lpt', COMS["FIT"].FITP.output(), store)
 
+
+       #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["GRD"].DDDPAR.output_range(1,2,end=2000), store)
+       debug_dump(sfile[:l_fn]+'_test.python2.lpt',COVAR.output(),store)#COMS["FFT"].FWRK.output_range(end=2000), store)
+       #debug_dump(sfile[:l_fn]+'_test.python2.lpt',PRMSV.output_range(1,COMS["FIT"].NFEW+1,ISP, COMS["FIT"].NFEW+1),store)#COMS["FFT"].FWRK.output_range(end=2000), store)
+       print("hi", CNORM, DETLOG,PRMSV(1,COMS["FIT"].NFEW+1,ISP),SIGSV(1,COMS["FIT"].NFEW+1,ISP))
+      
 
       print("Hi It worked!!!!!!!!!!!!!! #actually doing QL data not res")
       nd_out=10

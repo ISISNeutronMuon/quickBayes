@@ -200,16 +200,6 @@ c
       CALL PRINIT(FITP,3,NFEW,1)
       CALL FileInit(3,ISP)
       CALL REFINA(GRAD,HESS,DPAR,3+NFEW,DETLOG,INDX,COVAR)
-
-      call open_f(1,dumpFile2)
-      do n =1, 2000
-         write(1,*) FITP(n)
-      end do
-      close(unit=1)
-      write(*,*)'test',ASCL, WSCL, BSCL
-
-      return
-
       GOTO 2
    1  CALL SEARCH(GRAD,HESS,DPAR,NFEW,INDX,COVAR,FITP)
    2  NPARMS=4+2*NFEW
@@ -219,18 +209,21 @@ c
       IF (NFEW.GT.1) STEPSZ=STEPSZ/10.0
       IAGAIN=0
       CDIFMN=0.003
-        DO 10 I=1,200
-          CALL REFINE(GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,STEPSZ)
+      DO 10 I=1,200
+      write(*,*)'test', I
+       CALL REFINE(GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,STEPSZ)
           CALL NEWEST(COVAR,GRAD,NPARMS,NFEW,DPAR,FITP)
           CNORM=CCHI(FITP)
           IF (CNORM.LE.CHIOLD) THEN
             CHIDIF=(CHIOLD-CNORM)/CNORM
             IF (ABS(CHIDIF).LE.CDIFMN) THEN
               IF (IAGAIN.EQ.0) THEN
+                write(*,*) 'option1'
                 CDIFMN=0.00005
                 STEPSZ=0.15
                 IAGAIN=1
               ELSE
+              write(*,*) 'go to 3'
                GOTO 3
               ENDIF
             ENDIF
@@ -242,36 +235,44 @@ c
             IF (STEPSZ.LT.1.0E-10) GOTO 3
           ENDIF
   10    CONTINUE
+
    3  CALL REFINE(GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,0.7)
       CALL ERRBAR(COVAR,NPARMS,SIGPAR)
-      CALL SEEFIT(SIGPAR,CNORM,PRMSV(1,NFEW+1,ISP),
-     1   SIGSV(1,NFEW+1,ISP))
+      CALL SEEFIT(SIGPAR,CNORM,PRMSV(1,NFEW+1,ISP),SIGSV(1,NFEW+1,ISP))
       CALL OUTPRM(FITP,COVAR,NPARMS,NFEW,CNORM)
       CALL REFINE(GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,0.25)
-      CALL PROBN(CNORM,numb(4),DETLOG,NFEW,3,PRBSV(1,ISP))
-      noff=NDAT*NFEW
-      do n=1,NDAT
-       yfit(noff+n)=FIT(n)
-      end do 
-      NFEW=NFEW+1
-      if (o_el.eq.0) then                     !no peak
-       FITP(3)=0.0
-       FITPSV(3)=0.0
-      endif
-      IF (NFEW.LE.3) GOTO 1
-      nd_out=NDAT
-      do n=1,nd_out
-       xout(n)=XDAT(n)
-       yout(n)=DAT(n)
-       if(SIG(n).gt.1.0e-10)then
-        eout(n)=SQRT(2.0/SIG(n))
-       else
-        eout(n)=0.
-       endif
+c      CALL PROBN(CNORM,numb(4),DETLOG,NFEW,3,PRBSV(1,ISP))
+c      noff=NDAT*NFEW
+c      do n=1,NDAT
+c       yfit(noff+n)=FIT(n)
+c      end do 
+c      NFEW=NFEW+1
+c      if (o_el.eq.0) then                     !no peak
+c       FITP(3)=0.0
+c       FITPSV(3)=0.0
+c      endif
+c      IF (NFEW.LE.3) GOTO 1
+c      nd_out=NDAT
+c      do n=1,nd_out
+c       xout(n)=XDAT(n)
+c       yout(n)=DAT(n)
+c       if(SIG(n).gt.1.0e-10)then
+c        eout(n)=SQRT(2.0/SIG(n))
+c       else
+c        eout(n)=0.
+c       endif
+c      end do
+c      CALL PRBOUT(PRBSV,4,ISP,POUT)
+c      do l=1,4
+c       yprob(l)=POUT(l,isp)
+c      end do
+
+      call open_f(1,dumpFile2)
+      do n =1, 16
+         write(1,*) COVAR(n,1)
       end do
-      CALL PRBOUT(PRBSV,4,ISP,POUT)
-      do l=1,4
-       yprob(l)=POUT(l,isp)
-      end do
+      close(unit=1)
+      write(*,*) CNORM, DETLOG
+
       RETURN
       END

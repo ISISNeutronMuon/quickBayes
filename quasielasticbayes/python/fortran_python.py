@@ -120,6 +120,10 @@ class matrix_2(vec):
        k = self._index_for_vec(start_i,start_j)
        self._vec[k:k+len(vec)] = vec
    
+    def output_as_vec(self):
+        tmp = vec(self._m*self._n)
+        tmp.copy(self.output())
+        return tmp
                           
     def dimensions(self):
         return 2
@@ -139,8 +143,8 @@ class matrix_3(vec):
         k = self._index_for_vec(start_i,start_j,start_k)
         super().fill(value,n,k)
     
-    def __call__(self,i,j):
-        return self._vec[self._index_for_vec(i,j)]
+    def __call__(self,i,j,k):
+        return self._vec[self._index_for_vec(i,j,k)]
         
     def set(self, i,j, k, value):
         self._vec[self._index_for_vec(i,j,k)] = value
@@ -156,6 +160,10 @@ class matrix_3(vec):
     def get_from(self, i,j,k):
         kk = self._index_for_vec(i,j,k)
         return self._vec[kk:]
+
+    def output_range(self, i,j,k,end):
+        kk = self._index_for_vec(i,j,k)
+        return self._vec[kk:kk+end]
     
     def copy(self, vec, start_i=1, start_j=1, start_k=1):
        k = self._index_for_vec(start_i,start_j,start_k)

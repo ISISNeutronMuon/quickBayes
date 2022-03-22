@@ -143,6 +143,7 @@ C     --------------------------------------------
       do I=1,NP
         CALL VRDOTR(RESID,DDDPAR(1,I),NDAT,SM)
         GRAD(I)=SCLVEC(I)*SM
+        write(*,*)'grad check', GRAD(I), SCLVEC(I), SM, SCLVEC(I)*SM
       end do
       END
 C     --------------------------
@@ -384,7 +385,6 @@ C    changes both hess and covar
       else
        CNORM=CCHI(FITP)
       endif
-      write(*,*)'test', CNORM
       CALL GRADPR(GRAD,RESID,NDAT,NP,SCLVEC)
       CALL NEWEST(COVAR,GRAD,NP,NFEW,DPAR,FITP)
       END
