@@ -52,7 +52,7 @@ def compress(x):
     if end%2!=0:
         end -=1
     for k in range(0,end,2):
-        y.append(np.complex(x[k], x[k+1]))
+        y.append(complex(x[k], x[k+1]))
     return np.asarray(y)
     
 #@jit(nopython=True)
@@ -267,7 +267,7 @@ def FOUR2 (DATA,N,NDIM,ISIGN,IFORM):
       result = []
       if IFORM==-1:
           # N < len(DATA) since we dont actually use all of the data
-          result = FOUR2_NEG_IFORM(tmp,[N],NDIM,ISIGN,IFORM) # This seems to take data of the form exp(-t*gamma)*cos(omega*t) and pick out the omega freq
+          result = FOUR2_NEG_IFORM(tmp,[N],NDIM,ISIGN,IFORM) # This seems to take data of the form exp(-t*gamma)*cos(omega*t) and pick out the omega freq -> the oscialltion freq is related to the mean of the gaussian. The envelope is related to the width of the gaussianss
       elif ISIGN ==1 and IFORM ==1:
           result = np.conj(sc.fft(tmp))
       elif ISIGN ==-1  and IFORM ==1:

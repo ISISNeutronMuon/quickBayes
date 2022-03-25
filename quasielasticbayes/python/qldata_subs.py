@@ -308,8 +308,11 @@ def CCHI(V,COMS, o_bgd, o_w1):
         if NXFT2 > NFT2:
            NXFT2=NFT2
         for I in get_range(1,NXFT2):
-          EXPIJ=EXP(-TWOPIK(I)*SIGJ)
-          COMS["FIT"].EXPF.set(I,J, EXPIJ)
+          EXPIJ=np.exp(-COMS["FFT"].TWOPIK(I)*SIGJ)
+          COMS["FIT"].EXPF.set(I,J, EXPIJ)          
+          #if I == NXFT2:
+          #print("hi", EXPIJ, COMS["FIT"].EXPF(I,J), COMS["FFT"].TWOPIK(I), SIGJ, I)
+
           COMS["WORK"].WORK.set(I,1, COMS["WORK"].WORK(I,1)+AJ*EXPIJ)
 
       tmp = VMLTRC(COMS["WORK"].WORK.output_range(1,1,end=NFT2+1),RKEXP)#,NFT2,FWRK)
@@ -341,7 +344,7 @@ def CCHI(V,COMS, o_bgd, o_w1):
 
 
 
-def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1, prog):
+def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1,o_el, prog):
       # FFT FWRK, WORK WORK, GRD DDDPAR
       NFT2=int(COMS["FFT"].NFFT/2)+1
       CNORM=CCHI(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
@@ -361,7 +364,7 @@ def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1, prog):
 
       COMS["FFT"].FWRK.copy(DEGRID(COMS["WORK"].WORK.output_as_vec(),COMS))
 
-      HESS.set(4,4,VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["FFT"].FWRK.output_range(end=COMS["DATA"].NDAT)))
+      HESS.set(4,4,VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT+1),COMS["FFT"].FWRK.output_range(end=COMS["DATA"].NDAT+1),COMS["DATA"].NDAT-1))
       COMS["FFT"].FWRK.copy(COMS["GRD"].FR2PIK.output_range(1,1,end=COMS["FFT"].NFFT+2))
       tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
       COMS["FFT"].FWRK.copy(flatten(tmp))    
@@ -371,29 +374,28 @@ def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1, prog):
       tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
       COMS["FFT"].FWRK.copy(flatten(tmp))    
       COMS["WORK"].WORK.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,1)
-      HESS.set(3,4,VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["WORK"].WORK.output_range(1,1,end=COMS["DATA"].NDAT+1)))
+      HESS.set(3,4,VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT+1),COMS["WORK"].WORK.output_range(1,1,end=COMS["DATA"].NDAT+2),COMS["DATA"].NDAT-1))
       HESS.set(4,3, HESS(3,4))
-      for I in get_range(1,COMS["FIT"].NFEW): # not tested in here :(
-        print("boo")
+      for I in get_range(1,COMS["FIT"].NFEW): # something strange is happening in here...
         J=3+I+I
         AJ=COMS["FIT"].FITP(J)*COMS["SCL"].ASCL
 
-        #tmp= VMLTRC(COMS["FIT"].EXPF.output_range(1,I, end = NFT2+1),compress(COMS["GRD"].FR2PIK.output_range(1,1,2*(1+NFT2))))
-        #COMS["WORK"].WORK.copy(tmp)
-        #COMS["FFT"].FWRK.copy(COMS["WORK"].WORK.output_range(1,1,COMS["FFT"].NFFT+3))
-        #tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
-        #COMS["FFT"].FWRK.copy(flatten(tmp))   
+        tmp= VMLTRC(COMS["FIT"].EXPF.output_range(1,I, end = NFT2+2),compress(COMS["GRD"].FR2PIK.output_range(1,1,2*(2+NFT2))))
+        COMS["WORK"].WORK.copy(flatten(tmp))
+        COMS["FFT"].FWRK.copy(COMS["WORK"].WORK.output_range(1,1,COMS["FFT"].NFFT+2))
+        tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+        COMS["FFT"].FWRK.copy(flatten(tmp))   
         #COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J)
 
-        #tmp= VMLTRC(COMS["FFT"].TWOPIK.output_range(end = NFT2),compress(COMS["WORK"].WORK.output_range(1,1,2*(1+NFT2))))
-        #COMS["FFT"].FWRK.copy(tmp)
-        #COMS["WORK"].WORK.copy(COMS["FWRK"].FRWK.output_range(end=COMS["FFT"].NFFT+3))
+        #tmp= VMLTRC(COMS["FFT"].TWOPIK.output_range(end = NFT2-1),compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2))))
+        #COMS["FFT"].FWRK.copy(flatten(tmp))
+        # up to here -> slow down is either four and/or degrid
+        #COMS["WORK"].WORK.copy(COMS["FFT"].FWRK.output_range(end=COMS["FFT"].NFFT+3))
         #tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
         #COMS["FFT"].FWRK.copy(flatten(tmp))   
-        #COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J+1)
-        #print("hi python", J,HESS(J,J+1), HESS(J+1,J))
-        #HESS0(HESS,COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["GRD"].DDDPAR.output_range(1,J+1,COMS["DATA"].NDAT),AJ,J)
-        #print("bye python", J,HESS(J,J+1), HESS(J+1,J))
+        #COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J+1)# -> this messes up hessian! 
+        #tmp, HESS = HESS0(HESS,COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["GRD"].DDDPAR.output_range(1,J+1,COMS["DATA"].NDAT+1),AJ,J) # the return vals for tmp are causing a huge slow down
+        #COMS["GRD"].DDDPAR.copy(tmp, 1,J+1)
         #CALL VMLTIC(WORK,NFT2,WORK)
         #CALL VCOPY(WORK,FWRK,NFFT+2)
         #CALL FOUR2(FWRK,NFFT,1,-1,-1)
@@ -413,9 +415,9 @@ def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1, prog):
         #CALL VRDOTR(RESID,FWRK,NDAT,SM)
         #HESS(J+1,J+1)=-AJ*SM
       GRAD.copy(GRADPR(COMS["FIT"].RESID,COMS["DATA"].NDAT,NP,COMS["SCL"].SCLVEC, COMS, col=2)) # Grad has different sign in index 3, I think it is "zero" (e-4)
-      HESS=HESS1(NP,COMS["SCL"].SCLVEC.output_col(2),STEPSZ,COMS["FIT"].NFEW, prog, COMS, HESS=HESS) 
+      HESS=HESS1(NP,COMS["SCL"].SCLVEC.output_col(2),STEPSZ,COMS["FIT"].NFEW, prog, COMS,o_el, HESS=HESS) 
       if o_w1==1 and NP>6:
-          print("mksfdksfdksfdaksfd") # not tested in here
+          #print("mksfdksfdksfdaksfd") # not tested in here
           DIF=COMS["SCL"].WSCL*COMS["FIT"].FITP(6)-COMS["QW1"].QW1(COMS["QW1"].ISPEC)
           SIG2=2.0/pow(COMS["QW"].SIGQW1(COMS["QW"].ISPEC),2)
           GRAD.set(6, GRAD(6)+SIG2*DIF*COMS["SCL"].WSCL)
@@ -435,19 +437,19 @@ def SEEFIT(COMS, SIGPAR,CNORM, store, lptfile):
       SIGSV = []
 
       store.write(53, f' Best-fit assuming no. of quasi-elastic lines = { COMS["FIT"].NFEW}')
-      store.write(53,f' >>> Normalised Chi-squared = {CNORM}')
-      store.write(53, f' Background(Xmin) = {COMS["FIT"].FITP(1)*COMS["SCL"].BSCL} +- {SIGPAR(1)*COMS["SCL"].BSCL*ERRSCL}')
-      store.write(53, f' Background(Xmax) = {COMS["FIT"].FITP(2)*COMS["SCL"].BSCL}  +- {SIGPAR(2)*COMS["SCL"].BSCL*ERRSCL}')
-      store.write(53,f' Zero offset       = {COMS["FIT"].FITP(4)*COMS["SCL"].GSCL*1000.}  +- {SIGPAR(4)*COMS["SCL"].GSCL*ERRSCL*1000.}  ueV')
+      store.write(53,f' >>> Normalised Chi-squared = {CNORM:.4f}')
+      store.write(53, f' Background(Xmin) = {COMS["FIT"].FITP(1)*COMS["SCL"].BSCL:.3e} +- {SIGPAR(1)*COMS["SCL"].BSCL*ERRSCL:.3e}')
+      store.write(53, f' Background(Xmax) = {COMS["FIT"].FITP(2)*COMS["SCL"].BSCL:.3e}  +- {SIGPAR(2)*COMS["SCL"].BSCL*ERRSCL:.3e}')
+      store.write(53,f' Zero offset       = {COMS["FIT"].FITP(4)*COMS["SCL"].GSCL*1000.:.2e}  +- {SIGPAR(4)*COMS["SCL"].GSCL*ERRSCL*1000.:.2e}  ueV')
       store.write(53,' Elastic line')
-      store.write(53, f'Amplitude  =   {COMS["FIT"].FITP(3)*COMS["SCL"].ASCL}  +- {SIGPAR(3)*COMS["SCL"].ASCL*ERRSCL} ')
+      store.write(53, f'Amplitude  =   {COMS["FIT"].FITP(3)*COMS["SCL"].ASCL:.4e}  +- {SIGPAR(3)*COMS["SCL"].ASCL*ERRSCL:.4e} ')
       PRMSV.append(COMS["FIT"].FITP(3)*COMS["SCL"].ASCL)
       SIGSV.append(SIGPAR(3)*COMS["SCL"].ASCL*ERRSCL)
       for I in get_range(1,COMS["FIT"].NFEW):
         J=4+I+I
-        store.write(53,' Quasi-elastic line {I}')
-        store.write(53, f' FWHM        =   {2000*COMS["FIT"].FITP(J)*COMS["SCL"].WSCL}  +- {2000*SIGPAR(J)*COMS["SCL"].ASCL*ERRSCL} ueV')
-        store.write(53, f' Amplitude  =   {COMS["FIT"].FITP(J-1)*COMS["SCL"].ASCL}  +-  {SIGPAR(J-1)*COMS["SCL"].ASCL*ERRSCL}')
+        store.write(53,f' Quasi-elastic line {I}')
+        store.write(53, f' FWHM        =   {2000*COMS["FIT"].FITP(J)*COMS["SCL"].WSCL:.2e}  +- {2000*SIGPAR(J)*COMS["SCL"].WSCL*ERRSCL:.2e} ueV')
+        store.write(53, f' Amplitude  =   {COMS["FIT"].FITP(J-1)*COMS["SCL"].ASCL:.4e}  +-  {SIGPAR(J-1)*COMS["SCL"].ASCL*ERRSCL:.4e}') # this seems to be wrong for just the FITP(J-1)
         PRMSV.append(COMS["FIT"].FITP(J-1)*COMS["SCL"].ASCL)
         SIGSV.append(SIGPAR(J-1)*COMS["SCL"].ASCL*ERRSCL)
         PRMSV.append(2.0*COMS["FIT"].FITP(J)*COMS["SCL"].WSCL)
@@ -458,14 +460,14 @@ def SEEFIT(COMS, SIGPAR,CNORM, store, lptfile):
 
 def OUTPRM(P,C,NP,NFEW,CNORM, store, files):
       # p = param, C = covar
-      print("outfsda", NFEW) # still needs testing
+      #print("outfsda", NFEW) # still needs testing
       if NFEW<1 or NFEW>len(files):
           return
       for k in range(len(files)):
           store.open(k+1, files[k])
       store.write(NFEW, f'{P(3)}   {P(1)}   {P(2)}   {P(4)}')
       
-      for I in get_ramge(5,NP,2):
+      for I in get_range(5,NP,2):
         store.write(NFEW,f'{P(I)}   {P(I+1)}')
       
       CSCALE=2.0*CNORM
@@ -474,7 +476,7 @@ def OUTPRM(P,C,NP,NFEW,CNORM, store, files):
           C.set(I,J,CSCALE*C(I,J))
       store.write(NFEW, f'{C(3,3)}')
       store.write(NFEW, f'{C(3,5)}   {C(5,5)}')
-      WRITE(NFEW,f'{C(3,6)}   {C(5,6)}    {C(6,6)}')
+      store.write(NFEW,f'{C(3,6)}   {C(5,6)}    {C(6,6)}')
       if NFEW > 1:
         store.write(NFEW, f'{C(3,7)}   {C(5,7)}   {C(6,7)}    {C(7,7)}')
         store.write(NFEW, f'{C(3,8)}   {C(5,8)}   {C(6,8)}   {C(7,8)}   {C(8,8)}')
@@ -488,3 +490,32 @@ def OUTPRM(P,C,NP,NFEW,CNORM, store, files):
       store.close(unit=2)
       store.close(unit=3)
 
+      
+#**<search for one more & refine amplitudes>****************************
+def SEARCH(COMS, GRAD,HESS,DPAR, INDX,COVAR, o_w1, prog, o_bgd, o_el, store, lptfile, DETLOG, Chi_func):
+    #FIt FITP, HESS, COVAR, DPAR,  FFT FWRK, GRD DDDPAR
+      if o_w1 == 1 and COMS["FIT"].NFEW>=1:
+          COMS["FIT"].FITP.set(5, 0.1)
+          COMS["FIT"].FITP.set(6, COMS["QW1"].QW1(COMS["QW1"].ISPEC)/COMS["SCL"].WSCL)
+          if COMS["FIT"].NFEW == 1:
+              HESS, COVAR, DPAR=REFINA(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, Chi_func, prog, o_bgd,o_w1, o_el, store, lptfile)
+              return HESS, COVAR, DPAR
+      J=4+2*COMS["FIT"].NFEW
+      DXLOG=0.85
+      NSRCH=NINT(np.log(5.0*COMS["SCL"].GSCL/COMS["SCL"].WSCL)/np.log(DXLOG))
+      CMIN=1.0E20
+      COMS["FIT"].FITP.set(J-1, 0.1)
+      COMS["FIT"].FITP.set(J, 1.0)
+      SIGJ=COMS["FIT"].FITP(J)
+      print("moooo", NSRCH)
+      for I in get_range(1,NSRCH):
+        HESS, COVAR, DPAR=REFINA(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, Chi_func, prog, o_bgd,o_w1, o_el, store, lptfile)
+        CNORM=Chi_func(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
+        if CNORM<CMIN:
+          CMIN=CNORM
+          SIGJ=COMS["FIT"].FITP(J)
+       
+        COMS["FIT"].FITP.set(J, COMS["FIT"].FITP(J)*DXLOG)
+#      print("SIGJ", SIGJ, CMIN, CNORM, J)
+      COMS["FIT"].FITP.set(J, SIGJ)
+      return REFINA(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, Chi_func, prog, o_bgd,o_w1, o_el, store, lptfile) 

@@ -182,11 +182,11 @@ c
       CALL VLFILL(LGOOD,.TRUE.,m_sp)
       CALL BLRINT(XBLR,YBLR,NB,0,IDUF)
 
-      call open_f(1,dumpFile)
-      do n =1, 2000
-         write(1,*) FWRK(n)
-      end do
-      close(unit=1)
+c      call open_f(1,dumpFile)
+c      do n =1, 2000
+c         write(1,*) FWRK(n)
+c      end do
+c      close(unit=1)
 
 
       CALL DPINIT
@@ -201,7 +201,8 @@ c
       CALL FileInit(3,ISP)
       CALL REFINA(GRAD,HESS,DPAR,3+NFEW,DETLOG,INDX,COVAR)
       GOTO 2
-   1  CALL SEARCH(GRAD,HESS,DPAR,NFEW,INDX,COVAR,FITP)
+   1  write(*,*)'hi'
+      CALL SEARCH(GRAD,HESS,DPAR,NFEW,INDX,COVAR,FITP)
    2  NPARMS=4+2*NFEW
       CHIOLD=CCHI(FITP)
       CALL VCOPY(FITP,FITPSV,NPARMS)
@@ -210,13 +211,14 @@ c
       IAGAIN=0
       CDIFMN=0.003
       DO 10 I=1,200
-      write(*,*)'test', I
+c      write(*,*)'test', I
        CALL REFINE(GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,STEPSZ)
           CALL NEWEST(COVAR,GRAD,NPARMS,NFEW,DPAR,FITP)
           CNORM=CCHI(FITP)
           IF (CNORM.LE.CHIOLD) THEN
             CHIDIF=(CHIOLD-CNORM)/CNORM
             IF (ABS(CHIDIF).LE.CDIFMN) THEN
+              write(*,*) 'waaaa', CNORM, CHIOLD, CHIDIF, IAGAIN
               IF (IAGAIN.EQ.0) THEN
                 write(*,*) 'option1'
                 CDIFMN=0.00005
@@ -232,7 +234,10 @@ c
           ELSE
             CALL VCOPY(FITPSV,FITP,NPARMS)
             STEPSZ=STEPSZ*0.6
-            IF (STEPSZ.LT.1.0E-10) GOTO 3
+            IF (STEPSZ.LT.1.0E-10) then
+               write(*,*) 'another go to 3'
+               GOTO 3
+            ENDIF
           ENDIF
   10    CONTINUE
 
@@ -241,17 +246,17 @@ c
       CALL SEEFIT(SIGPAR,CNORM,PRMSV(1,NFEW+1,ISP),SIGSV(1,NFEW+1,ISP))
       CALL OUTPRM(FITP,COVAR,NPARMS,NFEW,CNORM)
       CALL REFINE(GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,0.25)
-c      CALL PROBN(CNORM,numb(4),DETLOG,NFEW,3,PRBSV(1,ISP))
-c      noff=NDAT*NFEW
-c      do n=1,NDAT
-c       yfit(noff+n)=FIT(n)
-c      end do 
-c      NFEW=NFEW+1
-c      if (o_el.eq.0) then                     !no peak
-c       FITP(3)=0.0
-c       FITPSV(3)=0.0
-c      endif
-c      IF (NFEW.LE.3) GOTO 1
+      CALL PROBN(CNORM,numb(4),DETLOG,NFEW,3,PRBSV(1,ISP))
+      noff=NDAT*NFEW
+      do n=1,NDAT
+       yfit(noff+n)=FIT(n)
+      end do 
+      NFEW=NFEW+1
+      if (o_el.eq.0) then                     !no peak
+       FITP(3)=0.0
+       FITPSV(3)=0.0
+      endif
+      IF (NFEW.LE.3) GOTO 1
 c      nd_out=NDAT
 c      do n=1,nd_out
 c       xout(n)=XDAT(n)
@@ -268,10 +273,20 @@ c       yprob(l)=POUT(l,isp)
 c      end do
 
       call open_f(1,dumpFile2)
-      do n =1, 16
-         write(1,*) COVAR(n,1)
+      do n =1, 10
+c         write(1,*) DDDPAR(n,6)
+         write(1,*) SCLVEC(n,2)
+         
       end do
       close(unit=1)
+
+      call open_f(1,dumpFile)
+      do n =1, 100
+         write(1,*) HESS(n,1)
+c         write(1,*) IPDAT(n)
+      end do
+      close(unit=1)
+
       write(*,*) CNORM, DETLOG
 
       RETURN

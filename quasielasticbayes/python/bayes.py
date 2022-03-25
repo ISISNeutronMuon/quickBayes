@@ -56,33 +56,39 @@ def VMLTIC(C):
     return C*1j
 
 # seems to rescale the YGRD data
-def DEGRID(YGRD, COMS):
+def DEGRID(YGRD, COMS): # is this the slow down?
       YDAT = []
       for I in get_range(1,COMS["DATA"].NDAT):
         J=int(COMS["Dintrp"].IPDAT(I))
         YDAT.append(YGRD(J)+COMS["Dintrp"].XPDAT(I)*(YGRD(J+1)-YGRD(J)))
       return np.asarray(YDAT)
 
-def VRDOTR(A,B):
-      return np.sum(A*B)
+def VRDOTR(A,B,N):
+    sm = 0.0
+    for j in get_range(1,N):
+        sm += A[j-1]*B[j-1]
+    #return np.sum(A*B)
+    return sm
 
 # weights the SCLVEC
 def GRADPR(RESID,NDAT,NP,SCLVEC, COMS,col=1):
       GRAD = []
       for I in get_range(1,NP):
-        SM=VRDOTR(RESID.output_range(end=NDAT),COMS["GRD"].DDDPAR.output_range(1,I, end=NDAT+1))#,NDAT,SM)
+        SM=VRDOTR(RESID.output_range(end=NDAT+1),COMS["GRD"].DDDPAR.output_range(1,I, end=NDAT+2), NDAT-1)#,NDAT,SM)
         GRAD.append(SCLVEC(I,col)*SM)
+        print('grad check', SM, I, NP, NDAT)
+      print()
       return np.asarray(GRAD)
 
 
 def HESS0(HESS, RESID, DDDPAR,AJ,J):
       SM = np.sum(-RESID*DDDPAR)
       HESS.set(J,J+1, SM)
-      HESS(J+1,J,SM) # symmetric matrix
-      return -DDDPAR*AJ
+      HESS.set(J+1,J,SM) # symmetric matrix
+      return -DDDPAR*AJ, HESS
 
 # if HESS is None, then create an NP by NP Hessian matrix
-def HESS1(NP,SCLvec,STEPSZ,NFEW, prog, COMS, HESS=None):
+def HESS1(NP,SCLvec,STEPSZ,NFEW, prog, COMS,o_el, HESS=None):
       if HESS is None:
           HESS = matrix_2(NP,NP)
       for J in get_range(1,NP):
@@ -132,7 +138,7 @@ def MLTMXV(P,OP,N):
 
 
 def NEWEST(COVAR,GRAD,NP,NFEW,FITP, prog, store,lptfile):
-
+      # FIT FITP
       if prog=='w':
        mp=3
       else:
@@ -159,7 +165,8 @@ def NEWEST(COVAR,GRAD,NP,NFEW,FITP, prog, store,lptfile):
 
 # should we define grad in here too?
 def REFINA(GRAD,NP,DETLOG,INDX,COVAR, COMS, CNORM_FUNC, prog, o_bgd,o_w1, o_el, store, lptfile):
-      NFT2=COMS["FFT"].NFFT/2+1
+      # HESS, COVAR, DPAR, FFT FWRK, GRD DDDPAR, FIT FITP
+      NFT2=int(COMS["FFT"].NFFT/2+1)
       CNORM=CNORM_FUNC(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
       #HESS.fill(0.0,NP*NP)
       COMS["FFT"].FWRK.copy(COMS["GRD"].FR2PIK.output_range(1,1,COMS["FFT"].NFFT+2))
@@ -167,13 +174,15 @@ def REFINA(GRAD,NP,DETLOG,INDX,COVAR, COMS, CNORM_FUNC, prog, o_bgd,o_w1, o_el, 
       COMS["FFT"].FWRK.copy(flatten(tmp))
       COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,3)
       for I in get_range(1,COMS["FIT"].NFEW):
-        tmp = VMLTRC(COMS["FIT"].EXPF.output_range(1,I,end=NFT2+1),COMS["GRD"].FR2PIK.output_range(1,1,end=NFT2+1))#,NFT2,FWRK)
+        tmp = VMLTRC(COMS["FIT"].EXPF.output_range(1,I,end=NFT2+1),compress(COMS["GRD"].FR2PIK.output_range(1,1,end=2*(NFT2+1))))#,NFT2,FWRK)
         COMS["FFT"].FWRK.copy(flatten(tmp))
         tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
         COMS["FFT"].FWRK.copy(flatten(tmp))
+        tmp = DEGRID(COMS["FFT"].FWRK,COMS)
         COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,3+I)
+
       GRAD.copy(GRADPR(COMS["FIT"].RESID,COMS["DATA"].NDAT,NP,COMS["SCL"].SCLVEC, COMS))
-      HESS=HESS1(NP,COMS["SCL"].SCLVEC.output(),0.3,COMS["FIT"].NFEW, prog, COMS, HESS=None) # create HESS matrix
+      HESS=HESS1(NP,COMS["SCL"].SCLVEC.output(),0.3,COMS["FIT"].NFEW, prog, COMS,o_el, HESS=None) # create HESS matrix
       covar_default = 1
       if prog == 's':
           covar_default = 2
@@ -368,3 +377,39 @@ def ERRBAR(COVAR,NP):
     for I in get_range(1,NP):
         SIGPAR.set(I, sqrt(2.0*abs(COVAR(I,I))+SMALL))
     return SIGPAR
+
+
+def FCTNLG(N):
+    A = np.asarray([k+1 for k in range(N)])
+    return np.sum(np.log10(A))
+
+# log likelyhoods?
+def PROBN(COMS, CNORM,NDAT,DETLOG,NFEW,NMAX, prog, store, lptfile):
+      # log_10 probabilities -> priors
+      CHISQ=CNORM*float(NDAT)
+      DETLOG=DETLOG-float(NFEW*2)*log10(COMS["SCL"].ASCL*COMS["SCL"].WSCL)
+      CHI2LG=-log10(2.7182818)*CHISQ/2.0
+
+      PROBLG=CHI2LG-(0.5*DETLOG)-(float(NFEW)*log10(COMS["SCL"].ASCL*COMS["SCL"].WSCL))
+      PROBLG=PROBLG+FCTNLG(NFEW)
+      PROBLG=PROBLG+(float(NFEW)*log10(4.0*pi))
+
+      store.open(53, lptfile)
+      if prog=='l':
+         store.write(53,f' Log10[Prob({NFEW} Quasi-elastic lines|Data)] = {PROBLG:.2f}')
+         if NFEW< NMAX:
+            store.write(53,' -------------------------')
+      
+      if prog=='s':
+          store.write(53,f' Log10[Prob(Stretched exp|Data)] = {PROBLG:.2f}')
+          if NFEW<1:
+             store.write(53,' -------------------------')
+      
+      if prog=='w':
+         store.write(53,f' Log10[Prob(Water|Data)] = {PROBLG:.2e}')
+         if NFEW<1:
+            store.write(53,' -------------------------')
+      
+      store.close(unit=53)
+      #PRBSV.set(NFEW+1, PROBLG)
+      return PROBLG, DETLOG

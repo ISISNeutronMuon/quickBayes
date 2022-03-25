@@ -303,6 +303,9 @@ C
         do I=1,NXFT2
           EXPIJ=EXP(-TWOPIK(I)*SIGJ)
           EXPF(I,J)=EXPIJ
+c          if (I.eq. NXFT2) then
+c          write(*,*) 'hi', EXPIJ,EXPF(I,J), TWOPIK(I), SIGJ, I
+c          end if
           WORK(I,1)=WORK(I,1)+AJ*EXPIJ
         end do
       end do
@@ -353,6 +356,7 @@ C
       CMIN=1.0E20
       FITP(J-1)=0.1
       FITP(J)=1.0
+      write(*,*)'mooooo', NSRCH
       do I=1,NSRCH
         CALL REFINA(GRAD,HESS,DPAR,3+NFEW,DETLOG,INDX,COVAR)
         CNORM=CCHI(FITP)
@@ -362,6 +366,7 @@ C
         ENDIF
         FITP(J)=FITP(J)*DXLOG
       end do
+c      write(*,*) 'SIGJ', SIGJ, CMIN, CNORM,J
       FITP(J)=SIGJ
       CALL REFINA(GRAD,HESS,DPAR,3+NFEW,DETLOG,INDX,COVAR)
       END
@@ -384,7 +389,7 @@ C
       NFT2=NFFT/2+1
       CNORM=CCHI(FITP)
       CALL VRFILL(HESS,0.0,NP*NP)
-      write(*,*)'waaaaa', NFEW
+c      write(*,*)'waaaaa', NFEW
       CALL VMLTRC(WORK,FR2PIK(1,2),NFT2,FWRK)
       CALL VMLTRC(TWOPIK,FWRK,NFT2,WORK)
       CALL VMLTIC(WORK,NFT2,WORK)
@@ -400,7 +405,7 @@ C
       CALL FOUR2(FWRK,NFFT,1,-1,-1)
       CALL DEGRID(FWRK,WORK)
       CALL VRDOTR(RESID,WORK,NDAT,HESS(3,4))
-      write(*,*) 'hess', HESS(3,4)
+c      write(*,*) 'hess', HESS(3,4)
       HESS(4,3)=HESS(3,4)
       do I=1,NFEW
         J=3+I+I
@@ -408,14 +413,16 @@ C
         CALL VMLTRC(EXPF(1,I),FR2PIK,NFT2,WORK)
         CALL VCOPY(WORK,FWRK,NFFT+2)
         CALL FOUR2(FWRK,NFFT,1,-1,-1)
-        CALL DEGRID(FWRK,DDDPAR(1,J))
-        CALL VMLTRC(TWOPIK,WORK,NFT2,FWRK)
-        CALL VCOPY(FWRK,WORK,NFFT+2)
-        CALL FOUR2(FWRK,NFFT,1,-1,-1)
-        CALL DEGRID(FWRK,DDDPAR(1,J+1))
-        write(*,*) 'hi fortran',J, HESS(J,J+1), HESS(J+1,J)
-        CALL HESS0(HESS,NP,RESID,NDAT,DDDPAR(1,J+1),AJ,J)
-        write(*,*) 'bye fortran',J, HESS(J,J+1), HESS(J+1,J)
+c       write(*,*)'moo', FWRK(1), FWRK(2), FWRK(3), FWRK(4), J, NFEW
+c        CALL DEGRID(FWRK,DDDPAR(1,J))
+c        CALL VMLTRC(TWOPIK,WORK,NFT2,FWRK)
+c        CALL VCOPY(FWRK,WORK,NFFT+2)
+c        CALL FOUR2(FWRK,NFFT,1,-1,-1)
+c        CALL DEGRID(FWRK,DDDPAR(1,J+1))
+c        write(*,*)'fdsfdasfdasfda', J+1
+c        write(*,*) 'hi fortran',J, HESS(J,J+1), HESS(J+1,J)
+c        CALL HESS0(HESS,NP,RESID,NDAT,DDDPAR(1,J+1),AJ,J)
+c        write(*,*) 'bye fortran',J, HESS(J,J+1), HESS(J+1,J)
 c        CALL VMLTIC(WORK,NFT2,WORK)
 c        CALL VCOPY(WORK,FWRK,NFFT+2)
 c        CALL FOUR2(FWRK,NFFT,1,-1,-1)
@@ -443,7 +450,7 @@ c        HESS(J+1,J+1)=-AJ*SM
           SIG2=2.0/SIGQW1(ISPEC)**2
           GRAD(6)=GRAD(6)+SIG2*DIF*WSCL
           HESS(6,6)=HESS(6,6)+SIG2*WSCL**2
-        endif
+       endif
       endif
       CALL INVERT(HESS,COVAR,NP,INDX,DETLOG)
       END

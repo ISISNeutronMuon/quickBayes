@@ -143,8 +143,9 @@ C     --------------------------------------------
       do I=1,NP
         CALL VRDOTR(RESID,DDDPAR(1,I),NDAT,SM)
         GRAD(I)=SCLVEC(I)*SM
-        write(*,*)'grad check', GRAD(I), SCLVEC(I), SM, SCLVEC(I)*SM
+        write(*,*)'grad check', SM,I, NP
       end do
+      write(*,*)
       END
 C     --------------------------
       SUBROUTINE VRDOTR(A,B,N,C)

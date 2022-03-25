@@ -56,7 +56,7 @@ class FitCom(object):
                      
 class GRDCom(object):
     def __init__(self,m_d2, m_d, m_p):
-        self.DDDPAR = matrix_2(m_d,m_p) # covar matrix?
+        self.DDDPAR = matrix_2(m_d,m_p)
         self.FR2PIK = matrix_2(m_d2,2)
 
 class ModResidual(object):
@@ -77,12 +77,13 @@ class QW1Com(object):
 
 
 class SCLCom(object):
+    # These are all scale factors
     def __init__(self, m_p):
-        self.BSCL = 0
-        self.ASCL = 0
-        self.WSCL = 0
+        self.BSCL = 0 # background
+        self.ASCL = 0 # amplitude
+        self.WSCL = 0 # width
         self.SCLVEC = matrix_2(m_p,2)
-        self.GSCL = 0
+        self.GSCL = 0 # offset from zero
 
 
 class STEXP(object):
