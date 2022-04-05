@@ -17,15 +17,16 @@ from quasielasticbayes.python.util import *
 
 def DPINIT(COMS):
       I=1
-      COMS["SCL"].GSCL=(COMS["FFT"].XJ(COMS["FFT"].NFFT)-COMS["FFT"].XJ(1))/float(COMS["FFT"].NFFT-1) # average XJ interval
+      COMS["SCL"].GSCL=(COMS["FFT"].XJ(COMS["FFT"].NFFT)-COMS["FFT"].XJ(1))/float(COMS["FFT"].NFFT-1) # number of bins
 
       def data_check(XJ, XDAT, J):
           return XJ(J) - XDAT >=-5.e-6 # given a tol due to small differences
       for K in get_range(1,COMS["DATA"].NDAT):
+        # get first XJ that lines up with bin at XDAT(K)
         J = find_index((COMS["FFT"].XJ, COMS["DATA"].XDAT(K)),I,COMS["FFT"].NFFT, data_check)
-        COMS["Dintrp"].IPDAT.set(K, J-1)
+        COMS["Dintrp"].IPDAT.set(K, J-1) # record how new bins line up with original bins
         # normalised XDAT-JDAT
-        COMS["Dintrp"].XPDAT.set(K, (COMS["DATA"].XDAT(K)-COMS["FFT"].XJ(J-1))/COMS["SCL"].GSCL)
+        COMS["Dintrp"].XPDAT.set(K, (COMS["DATA"].XDAT(K)-COMS["FFT"].XJ(J-1))/COMS["SCL"].GSCL) # offset in the bin values
         I=J
 
 def GDINIT(COMS):
@@ -34,23 +35,24 @@ def GDINIT(COMS):
       GNORM=1.0/(XN-X1)
       for I in get_range(1,COMS["DATA"].NDAT):
         XGNORM=(COMS["DATA"].XDAT(I)-X1)*GNORM # fraction of x range
-        COMS["GRD"].DDDPAR.set(I,1, 1.0-XGNORM) # normalized offset of xdat
+        COMS["GRD"].DDDPAR.set(I,1, 1.0-XGNORM)
         COMS["GRD"].DDDPAR.set(I,2, XGNORM)
 
-
+#fres, DELTAX, 
 def CXSHFT(RK,DX,TWOPIK):
-    XX = TWOPIK*DX
+    XX = TWOPIK*DX # oscillation term (offset*phase factor)
     XC = np.cos(XX)+ 1j*np.sin(XX)
-    RKEXP = RK*XC
-    RKEXP2 = VMLTRC(TWOPIK,RKEXP)
-    RKEXP2=VMLTIC(RKEXP2)
+    RKEXP = RK*XC # FT(resolution)*oscillations
+    RKEXP2 = VMLTRC(TWOPIK,RKEXP) # multiply together to get even and odd part
+    RKEXP2=VMLTIC(RKEXP2) # times by i -> phase factors are missing an i
     return RKEXP, RKEXP2
 
 def VMLTRC(R,C):
     A = R*C.real
     B = R*C.imag
-    C = A + 1j*B
-    return A + 1j*B
+    #C = A + 1j*B
+    return R*C
+
 #C     -------------------------
 def VMLTIC(C):
     return C*1j
@@ -76,8 +78,8 @@ def GRADPR(RESID,NDAT,NP,SCLVEC, COMS,col=1):
       for I in get_range(1,NP):
         SM=VRDOTR(RESID.output_range(end=NDAT+1),COMS["GRD"].DDDPAR.output_range(1,I, end=NDAT+2), NDAT-1)#,NDAT,SM)
         GRAD.append(SCLVEC(I,col)*SM)
-        print('grad check', SM, I, NP, NDAT)
-      print()
+        #print('grad check', SM, I, NP, NDAT)
+      #print()
       return np.asarray(GRAD)
 
 
@@ -207,14 +209,14 @@ def DATIN1(COMS, store, lptfile):
        store.close(unit=53)
       COMS["Params"].RSCL =pow(COMS["Params"].RSCL, 2)
       N=0
-      # lopp over bins
+      # lopp over original bins
       for I in get_range(COMS["Params"].IMIN,COMS["Params"].IMAX,COMS["Params"].NBIN):
        N=N+1
        XXD=0.0
        DD=0.0
        EE=0.0
        K=0
-       # looping across each bin
+       # get values from rebinned data
        for J in get_range(0,COMS["Params"].NBIN-1):
         XXD=XXD+COMS["DATA"].XDAT(I+J)
         if COMS["DATA"].SIG(I+J) > SMALL:
@@ -237,7 +239,8 @@ def DATIN(IREAD,DTNORM, efix, ntc, COMS, store,lptfile):
       IDUF=0
       SMALL=1.0E-10
       DSUM=0.0
-     
+
+      # get Average Q value
       COS2TH=2.0*np.cos(COMS["DATA"].theta(IREAD)*pi/180.0)
       QQ=efix+efix-COS2TH*abs(efix)
       COMS["DATA"].QAVRG.set(IREAD, 0.69469*np.sqrt(QQ))
@@ -245,25 +248,28 @@ def DATIN(IREAD,DTNORM, efix, ntc, COMS, store,lptfile):
       store.write(53,' ----------------------------------------------------')
       store.write(53, f' Group {IREAD},  theta = {COMS["DATA"].theta(IREAD)},  Q = {COMS["DATA"].QAVRG(IREAD)}')
       store.write(53,' ----------------------------------------------------')
+      store.close(unit=53)
+      
       DTNRM=DTNORM(IREAD)
       NDAT=ntc-1
 
+      # laod sample data
       COMS["DATA"].XDAT.copy(COMS["DATA"].xin.output_range(end=COMS["DATA"].NDAT))
       COMS["DATA"].DAT.copy(COMS["DATA"].yin.output_range(end=COMS["DATA"].NDAT))
 
       for I in get_range(1,COMS["DATA"].NDAT):
        COMS["DATA"].SIG.set(I, COMS["DATA"].ein(I)*DTNRM)
-
+       # only record values if errors are above a tol
        if COMS["DATA"].SIG(I) > SMALL:
         COMS["DATA"].SIG.set(I, pow(COMS["DATA"].SIG(I),2))
         DSUM=DSUM+COMS["DATA"].DAT(I)
        else:
         COMS["DATA"].SIG.set(I, 0.0)
-
+      # if no peak data
       if DSUM < SMALL:
          IDUF=1
       DATIN1(COMS, store, lptfile)
-      store.close(unit=53)
+
       return IDUF
 
 # dump data to a file
@@ -305,8 +311,8 @@ def PRINIT(NQMAX,IXSCAL,COMS,store, prog,lptfile, o_bgd ):
           if NSUM >= 10:
              break
 
-         COMS["SCL"].BSCL=SM/float(NSUM)
-         # use the smaller normalization
+         COMS["SCL"].BSCL=SM/float(NSUM) # average value per bin
+         # use the smaller normalization -> how we account for + or - gradient
          if BSCL1<COMS["SCL"].BSCL:
             COMS["SCL"].BSCL=BSCL1
          COMS["SCL"].BSCL=COMS["SCL"].BSCL/2.0
@@ -319,7 +325,7 @@ def PRINIT(NQMAX,IXSCAL,COMS,store, prog,lptfile, o_bgd ):
          if abs(COMS["DATA"].XDAT(1))>AXMAX:
             AXMAX=abs(COMS["DATA"].XDAT(1))
 
-         COMS["SCL"].WSCL=AXMAX/3.0 # no idea why 3
+         COMS["SCL"].WSCL=AXMAX/3.0 # no idea why 3 -> assume width of about 1/6 of the range
 
          MK=0
          SM=0.0
@@ -332,7 +338,7 @@ def PRINIT(NQMAX,IXSCAL,COMS,store, prog,lptfile, o_bgd ):
            SM=SM+(COMS["DATA"].DAT(I)-COMS["SCL"].BSCL)*(COMS["DATA"].XDAT(I+1)-COMS["DATA"].XDAT(I))
            SUMSIG=SUMSIG+np.sqrt((2.0/COMS["DATA"].SIG(I))) # s = sigma sqrt{\frac{2}{sigma(I)} }
 
-         # scale the average of the non-BG data by total bins
+         # scale the peak amplitude
          COMS["SCL"].ASCL=SM*float(COMS["DATA"].NDAT)/float(MK)
          # average error of non-BG data
          SUMSIG=SUMSIG/float(MK)
@@ -347,10 +353,10 @@ def PRINIT(NQMAX,IXSCAL,COMS,store, prog,lptfile, o_bgd ):
          store.write(53,' ----------------------------------------------------')
          store.close(unit=53)
          COMS["SCL"].ASCL=COMS["SCL"].ASCL/COMS["SCL"].GSCL # rescale 
-         # no idea - fit parameters?
-         COMS["FIT"].FITP.set(1, 1.0)
-         COMS["FIT"].FITP.set(2, 1.0)
-         COMS["FIT"].FITP.set(3, 0.5)
+         # fit parameters
+         COMS["FIT"].FITP.set(1, 1.0) # BG min
+         COMS["FIT"].FITP.set(2, 1.0) # BG max
+         COMS["FIT"].FITP.set(3, 0.5) # elastic peak amplitude
          # seems to be storing the max values and BG for latter
          for I in get_range(1,2):
            COMS["SCL"].SCLVEC.set(I,1,COMS["SCL"].BSCL)

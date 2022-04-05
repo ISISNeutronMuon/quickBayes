@@ -44,6 +44,22 @@ class FFTCom(object):
         self.TWOPIK = vec(m_d1)
         self.NFFT = 0
 
+class data_object(object):
+    def __init__(self, m_d, m_d1, m_d2):
+        self.x_data = vec(m_d)
+        self.y_data = vec(m_d)
+        self.e_data = vec(m_d)
+        self.N = 0
+        self.x_bin = vec(m_d)
+        self.y_bin = vec(m_d)
+        self.e_bin = vec(m_d)
+        self.N_bin = 0
+        self.phases = vec(m_d1)
+        self.FTY = vec(m_d2, True)
+        self.IFTY = vec(m_d2, True)
+        self.N_FT = 0
+
+
 
 class FitCom(object):
     def __init__(self, m_d,m_p,m_d1):

@@ -40,8 +40,9 @@ subprocess.call(["python", "quasielasticbayes\\test\\qldata_test.py"])
 
 
 
-plot_data("quasielastic_test.tx", "quasielastic_test.python.lpt", "r", "g--")
-plot_data("quasielastic_test2.t", "quasielastic_test.python2.lpt", "r", "g--")
+#plot_data("quasielastic_test.tx", "quasielastic_test.python.lpt", "r", "g--")
+#plot_data("quasielastic_test2.t", "quasielastic_test.python2.lpt", "r", "g--")
+plot_data("quasielastic_test.python.lpt", "quasielastic_test.python2.lpt", "r", "g--")
 
 
 plt.show()

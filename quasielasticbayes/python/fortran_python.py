@@ -237,3 +237,11 @@ def debug_dump(file_name, val, store):
     for k in range(len(val)):
         store.write(1, val[k])
     store.close(1)
+
+
+def deprecated(func):
+    def wrapper(*arg):
+        print("WARNING deprecated function: "+func.__name__)
+        result = func(*arg)
+        return result
+    return wrapper

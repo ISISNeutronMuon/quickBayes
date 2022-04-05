@@ -17,6 +17,8 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
       COMS["DATA"] = DatCom(m_d,m_sp)
       COMS["Dintrp"] = Dintrp(m_d)
       COMS["FIT"] = FitCom(m_d,m_p,m_d1)
+      COMS["res_data"] = data_object(m_d, m_d1, m_d2)
+      COMS["sample_data"] = data_object(m_d, m_d1, m_d2)
       COMS["SCL"] = SCLCom(m_p)
       COMS["GRD"] = GRDCom(m_d2, m_d,m_p)
       COMS["QW1"] = QW1Com(m_sp)
@@ -60,16 +62,18 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
 
       COMS["FFT"].NFFT=m_d
       #numb = [ngrp, nsp, ntc, Ndat, nbin, IMIN, IMAX, NB, nrbin]
-      NSPEC=numb[0] #no. of groups
-      ISP=numb[1] #group number
+      NSPEC=numb[0] #no. of spectra
+      ISP=numb[1] # number of spectra
       COMS["QW1"].ISPEC=ISP
       ntc=numb[2] #no. of points
       COMS["DATA"].NDAT=numb[3]
+      COMS["sample_data"].N = int(numb[3])
       COMS["Params"].NBIN=int(numb[4])
       COMS["Params"].IMIN=numb[5]
       COMS["Params"].IMAX=numb[6]
       NB=numb[7]
       COMS["Res"].nrbin=int(numb[8])
+      COMS["res_data"].N_bin = int(numb[8])
       #reals = [efix, theta[isp], rscl, bnorm]
       efix=reals[0]
       COMS["DATA"].theta.set(ISP,reals[1])
@@ -80,15 +84,25 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
       ein =  COMS["DATA"].ein
       XDAT =  COMS["DATA"].XDAT
       
-
+      # copy sample data
       COMS["DATA"].xin.copy(x_in[0:m_d])
       COMS["DATA"].yin.copy(y_in[0:m_d])
       COMS["DATA"].ein.copy(e_in[0:m_d])
       COMS["DATA"].XDAT.copy(XD_in[0:m_d])
 
+      COMS["sample_data"].x_data.copy(x_in[0:m_d])
+      COMS["sample_data"].y_data.copy(y_in[0:m_d])
+      COMS["sample_data"].e_data.copy(e_in[0:m_d])
+
+      # copy resolution data
+      COMS["res_data"].x_data.copy(X_r[0:NB])
+      COMS["res_data"].y_data.copy(Y_r[0:NB])
+      COMS["res_data"].e_data.copy(E_r[0:NB])
+
       COMS["Res"].xres.copy(X_r[0:NB])
       COMS["Res"].yres.copy(Y_r[0:NB])
       COMS["Res"].eres.copy(E_r[0:NB])
+
       o_el=opft[0]
       o_bgd=opft[1]
       o_w1=opft[2]
@@ -110,6 +124,7 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
       l_user=9
       user='<unknown>'
 
+      # set QW values
       if o_w1 ==1:
        COMS["QW1"].QW1.copy(Wy_in[0:NSPEC])
        tmp =  COMS["QW1"].QW1.output_range(start=1,end=NSPEC)
@@ -121,6 +136,7 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
        tmp =0.5*(np.abs(tmp)+0.00001)
        COMS["QW1"].SIGQW1.copy(tmp)
 
+      # report stuff
       if ISP==1: #print info	
        store.open(53,lptfile)
        store.write(53,f' Sample run: {sfile}')
@@ -158,23 +174,25 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
             store.read(n)
             store.close(unit=n)
        IDUF = 0
-       XBLR,YBLR=BLRINT(NB,0,IDUF, COMS, store, lptfile) # rebin + FFT of splined data -> improves signal to noise ratio of res file
+       XBLR,YBLR=BLRINT(NB,0,IDUF, COMS, store, lptfile) # rebin + FFT of splined data -> make bins even spaced
 
-       #debug_dump(sfile[:l_fn]+'_test.python.lpt', COMS["FFT"].FWRK.output(),  store) # keep this one
+       debug_dump(sfile[:l_fn]+'_test.python.lpt', COMS["FFT"].FRES.output(),  store) # keep this one
+       debug_dump(sfile[:l_fn]+'_test.python2.lpt', flatten(COMS["res_data"].FTY.output()),  store) # keep this one
 
-       DPINIT(COMS) # subtracts the res from data in time domain
-       GDINIT(COMS) # normalised (by GRD) offset of XDAT values -> might be covar matrix
-       # seems to filter data -> if large errors assume they dominate the bin
-       # sample data into data, XDAT is binned sample data, DAT is binned sample y
+       DPINIT(COMS) # get bin offsets
+       GDINIT(COMS) # record fractional original x bins
+
+       # read in sample data and rebin it to even bins
        IDUF = DATIN(ISP,DTNORM, efix, ntc, COMS, store, lptfile) 
-       # FFT of time binned sample data into FRES
-       XBLR, YBLR = BLRINT(NB,ISP,IDUF, COMS, store, lptfile) # back to real space? - print resolution range
+       # get inverse FFT for resolution data (if IDUF !=0)
+       XBLR, YBLR = BLRINT(NB,ISP,IDUF, COMS, store, lptfile)
        if IDUF!=0:
           LGOOD.set(ISP, False)
 
        # this might not even do anything
-       DPINIT(COMS) # subtraction using sample time domain data
-       PRINIT(3,1, COMS, store, prog, lptfile, o_bgd) # seems to find the dominanat data - i.e. not BG and it records the BG
+       DPINIT(COMS) # get offsets for binned sample data
+       PRINIT(3,1, COMS, store, prog, lptfile, o_bgd) # rescale the sample data to make it easier to fit. Set up fits
+ 
        FileInit(3,ISP, COMS, store, [fileout1, fileout2, fileout3]) # dump data to file
        DETLOG = 0
        HESS, COVAR, DPAR=REFINA(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, CCHI, prog, o_bgd,o_w1, o_el, store, lptfile)
@@ -245,11 +263,11 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
                 FITPSV.set(3, 0.0)
       
 
-       debug_dump(sfile[:l_fn]+'_test.python.lpt',HESS.output(),  store) # keep this one
+       #debug_dump(sfile[:l_fn]+'_test.python.lpt',HESS.output(),  store) # keep this one
        #debug_dump(sfile[:l_fn]+'_test.python.lpt',COMS["Dintrp"].IPDAT.output_range(end=2000),  store) # keep this one
 
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',HESS.output(), store)
-       debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["SCL"].SCLVEC.output_range(1,2,end=2000), store)
+       #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["SCL"].SCLVEC.output_range(1,2,end=2000), store)
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["GRD"].DDDPAR.output_range(1,6,end=2000), store)
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["FIT"].FITP.output(),store)#COMS["FFT"].FWRK.output_range(end=2000), store)
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["FFT"].FWRK.output_range(end=2000), store)
