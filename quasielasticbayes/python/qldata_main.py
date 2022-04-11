@@ -174,76 +174,84 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
             store.read(n)
             store.close(unit=n)
        IDUF = 0
-       XBLR,YBLR=BLRINT(NB,0,IDUF, COMS, store, lptfile) # rebin + FFT of splined data -> make bins even spaced
+       XBLR,YBLR=bin_resolution(NB,0,IDUF, COMS, store, lptfile) # rebin + FFT of splined data -> make bins even spaced
 
        debug_dump(sfile[:l_fn]+'_test.python.lpt', COMS["FFT"].FRES.output(),  store) # keep this one
        debug_dump(sfile[:l_fn]+'_test.python2.lpt', flatten(COMS["res_data"].FTY.output()),  store) # keep this one
 
-       DPINIT(COMS) # get bin offsets
-       GDINIT(COMS) # record fractional original x bins
-
+       bin_offsets(COMS)
+       normalize_x_range(COMS) # record fractional original x bins
        # read in sample data and rebin it to even bins
-       IDUF = DATIN(ISP,DTNORM, efix, ntc, COMS, store, lptfile) 
+       IDUF = calculate_sample_bins(ISP,DTNORM, efix, ntc, COMS, store, lptfile) 
        # get inverse FFT for resolution data (if IDUF !=0)
-       XBLR, YBLR = BLRINT(NB,ISP,IDUF, COMS, store, lptfile)
+       XBLR, YBLR = bin_resolution(NB,ISP,IDUF, COMS, store, lptfile)
        if IDUF!=0:
           LGOOD.set(ISP, False)
 
        # this might not even do anything
-       DPINIT(COMS) # get offsets for binned sample data
-       PRINIT(3,1, COMS, store, prog, lptfile, o_bgd) # rescale the sample data to make it easier to fit. Set up fits
- 
-       FileInit(3,ISP, COMS, store, [fileout1, fileout2, fileout3]) # dump data to file
+       bin_offsets(COMS) # get offsets for binned sample data
+       set_sacle_factors(3,1, COMS, store, prog, lptfile, o_bgd) # rescale the sample data to make it easier to fit. Set up fits
+
+       write_file_info(3,ISP, COMS, store, [fileout1, fileout2, fileout3]) # dump data to file
+
        DETLOG = 0
-       HESS, COVAR, DPAR=REFINA(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, CCHI, prog, o_bgd,o_w1, o_el, store, lptfile)
-       #GOTO 2
+       HESS, COVAR, DPAR, DETLOG =refine_param_values(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, construct_fit_and_chi, prog, o_bgd,o_w1, o_el, store, lptfile)
        ################################
        # chnage the code so it only calculates 0 and 1 elastic lines
        ###############################
        for counter in range(4): # equivalent of less than equal to 3
-            if counter > 0: # skip on the first pass
+            if counter > 0: # skip on the first pass -> no peaks to find
                print("hi")
-               HESS, COVAR, DPAR = SEARCH(COMS, GRAD,HESS,DPAR, INDX,COVAR, o_w1, prog, o_bgd, o_el, store, lptfile, DETLOG, CCHI)
-            NPARMS=4+2*COMS["FIT"].NFEW # line 2
-            CHIOLD=CCHI(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
+               HESS, COVAR, DPAR, DETLOG = find_latest_peak(COMS, GRAD,HESS,DPAR, INDX,COVAR, o_w1, prog, o_bgd, o_el, store, lptfile, DETLOG, construct_fit_and_chi)
+
+            NPARMS=4+2*COMS["FIT"].NFEW # 4 default (BG and elastic params) plus 2 per peak
+            chi_keep=construct_fit_and_chi(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
+            # get copy of fit values
             FITPSV.copy(COMS["FIT"].FITP.output_range(end=NPARMS))
-            STEPSZ=0.3
-            if COMS["FIT"].NFEW>1:
-                STEPSZ=STEPSZ/10.0
+
+            step_size=0.3
+            if COMS["FIT"].NFEW>1: # if more than one peak -> smaller steps
+                step_size=step_size/10.0
             IAGAIN=0
-            CDIFMN=0.003
+            delta_chi_threshold=0.003
+            # optimization steps
             for I in get_range(1,200):
                 #print("test", I)
-
-                HESS, COVAR, DETLOG = REFINE(COMS, GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1,o_el, prog)
-
-                DPAR = NEWEST(COVAR,GRAD,NPARMS,COMS["FIT"].NFEW,COMS["FIT"].FITP,prog,store, lptfile)
+                #######################################################################################################
+                # come back to this one!!!!!
+                HESS, COVAR, DETLOG = REFINE(COMS, GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,step_size, o_bgd, o_w1,o_el, prog)
+                #######################################################################################################
+                DPAR, fit_params= update_fit_params(COVAR,GRAD,NPARMS,COMS["FIT"].NFEW,COMS["FIT"].FITP,prog,store, lptfile)
+                COMS["FIT"].FITP.copy(fit_params)
                 CNORM=CCHI(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
-                if CNORM<=CHIOLD:
+
+                if CNORM<=chi_keep: # a better parameter set
                     #print("a")
-                    CHIDIF=(CHIOLD-CNORM)/CNORM
-                    if abs(CHIDIF)<=CDIFMN: 
+                    chi_diff=(chi_keep-CNORM)/CNORM
+                    if abs(chi_diff)<=delta_chi_threshold: 
                     #if abs(abs(CHIDIF)-CDIFMN)<=1.e-1: # fudge factor to make sure it does the same as Fortran 
                         print("waaa")
                         if IAGAIN==0:
                             print('option1')
-                            CDIFMN=0.00005
-                            STEPSZ=0.15
+                            delta_chi_threshold=0.00005
+                            step_size=0.15
                             IAGAIN=1
                         else:
                             print('go to 3')
                             break
              
-                    CHIOLD=CNORM
+                    chi_keep=CNORM
                     FITPSV.copy(COMS["FIT"].FITP.output_range(end=NPARMS))
                 else:
                     COMS["FIT"].FITP.copy(FITPSV.output_range(end=NPARMS))
-                    STEPSZ=STEPSZ*0.6
-                    if STEPSZ<1.0E-10:
+                    step_size=step_size*0.6
+                    if step_size<1.0E-10: # step size is too small
                         print("another go to 3")
                         break
-        
+            #######################################################################################################
+            # come back to this one!!!!!        
             HESS, COVAR, DETLOG = REFINE(COMS, GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,0.7, o_bgd, o_w1,o_el, prog)
+            #######################################################################################################
             SIGPAR = ERRBAR(COVAR,NPARMS)
 
             tmp_p, tmp_s = SEEFIT(COMS, SIGPAR,CNORM, store, lptfile)

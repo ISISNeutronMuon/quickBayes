@@ -281,5 +281,15 @@ def FOUR2 (DATA,N,NDIM,ISIGN,IFORM):
       return np.asarray(result)
 
 
+def FOUR2_IFT(data, N, NDIM, ISIGN):
+    if any(np.iscomplex(data)):
+        data=flatten(data)
+   
+    result = FOUR2_NEG_IFORM(data,[N],NDIM,ISIGN,-1) # This seems to take data of the form exp(-t*gamma)*cos(omega*t) and pick out the omega freq -> the oscialltion freq is related to the mean of the gaussian. The envelope is related to the width of the gaussianss
+    return np.asarray(result)
+
 def FOUR3 (DATA,N,NDIM,ISIGN,IFORM):
     return np.asarray(sc.ifft(DATA.output()[0:N]))
+
+def four4(DATA):
+    return np.asarray(sc.ifft(DATA))

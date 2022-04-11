@@ -23,15 +23,15 @@ class DatCom(object):
 
 class Dintrp(object):
     def __init__(self, m_d):
-        self.IPDAT = vec(m_d)
-        self.XPDAT = vec(m_d)
+        self.IPDAT = vec(m_d) # indicies for mapping to original bins
+        self.XPDAT = vec(m_d) # fractional bin offsets
 
 
 class ModParams(object):
     def __init__(self):
         self.NBIN =0
-        self.IMIN = 0
-        self.IMAX = 0
+        self.IMIN = 0 # min energy
+        self.IMAX = 0 # max energy
         self.RSCL = 0
         self.BNORM = 0
 
@@ -59,21 +59,19 @@ class data_object(object):
         self.IFTY = vec(m_d2, True)
         self.N_FT = 0
 
-
-
 class FitCom(object):
     def __init__(self, m_d,m_p,m_d1):
         self.FIT = vec(m_d)
-        self.RESID = vec(m_d)
-        self.NFEW =0
-        self.FITP = vec(m_p)
-        self.EXPF = matrix_2(m_d1,6)
+        self.RESID = vec(m_d) # residuals
+        self.NFEW =0 # number inelastic peaks
+        self.FITP = vec(m_p) # paramteters
+        self.EXPF = matrix_2(m_d1,6) # exponentials
 
                      
 class GRDCom(object):
     def __init__(self,m_d2, m_d, m_p):
-        self.DDDPAR = matrix_2(m_d,m_p)
-        self.FR2PIK = matrix_2(m_d2,2)
+        self.DDDPAR = matrix_2(m_d,m_p) # components of fit convolved with resolution
+        self.FR2PIK = matrix_2(m_d2,2) # inelastic peaks
 
 class ModResidual(object):
     def __init__(self,m_d):

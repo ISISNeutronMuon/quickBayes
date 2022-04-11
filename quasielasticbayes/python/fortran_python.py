@@ -36,6 +36,7 @@ def zeros(n, complex=False):
 class vec(object):
     def __init__(self, n,complex=False):
         self._vec = zeros(n, complex)
+        self._complex = complex
         
     def __call__(self,j):
         return self._vec[j-1]
@@ -124,7 +125,22 @@ class matrix_2(vec):
         tmp = vec(self._m*self._n)
         tmp.copy(self.output())
         return tmp
-                          
+                             
+    def resize(self, new_m, new_n):
+        if new_m < self._m or new_n < self._n:
+            raise ValueError("cannot resize matrix")
+        new_vec = zeros(new_n*new_m, self._complex)
+        k2 = 0
+        for j in range(self._n):
+            for i in range(self._m):
+                k = self._index_for_vec(i+1,j+1)
+                new_vec[k2] = self._vec[k]
+                k2+=1
+            k2+= (new_m -self._m)
+        self._m = new_m
+        self._n = new_n
+        self._vec = new_vec
+
     def dimensions(self):
         return 2
         

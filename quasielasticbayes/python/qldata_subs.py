@@ -161,15 +161,99 @@ def rm_BG(x_bin,y_bin,N_bin, YMAX,LST,COMS, store, lptfile):
       for I in get_range(IMIN,IMAX):
         y_bin.set(I, y_bin(I)-BG)
         BG=BG+DB
-      print("test",XMIN, XMAX, y_bin.output()[0:4] )
+
       return XMIN, XMAX, y_bin
 
 
 
 @deprecated
 def XGINIT(XB,YB,NB,YMAX,LST, COMS, store, lptfile):
-      return rm_BG(XB,YB,NB,YMAX,LST, COMS, store, lptfile)
+      #return rm_BG(XB,YB,NB,YMAX,LST, COMS, store, lptfile)
       # DATA XDAT NDAT, FFT XJ, N
+      XDMIN=COMS["DATA"].XDAT(1)
+      XDMAX=COMS["DATA"].XDAT(COMS["DATA"].NDAT)
+      Y0=YMAX/10.0
+      # these two check seem to be finiding the first y value greater than some ref value
+      # that is also before the x range
+      def check_data_from_below(XB, YB, Y0, XDMIN, I):
+           return YB(I)>=Y0 and XB(I)>XDMIN
+      I = find_index((XB, YB, Y0, XDMIN),1, NB, check_data_from_below)
+
+      XMIN=XB(I)
+      def check_data_from_above(XB, YB, Y0, XDMAX, I):
+          return YB(I)>=Y0 and XB(I)<XDMAX
+      I = find_index((XB, YB, Y0, XDMAX),NB,1, check_data_from_above, step=-1)
+      XMAX=XB(I)
+
+      # this section seems to get values for FFT
+      BWIDTH=XMAX-XMIN
+      DXJ=BWIDTH/20.0
+
+      AXMAX=abs(COMS["DATA"].XDAT(1))
+      if abs(COMS["DATA"].XDAT(COMS["DATA"].NDAT))>AXMAX:
+         AXMAX=abs(COMS["DATA"].XDAT(COMS["DATA"].NDAT))
+      XNDMAX=500.0
+      if COMS["DATA"].NDAT > int(XNDMAX):
+         XNDMAX=float(COMS["DATA"].NDAT)
+
+      DXDAT=2.0*AXMAX/XNDMAX
+      if DXDAT>DXJ:
+         DXJ=DXDAT
+
+      XNGD=(2.0*AXMAX)/DXJ
+      NGD=NINT(np.log(XNGD-1.0)/np.log(2.0))+1
+      NGD=pow(2,NGD)
+      
+      if NGD>m_d:
+       store.open(53,lptfile)
+       store.write(53,' ERROR in XGINIT : too many points')
+       store.close(unit=53)
+       return
+      COMS["FFT"].NFFT=NGD
+
+      # set FFT XJ values
+      COMS["FFT"].XJ.set(1, -DXJ*float(COMS["FFT"].NFFT/2))
+      for j in get_range(2,COMS["FFT"].NFFT):
+          COMS["FFT"].XJ.set(j,COMS["FFT"].XJ(j-1)+DXJ)
+      # get the energy range
+      XMIN=XMIN-5.0*BWIDTH
+      XMAX=XMAX+5.0*BWIDTH
+      if XMIN<XB(1):
+         XMIN=XB(1)
+      if XMAX>XB(NB):
+         XMAX=XB(NB)
+      if XMIN<XDMIN:
+         XMIN=XDMIN
+      if XMAX>XDMAX:
+         XMAX=XDMAX
+      if LST:
+       store.open(53,lptfile)
+
+       store.write(53,f' Resolution Range: {XMIN} to {XMAX} ueV')
+       store.close(unit=53)
+      
+      # get x range -> via indices
+      def check_data_x_min(XB, XMIN, I):
+          return  XB(I)>=XMIN
+      I = find_index((XB, XMIN),1,NB, check_data_x_min)
+      IMIN=I
+
+      B1=0.0
+      B2=0.0
+      # get mean value for 5 bins (that are in range) closest to min/max
+      for I in get_range(1,5):
+        B1=B1+YB(IMIN+I-1)
+        B2=B2+YB(IMAX-I+1)
+      B1=B1/5.0
+      B2=B2/5.0
+      DB=(B2-B1)/float(max(IMAX-IMIN-4,1)) # no idea where the 4 comes from
+      B=B1
+      # set uniform increase in YB
+      for I in get_range(IMIN,IMAX):
+        YB.set(I, YB(I)-B)
+        B=B+DB
+      return XMIN, XMAX, YB
+
 """
 ***<set up blur function>**********************************************
 """
@@ -181,8 +265,9 @@ def rebin(x_in,y_in,e_in,N_new_bins,N_merged_bins):
       YB = vec(N_new_bins)
       SMALL=1.0E-20
       BNORM=1.0/float(N_merged_bins)
-
+      N = 0
       for I in get_range(1,N_new_bins,N_merged_bins): # new binning
+        N += 1
         x_value=0.0
         y_value=0.0
         K=0
@@ -195,8 +280,8 @@ def rebin(x_in,y_in,e_in,N_new_bins,N_merged_bins):
               K=K+1
               y_value += y_in(IJ)
 
-         XB.set(I,BNORM*x_value)
-         YB.set(I,0.0)
+         XB.set(N,BNORM*x_value)
+         YB.set(N,0.0)
          if K>0:
             YB.set(I,BNORM*y_value) # normalise data
       return XB, YB
@@ -207,7 +292,33 @@ def BINBLR(WX,WY,WE,NB,NBIN):
       Original dat is W* and the output is *B
       It seems to just be a rebin alg
       """
-      return rebin(WX,WY,WE,NB,NBIN)
+      #return rebin(WX,WY,WE,NB,NBIN)
+      XB = vec(NB)
+      YB = vec(NB)
+      N=0
+      SMALL=1.0E-20
+      BNORM=1.0/float(NBIN)
+
+      for I in get_range(1,NB,NBIN): # new binning
+        N=N+1
+        XXD=0.0
+        DD=0.0
+        K=0
+        for J in get_range(0,NBIN-1): # loop over bins in new bin
+         IJ=I+J
+         if IJ<=NB:
+
+            XXD=XXD+WX(IJ)
+            if WE(IJ) > SMALL: # only include non-zero errors
+              K=K+1
+              DD=DD+WY(IJ)
+
+         XB.set(N,BNORM*XXD)
+         YB.set(N,0.0)
+         if K>0:
+            YB.set(N,BNORM*DD) # normalise data
+      NB=N
+
 
 
 def bin_resolution(N_bin,IREAD,IDUF,COMS,store,lptfile):
@@ -254,16 +365,15 @@ def bin_resolution(N_bin,IREAD,IDUF,COMS,store,lptfile):
       DER2 = vec(m_d)
       data = vec(COMS["FFT"].NFFT)
       func=SPLINE(x_bin,y_bin,N_bin,0.0,0.0,DER2)
-      TWOPIN=np.pi/float(COMS["res_data"].N_FT)
+      TWOPIN=np.pi/float(COMS["res_data"].N_FT) # factor of 1/2 "hidden" in N_FT compared to NFFT
 
       # clean up old data
       COMS["FFT"].FRES.fill(0.0, COMS["FFT"].NFFT)
       COMS["res_data"].FTY.fill(0.0, COMS["res_data"].N_FT)
 
+      # spline the data ontop the sample data bins
       XX=0.0
       bin_width=COMS["FFT"].XJ(2)-COMS["FFT"].XJ(1)
-
-      # spline the data ontop the sample data bins
       data = vec(COMS["FFT"].NFFT)
       data.set(1,SPLINT(XX,func))
       for I in get_range(1,int(COMS["FFT"].NFFT/2)):#use symmetry to have the range we need to loop
@@ -304,18 +414,17 @@ def bin_resolution(N_bin,IREAD,IDUF,COMS,store,lptfile):
 
 
         COMS["res_data"].IFTY.copy(COMS["res_data"].FTY.output_range(end=COMS["res_data"].N_FT))
-        out2 = FOUR2(COMS["res_data"].IFTY, COMS["res_data"].N_FT, 1, -1,-1)
+        out2 = FOUR3(COMS["res_data"].IFTY, COMS["res_data"].N_FT, 1, -1,-1)
         COMS["res_data"].IFTY.copy(out[0:m_d2])
 
       LSTART= True
       return x_bin, y_bin
-      #return x_bin, y_bin
+
 
 @deprecated
 def BLRINT(NB,IREAD,IDUF,COMS,store,lptfile):
       # data XDAT, NDAT
-      return bin_resolution(NB,IREAD,IDUF,COMS,store,lptfile)
-      """
+      #return bin_resolution(NB,IREAD,IDUF,COMS,store,lptfile)
       DER2 = vec(m_d)
       LSTART = True
       if IREAD==0:
@@ -407,9 +516,80 @@ def BLRINT(NB,IREAD,IDUF,COMS,store,lptfile):
 
       LSTART= True
       return XB, YB
-      """
 
+
+def construct_fit_and_chi(fit_params,COMS, o_bgd, o_w1):
+      CHI=0.0
+      min_BG=COMS["SCL"].BSCL*fit_params(1) # BG 1
+      max_BG=COMS["SCL"].BSCL*fit_params(2) # BG 2
+      elastic_amplitude=COMS["SCL"].ASCL*fit_params(3) # elastic peak amplitude
+      av_bin_width=fit_params(4) # average bin width
+      NFT2 = 1 + COMS["FFT"].NFFT//2
+
+      # get resolution values
+      FT_res = COMS["res_data"].FTY.output_range(end=NFT2)
+      two_pi_k = COMS["res_data"].phases.output_range(end=NFT2)
+
+      RKEXP, RKEXP2 = complex_shift(FT_res, av_bin_width, two_pi_k)
+
+      COMS["GRD"].FR2PIK.copy(flatten(RKEXP)) # lets make these complex later
+      COMS["GRD"].FR2PIK.copy(flatten(RKEXP2), 1,2)
+
+      # uniform value equal to estimate for elastic peak
+      fit_values = np.full(NFT2+1, elastic_amplitude)
+
+      XNSCL=-np.log(1.0E-7)/(two_pi_k[1]-two_pi_k[0]) # estimate for x bin width?
+
+      for J in get_range(1,COMS["FIT"].NFEW):
+        amplitude_J=COMS["SCL"].ASCL*fit_params(3+J+J)
+        sigma_J=COMS["SCL"].WSCL*fit_params(4+J+J)/COMS["SCL"].GSCL
+        COMS["FIT"].EXPF.fill(0.0, NFT2, 1,J)# this might need a plus 1 to N later
+        # estimate for range that the exp will alter the value
+        NXFT2=1+NINT(XNSCL/(np.abs(sigma_J)+1.0E-10))
+        if NXFT2 > NFT2:
+           NXFT2=NFT2
+
+        EXP_IJ = np.exp(-COMS["FFT"].TWOPIK.output_range(end=NXFT2)*sigma_J)
+        COMS["FIT"].EXPF.copy(EXP_IJ, 1,J)
+        fit_values[0:NXFT2+1] += amplitude_J*EXP_IJ
+
+      COMS["WORK"].WORK.copy(fit_values, 1,1) # this relies on having the fit values
+
+      fit_values = fit_values*RKEXP # multiply fit by FT(resolution)*(other stuff)
+
+      COMS["sample_data"].FTY.copy(fit_values)
+
+      fit_in_original_domain = flatten(FOUR2(COMS["sample_data"].FTY,COMS["FFT"].NFFT,1,-1,-1)) # not sure why we faltten the data
+      fit_in_original_domain = bin_shift(fit_in_original_domain,COMS) # shift back to original binning
+      COMS["FIT"].FIT.copy(fit_in_original_domain)
+
+      X1=COMS["sample_data"].x_data(1)
+      BG_grad = 0.0
+      if o_bgd==2:
+         BG_grad=(max_BG-min_BG)/(COMS["sample_data"].x_data(COMS["sample_data"].N)-X1)
+
+      xdat = COMS["sample_data"].x_data.output_range(end=COMS["DATA"].NDAT-1) # add minus 1's here to make the lengths the same -> assume at this point everything is zero anyway
+      data = COMS["DATA"].DAT.output_range(end=COMS["DATA"].NDAT-1)
+      weights = COMS["DATA"].SIG.output_range(end=COMS["DATA"].NDAT-1)
+  
+      fit_in_original_domain += min_BG+BG_grad*(xdat-X1) # add BG back in
+
+      diff = fit_in_original_domain - data
+      resid = diff*weights # residuals, sig is a weighting
+      CHI = np.sum(diff*resid)
+
+      COMS["FIT"].FIT.copy(fit_in_original_domain) # does not match at later indicies -> probably fine
+      COMS["FIT"].RESID.copy(resid)
+
+      if o_w1 == 1 and COMS["FIT"].NFEW>=1:
+         RESW1D=(COMS["SCL"].WSCL*fit_params(6)-COMS["QW1"].QW1(COMS["QW1"].ISPEC))/COMS["QW1"].SIGQW1(COMS["QW1"].ISPEC)
+         CHI=CHI+2.0*pow(RESW1D,2)
+      return CHI/(2.0*float(COMS["DATA"].NDAT))
+
+@deprecated
 def CCHI(V,COMS, o_bgd, o_w1):
+      return construct_fit_and_chi(V, COMS, o_bgd, o_w1)
+      """
       CHI=0.0
       B1=COMS["SCL"].BSCL*V(1) # BG 1
       B2=COMS["SCL"].BSCL*V(2) # BG 2
@@ -420,7 +600,9 @@ def CCHI(V,COMS, o_bgd, o_w1):
       # get resolution values
       fres = COMS["res_data"].FTY.output_range(end=NFT2)
       twopik = COMS["res_data"].phases.output_range(end=NFT2)
-      RKEXP, RKEXP2 = CXSHFT(fres, DELTAX, twopik)#,FR2PIK,FR2PIK(1,2),NFT2)
+
+      RKEXP, RKEXP2 = CXSHFT(fres, DELTAX, twopik)
+
       COMS["GRD"].FR2PIK.copy(flatten(RKEXP))
       COMS["GRD"].FR2PIK.copy(flatten(RKEXP2), 1,2)
       COMS["WORK"].WORK.fill(A0, NFT2+1)
@@ -452,7 +634,7 @@ def CCHI(V,COMS, o_bgd, o_w1):
       #avoid conflict BNORM with ModPars
       fit = COMS["FIT"].FIT.output_range(end=COMS["DATA"].NDAT)
       xdat = COMS["DATA"].XDAT.output_range(end=COMS["DATA"].NDAT)
-      dat = COMS["DATA"].DAT.output_range(end=COMS["DATA"].NDAT)
+      dat = COMS["DATA"].DAT.output_range(end=COMS["DATA"].NDAT) # binned sample data
       sig = COMS["DATA"].SIG.output_range(end=COMS["DATA"].NDAT)
       fit += B1+BNRM*(xdat-X1)
       diff = fit - dat
@@ -466,6 +648,7 @@ def CCHI(V,COMS, o_bgd, o_w1):
          RESW1D=(COMS["SCL"].WSCL*V(6)-COMS["QW1"].QW1(COMS["QW1"].ISPEC))/COMS["QW1"].SIGQW1(COMS["QW1"].ISPEC)
          CHI=CHI+2.0*pow(RESW1D,2)
       return CHI/(2.0*float(COMS["DATA"].NDAT))
+      """
 
 
 
@@ -510,6 +693,7 @@ def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1,o_el, prog):
         COMS["FFT"].FWRK.copy(COMS["WORK"].WORK.output_range(1,1,COMS["FFT"].NFFT+2))
         tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
         COMS["FFT"].FWRK.copy(flatten(tmp))   
+        ####################################################################################################################################
         #COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J)
 
         #tmp= VMLTRC(COMS["FFT"].TWOPIK.output_range(end = NFT2-1),compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2))))
@@ -617,7 +801,37 @@ def OUTPRM(P,C,NP,NFEW,CNORM, store, files):
 
       
 #**<search for one more & refine amplitudes>****************************
-def SEARCH(COMS, GRAD,HESS,DPAR, INDX,COVAR, o_w1, prog, o_bgd, o_el, store, lptfile, DETLOG, Chi_func):
+def find_latest_peak(COMS, GRAD,HESS,d_params, INDX,COVAR, o_w1, prog, o_bgd, o_el, store, lptfile, DETLOG, fit_and_chi_func):
+    # assume that the previous loops have found good estimates for the other quasi elastic peaks-> only need to focus on getting the latest one
+      if o_w1 == 1 and COMS["FIT"].NFEW>=1:
+          COMS["FIT"].FITP.set(5, 0.1)
+          COMS["FIT"].FITP.set(6, COMS["QW1"].QW1(COMS["QW1"].ISPEC)/COMS["SCL"].WSCL) # est width of elastic peak
+          if COMS["FIT"].NFEW == 1:
+              return refine_param_values(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, fit_and_chi_func, prog, o_bgd,o_w1, o_el, store, lptfile)
+           
+      J=4+2*COMS["FIT"].NFEW # 4 default params (BG and elastic line) plus 2 per quasi elastic peak
+      weight=0.85
+      N_iterations=NINT(np.log(5.0*COMS["SCL"].GSCL/COMS["SCL"].WSCL)/np.log(weight))# int(5*log(offset/width)/log(0.85))
+      CMIN=1.0E20
+      COMS["FIT"].FITP.set(J-1, 0.1)
+      COMS["FIT"].FITP.set(J, 1.0) # set the params for the last peak being considered
+      tmp_width = COMS["FIT"].FITP(J)
+
+      # "minimize" to find the latest peak (and update the previous peaks)
+      for I in get_range(1,N_iterations):
+        HESS, COVAR, d_params, DETLOG=refine_param_values(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, Chi_func, prog, o_bgd,o_w1, o_el, store, lptfile)
+        CNORM=fit_and_chi_func(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
+        if CNORM<CMIN:
+          CMIN=CNORM
+          tmp_width=COMS["FIT"].FITP(J) # only keep the "minimal value"
+       
+        COMS["FIT"].FITP.set(J, COMS["FIT"].FITP(J)*weight) # makes a step in the "minimization"
+
+      # make sure we use the "best value"
+      COMS["FIT"].FITP.set(J, tmp_width)
+      return refine_param_values(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, fit_and_chi_func, prog, o_bgd,o_w1, o_el, store, lptfile) 
+
+def find_latest_peak(COMS, GRAD,HESS,DPAR, INDX,COVAR, o_w1, prog, o_bgd, o_el, store, lptfile, DETLOG, Chi_func):
     #FIt FITP, HESS, COVAR, DPAR,  FFT FWRK, GRD DDDPAR
       if o_w1 == 1 and COMS["FIT"].NFEW>=1:
           COMS["FIT"].FITP.set(5, 0.1)
@@ -634,7 +848,7 @@ def SEARCH(COMS, GRAD,HESS,DPAR, INDX,COVAR, o_w1, prog, o_bgd, o_el, store, lpt
       SIGJ=COMS["FIT"].FITP(J)
       print("moooo", NSRCH)
       for I in get_range(1,NSRCH):
-        HESS, COVAR, DPAR=REFINA(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, Chi_func, prog, o_bgd,o_w1, o_el, store, lptfile)
+        HESS, COVAR, DPAR, DETLOG=REFINA(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, Chi_func, prog, o_bgd,o_w1, o_el, store, lptfile)
         CNORM=Chi_func(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
         if CNORM<CMIN:
           CMIN=CNORM
