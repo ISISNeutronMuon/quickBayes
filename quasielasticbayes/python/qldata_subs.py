@@ -131,7 +131,7 @@ def rm_BG(x_bin,y_bin,N_bin, YMAX,LST,COMS, store, lptfile):
       if LST:
        store.open(53,lptfile)
 
-       store.write(53,f' Resolution Range: {XMIN} to {XMAX} ueV')
+       store.write(53,f' Resolution Range: {XMIN:7.1f} to {XMAX:7.1f} ueV')
        store.close(unit=53)
       
       # get x range -> via indices
@@ -694,17 +694,19 @@ def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1,o_el, prog):
         tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
         COMS["FFT"].FWRK.copy(flatten(tmp))   
         ####################################################################################################################################
-        #COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J)
+        #COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J) # get different answers :( Lets try exposing the decomp
 
-        #tmp= VMLTRC(COMS["FFT"].TWOPIK.output_range(end = NFT2-1),compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2))))
+        #tmp= VMLTRC(COMS["FFT"].TWOPIK.output_range(end = NFT2),compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2+1))))
         #COMS["FFT"].FWRK.copy(flatten(tmp))
         # up to here -> slow down is either four and/or degrid
-        #COMS["WORK"].WORK.copy(COMS["FFT"].FWRK.output_range(end=COMS["FFT"].NFFT+3))
+        #COMS["WORK"].WORK.copy(COMS["FFT"].FWRK.output_range(end=COMS["FFT"].NFFT+2))
         #tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
-        #COMS["FFT"].FWRK.copy(flatten(tmp))   
-        #COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J+1)# -> this messes up hessian! 
-        #tmp, HESS = HESS0(HESS,COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["GRD"].DDDPAR.output_range(1,J+1,COMS["DATA"].NDAT+1),AJ,J) # the return vals for tmp are causing a huge slow down
-        #COMS["GRD"].DDDPAR.copy(tmp, 1,J+1)
+        #COMS["FFT"].FWRK.copy(flatten(tmp))
+        ##################################################################################################################################   
+        COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J+1)# -> this changes the result (corrct if the above is commented out)
+        tmp, HESS = HESS0(HESS,COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["GRD"].DDDPAR.output_range(1,J+1,COMS["DATA"].NDAT+1),AJ,J) # the return vals for tmp are causing a huge slow down
+        COMS["GRD"].DDDPAR.copy(tmp, 1,J+1)
+
         #CALL VMLTIC(WORK,NFT2,WORK)
         #CALL VCOPY(WORK,FWRK,NFFT+2)
         #CALL FOUR2(FWRK,NFFT,1,-1,-1)
@@ -746,19 +748,19 @@ def SEEFIT(COMS, SIGPAR,CNORM, store, lptfile):
       SIGSV = []
 
       store.write(53, f' Best-fit assuming no. of quasi-elastic lines = { COMS["FIT"].NFEW}')
-      store.write(53,f' >>> Normalised Chi-squared = {CNORM:.4f}')
-      store.write(53, f' Background(Xmin) = {COMS["FIT"].FITP(1)*COMS["SCL"].BSCL:.3e} +- {SIGPAR(1)*COMS["SCL"].BSCL*ERRSCL:.3e}')
-      store.write(53, f' Background(Xmax) = {COMS["FIT"].FITP(2)*COMS["SCL"].BSCL:.3e}  +- {SIGPAR(2)*COMS["SCL"].BSCL*ERRSCL:.3e}')
-      store.write(53,f' Zero offset       = {COMS["FIT"].FITP(4)*COMS["SCL"].GSCL*1000.:.2e}  +- {SIGPAR(4)*COMS["SCL"].GSCL*ERRSCL*1000.:.2e}  ueV')
+      store.write(53,f' >>> Normalised Chi-squared = {CNORM:11.4f}')
+      store.write(53, f' Background(Xmin) = {COMS["FIT"].FITP(1)*COMS["SCL"].BSCL:12.3e} +- {SIGPAR(1)*COMS["SCL"].BSCL*ERRSCL:12.3e}')
+      store.write(53, f' Background(Xmax) = {COMS["FIT"].FITP(2)*COMS["SCL"].BSCL:12.3e}  +- {SIGPAR(2)*COMS["SCL"].BSCL*ERRSCL:12.3e}')
+      store.write(53,f' Zero offset       = {COMS["FIT"].FITP(4)*COMS["SCL"].GSCL*1000.:12.2f}  +- {SIGPAR(4)*COMS["SCL"].GSCL*ERRSCL*1000.:10.2f}  ueV')
       store.write(53,' Elastic line')
-      store.write(53, f'Amplitude  =   {COMS["FIT"].FITP(3)*COMS["SCL"].ASCL:.4e}  +- {SIGPAR(3)*COMS["SCL"].ASCL*ERRSCL:.4e} ')
+      store.write(53, f'Amplitude  =   {COMS["FIT"].FITP(3)*COMS["SCL"].ASCL:13.4e}  +- {SIGPAR(3)*COMS["SCL"].ASCL*ERRSCL:11.3e} ')
       PRMSV.append(COMS["FIT"].FITP(3)*COMS["SCL"].ASCL)
       SIGSV.append(SIGPAR(3)*COMS["SCL"].ASCL*ERRSCL)
       for I in get_range(1,COMS["FIT"].NFEW):
         J=4+I+I
         store.write(53,f' Quasi-elastic line {I}')
-        store.write(53, f' FWHM        =   {2000*COMS["FIT"].FITP(J)*COMS["SCL"].WSCL:.2e}  +- {2000*SIGPAR(J)*COMS["SCL"].WSCL*ERRSCL:.2e} ueV')
-        store.write(53, f' Amplitude  =   {COMS["FIT"].FITP(J-1)*COMS["SCL"].ASCL:.4e}  +-  {SIGPAR(J-1)*COMS["SCL"].ASCL*ERRSCL:.4e}') # this seems to be wrong for just the FITP(J-1)
+        store.write(53, f' FWHM        =   {2000*COMS["FIT"].FITP(J)*COMS["SCL"].WSCL:13.2f}  +- {2000*SIGPAR(J)*COMS["SCL"].WSCL*ERRSCL:11.2f} ueV')
+        store.write(53, f' Amplitude  =   {COMS["FIT"].FITP(J-1)*COMS["SCL"].ASCL:13.4e}  +-  {SIGPAR(J-1)*COMS["SCL"].ASCL*ERRSCL:11.3e}') # this seems to be wrong for just the FITP(J-1)
         PRMSV.append(COMS["FIT"].FITP(J-1)*COMS["SCL"].ASCL)
         SIGSV.append(SIGPAR(J-1)*COMS["SCL"].ASCL*ERRSCL)
         PRMSV.append(2.0*COMS["FIT"].FITP(J)*COMS["SCL"].WSCL)
@@ -774,25 +776,25 @@ def OUTPRM(P,C,NP,NFEW,CNORM, store, files):
           return
       for k in range(len(files)):
           store.open(k+1, files[k])
-      store.write(NFEW, f'{P(3)}   {P(1)}   {P(2)}   {P(4)}')
+      store.write(NFEW, f'{P(3):13.4e}   {P(1):13.4e}   {P(2):13.4e}   {P(4):13.4e}')
       
       for I in get_range(5,NP,2):
-        store.write(NFEW,f'{P(I)}   {P(I+1)}')
+        store.write(NFEW,f'{P(I):13.4e}   {P(I+1):13.4e}')
       
       CSCALE=2.0*CNORM
       for J in get_range(1,NP):
         for I in get_range(1,NP):
           C.set(I,J,CSCALE*C(I,J))
-      store.write(NFEW, f'{C(3,3)}')
-      store.write(NFEW, f'{C(3,5)}   {C(5,5)}')
-      store.write(NFEW,f'{C(3,6)}   {C(5,6)}    {C(6,6)}')
+      store.write(NFEW, f'{C(3,3):13.4e}')
+      store.write(NFEW, f'{C(3,5):13.4e}   {C(5,5):13.4e}')
+      store.write(NFEW,f'{C(3,6):13.4e}   {C(5,6):13.4e}    {C(6,6):13.4e}')
       if NFEW > 1:
-        store.write(NFEW, f'{C(3,7)}   {C(5,7)}   {C(6,7)}    {C(7,7)}')
-        store.write(NFEW, f'{C(3,8)}   {C(5,8)}   {C(6,8)}   {C(7,8)}   {C(8,8)}')
+        store.write(NFEW, f'{C(3,7):13.4e}   {C(5,7):13.4e}   {C(6,7):13.4e}    {C(7,7):13.4e}')
+        store.write(NFEW, f'{C(3,8):13.4e}   {C(5,8):13.4e}   {C(6,8):13.4e}   {C(7,8):13.4e}   {C(8,8):13.4e}')
       
       elif NFEW>2:
-        store.write(NFEW, f'{C(3,9)}   {C(5,9)}   {C(6,9)}   {C(7,9)}   {C(8,9)}   {C(9,9)}')
-        store.write(NFEW, f'{C(3,10)}   {C(5,10)}   {C(6,10)}    {C(7,10)}     {C(8,10)}   {C(9,10)}    {C(10,10)}')
+        store.write(NFEW, f'{C(3,9):13.4e}   {C(5,9):13.4e}   {C(6,9):13.4e}   {C(7,9):13.4e}   {C(8,9):13.4e}   {C(9,9):13.4e}')
+        store.write(NFEW, f'{C(3,10):13.4e}   {C(5,10):13.4e}   {C(6,10):13.4e}    {C(7,10):13.4e}     {C(8,10):13.4e}   {C(9,10):13.4e}    {C(10,10):13.4e}')
       
       store.write(NFEW,' -------------------------------------------------')
       store.close(unit=1)

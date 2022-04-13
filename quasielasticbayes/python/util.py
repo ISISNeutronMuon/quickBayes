@@ -74,7 +74,7 @@ def LUDCMP(A,N,NP):
 
       if A(N,N)==0.0:
           A.set(N,N,TINY)
-      return INDX, D
+      return INDX, D, A
 
 def LUBKSB(A,N,NP,INDX,B):
       # B is a numpy array

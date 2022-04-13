@@ -273,9 +273,9 @@ c       yprob(l)=POUT(l,isp)
 c      end do
 
       call open_f(1,dumpFile2)
-      do n =1, 10
+      do n =1, 100
 c         write(1,*) DDDPAR(n,6)
-         write(1,*) SCLVEC(n,2)
+         write(1,*) HESS(n,1)
          
       end do
       close(unit=1)

@@ -202,7 +202,7 @@ def INVERT(NP, INDX, covar_default, HESS=None, COVAR=None):
     # set diagonal for covariance matrix
     for I in get_range(1,NP):
         COVAR.set(I,I, covar_default)
-    INDX,D=LUDCMP(HESS,NP,NP)
+    INDX,D, HESS=LUDCMP(HESS,NP,NP)
     for I in get_range(1,NP):
       DETLOG=DETLOG+log10(abs(HESS(I,I))+SMALL)
         
@@ -452,7 +452,7 @@ def calculate_sample_bins(IREAD,DTNORM, efix, ntc, COMS, store,lptfile):
       COMS["DATA"].QAVRG.set(IREAD, 0.69469*np.sqrt(QQ))
       store.open(53,lptfile)
       store.write(53,' ----------------------------------------------------')
-      store.write(53, f' Group {IREAD},  theta = {COMS["DATA"].theta(IREAD)},  Q = {COMS["DATA"].QAVRG(IREAD)}')
+      store.write(53, f' Group {IREAD},  theta = {COMS["DATA"].theta(IREAD):10.5f},  Q = {COMS["DATA"].QAVRG(IREAD):10.5f}')
       store.write(53,' ----------------------------------------------------')
       store.close(unit=53)
       
@@ -613,7 +613,7 @@ def set_sacle_factors(N_QE_peaks,scale,COMS,store, prog,lptfile, o_bgd ):
          # if measurments are less then errors
          if COMS["SCL"].ASCL < sum_sigma:
            store.write(53,' qlm> *** Estimate of Amax is being set to lower bound!')
-           store.write(53,f' ( {COMS["SCL"].ASCL} --> {SUMSIG} )')
+           store.write(53,f' ( {COMS["SCL"].ASCL:14.7e} --> {SUMSIG:14.7e} )')
            COMS["SCL"].ASCL=sum_sigma
          store.write(53,' ----------------------------------------------------')
          store.close(unit=53)
@@ -770,17 +770,17 @@ def PROBN(COMS, CNORM,NDAT,DETLOG,NFEW,NMAX, prog, store, lptfile):
 
       store.open(53, lptfile)
       if prog=='l':
-         store.write(53,f' Log10[Prob({NFEW} Quasi-elastic lines|Data)] = {PROBLG:.2f}')
+         store.write(53,f' Log10[Prob({NFEW} Quasi-elastic lines|Data)] = {PROBLG:11.1f}')
          if NFEW< NMAX:
             store.write(53,' -------------------------')
       
       if prog=='s':
-          store.write(53,f' Log10[Prob(Stretched exp|Data)] = {PROBLG:.2f}')
+          store.write(53,f' Log10[Prob(Stretched exp|Data)] = {PROBLG:11.1f}')
           if NFEW<1:
              store.write(53,' -------------------------')
       
       if prog=='w':
-         store.write(53,f' Log10[Prob(Water|Data)] = {PROBLG:.2e}')
+         store.write(53,f' Log10[Prob(Water|Data)] = {PROBLG:11.1f}')
          if NFEW<1:
             store.write(53,' -------------------------')
       

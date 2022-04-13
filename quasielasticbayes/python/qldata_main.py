@@ -141,7 +141,7 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
        store.open(53,lptfile)
        store.write(53,f' Sample run: {sfile}')
        store.write(53,f' Resolution file: {rfile}')
-       store.write(53,f' Energy range: {xin(COMS["Params"].IMIN)} to {xin(COMS["Params"].IMAX)} meV')
+       store.write(53,f' Energy range: {xin(COMS["Params"].IMIN):8.3f} to {xin(COMS["Params"].IMAX):8.3f} meV')
        if o_el == 0:
           store.write(53,' Elastic option : NO peak')
        if o_el==1:
@@ -166,7 +166,7 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
             #store.write(n,' Data : '+name) # no idea what name is
             store.write(n,title[:l_title])
             store.write(n,user[:l_user])
-            store.write(n, f"{NSPEC}, {COMS['DATA'].NDAT}, {xin(COMS['Params'].IMIN)}, {xin(COMS['Params'].IMAX)}")
+            store.write(n, f"{NSPEC}, {COMS['DATA'].NDAT}, {xin(COMS['Params'].IMIN):10.3f}, {xin(COMS['Params'].IMAX):10.3f}")
             store.write(n,'-------------------------------------------------')
             store.write(n,rfile)
             store.write(n,n)
@@ -176,8 +176,8 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
        IDUF = 0
        XBLR,YBLR=bin_resolution(NB,0,IDUF, COMS, store, lptfile) # rebin + FFT of splined data -> make bins even spaced
 
-       debug_dump(sfile[:l_fn]+'_test.python.lpt', COMS["FFT"].FRES.output(),  store) # keep this one
-       debug_dump(sfile[:l_fn]+'_test.python2.lpt', flatten(COMS["res_data"].FTY.output()),  store) # keep this one
+       #debug_dump(sfile[:l_fn]+'_test.python.lpt', COMS["FFT"].FRES.output(),  store) # keep this one
+       #debug_dump(sfile[:l_fn]+'_test.python2.lpt', flatten(COMS["res_data"].FTY.output()),  store) # keep this one
 
        bin_offsets(COMS)
        normalize_x_range(COMS) # record fractional original x bins
@@ -271,8 +271,8 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
                 FITPSV.set(3, 0.0)
       
 
-       #debug_dump(sfile[:l_fn]+'_test.python.lpt',HESS.output(),  store) # keep this one
-       #debug_dump(sfile[:l_fn]+'_test.python.lpt',COMS["Dintrp"].IPDAT.output_range(end=2000),  store) # keep this one
+       debug_dump(sfile[:l_fn]+'_test.python.lpt',HESS.output(),  store) # keep this one
+       #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["Dintrp"].IPDAT.output_range(end=2000),  store) # keep this one
 
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',HESS.output(), store)
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["SCL"].SCLVEC.output_range(1,2,end=2000), store)
