@@ -257,7 +257,7 @@ def debug_dump(file_name, val, store):
 
 def deprecated(func):
     def wrapper(*arg):
-        print("WARNING deprecated function: "+func.__name__)
+        #print("WARNING deprecated function: "+func.__name__)
         result = func(*arg)
         return result
     return wrapper

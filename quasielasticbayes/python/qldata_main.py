@@ -196,7 +196,8 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
 
        DETLOG = 0
        HESS, COVAR, DPAR, DETLOG =refine_param_values(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, construct_fit_and_chi, prog, o_bgd,o_w1, o_el, store, lptfile)
-       ################################
+
+      ################################
        # chnage the code so it only calculates 0 and 1 elastic lines
        ###############################
        for counter in range(4): # equivalent of less than equal to 3
@@ -216,7 +217,9 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
             delta_chi_threshold=0.003
             # optimization steps
             for I in get_range(1,200):
-                #print("test", I)
+                print("test", I,NPARMS, len(HESS.output()))
+                debug_dump(sfile[:l_fn]+'_test.python2.lpt',np.pad(HESS.output(),[0, (NPARMS*NPARMS)-len(HESS.output())], mode="constant"),  store) # keep this one
+
                 #######################################################################################################
                 # come back to this one!!!!!
                 HESS, COVAR, DETLOG = REFINE(COMS, GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,step_size, o_bgd, o_w1,o_el, prog)
@@ -250,6 +253,9 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
                         break
             #######################################################################################################
             # come back to this one!!!!!        
+            #if counter ==0:
+            #    debug_dump(sfile[:l_fn]+'_test.python2.lpt',HESS.output(),  store) # keep this one
+
             HESS, COVAR, DETLOG = REFINE(COMS, GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,0.7, o_bgd, o_w1,o_el, prog)
             #######################################################################################################
             SIGPAR = ERRBAR(COVAR,NPARMS)

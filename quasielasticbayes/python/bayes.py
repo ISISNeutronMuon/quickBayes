@@ -157,7 +157,7 @@ def make_hessian(N_params,scale_vector,step,N_QE, prog, COMS, o_el, HESS=None):
         for I in get_range(J,N_params):
           # sum weights*evaluation for individual function_I * evaluation for individual function_J 
           SM=np.sum(COMS["DATA"].SIG.output_range(end=COMS["DATA"].NDAT)*COMS["GRD"].DDDPAR.output_range(1,I,COMS["DATA"].NDAT+1)*COMS["GRD"].DDDPAR.output_range(1,J,COMS["DATA"].NDAT+1))
-          HESS.set(I,J, (HESS(I,J)+SM)*scale_vector[I-1]*scale_vector[J-1]) # this uses the previous value to give some influence to the history of the hessian
+          HESS.set(I,J, +SM*scale_vector[I-1]*scale_vector[J-1]) # this uses the previous value to give some influence to the history of the hessian
           HESS.set(J,I, HESS(I,J)) # symmetric hessian
 
       BEEFUP=2.0/(step*step)
@@ -206,9 +206,13 @@ def INVERT(NP, INDX, covar_default, HESS=None, COVAR=None):
     for I in get_range(1,NP):
       DETLOG=DETLOG+log10(abs(HESS(I,I))+SMALL)
         
+    #print("nooo", NP, INDX.output())
     for I in get_range(1,NP):
-        tmp = LUBKSB(HESS,NP,NP,INDX,COVAR.output_from(1,I))
+        tmp = LUBKSB(HESS,NP,NP,INDX,COVAR.output_col(I))
         COVAR.copy(tmp, 1,I)
+        #for j in get_range(1,NP):
+        #    print("tmp", j, tmp[j-1], len(tmp))
+        
     return HESS, COVAR, DETLOG
 
 def matrix_times_vector(grad,covar,N_params):
@@ -749,7 +753,7 @@ def ERRBAR(COVAR,NP):
     SMALL=1.0E-20
     SIGPAR = vec(NP)
     for I in get_range(1,NP):
-        SIGPAR.set(I, sqrt(2.0*abs(COVAR(I,I))+SMALL))
+        SIGPAR.set(I, COVAR(I,I))#sqrt(2.0*abs(COVAR(I,I))+SMALL))
     return SIGPAR
 
 

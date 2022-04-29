@@ -200,6 +200,7 @@ c      close(unit=1)
       CALL PRINIT(FITP,3,NFEW,1)
       CALL FileInit(3,ISP)
       CALL REFINA(GRAD,HESS,DPAR,3+NFEW,DETLOG,INDX,COVAR)
+
       GOTO 2
    1  write(*,*)'hi'
       CALL SEARCH(GRAD,HESS,DPAR,NFEW,INDX,COVAR,FITP)
@@ -211,7 +212,14 @@ c      close(unit=1)
       IAGAIN=0
       CDIFMN=0.003
       DO 10 I=1,200
-c      write(*,*)'test', I
+        open(unit=1,file=dumpFile2,access='append')
+         do n =1, NPARMS*NPARMS
+c         write(1,*) DDDPAR(n,6)
+          write(1,*) HESS(n,1)
+         
+         end do
+        close(unit=1)
+c       write(*,*)'test', I, NPARMS
        CALL REFINE(GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,STEPSZ)
           CALL NEWEST(COVAR,GRAD,NPARMS,NFEW,DPAR,FITP)
           CNORM=CCHI(FITP)
@@ -240,6 +248,13 @@ c      write(*,*)'test', I
             ENDIF
           ENDIF
   10    CONTINUE
+
+c   3   call open_f(1,dumpFile2)
+c      do n =1, 100
+c         write(1,*) DDDPAR(n,6)
+c         write(1,*) HESS(n,1)        
+c      end do
+c      close(unit=1)
 
    3  CALL REFINE(GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,0.7)
       CALL ERRBAR(COVAR,NPARMS,SIGPAR)
@@ -272,16 +287,10 @@ c      do l=1,4
 c       yprob(l)=POUT(l,isp)
 c      end do
 
-      call open_f(1,dumpFile2)
-      do n =1, 100
-c         write(1,*) DDDPAR(n,6)
-         write(1,*) HESS(n,1)
-         
-      end do
-      close(unit=1)
+
 
       call open_f(1,dumpFile)
-      do n =1, 100
+      do n =1, NPARMS*NPARMS
          write(1,*) HESS(n,1)
 c         write(1,*) IPDAT(n)
       end do

@@ -143,7 +143,7 @@ C     --------------------------------------------
       do I=1,NP
         CALL VRDOTR(RESID,DDDPAR(1,I),NDAT,SM)
         GRAD(I)=SCLVEC(I)*SM
-        write(*,*)'grad check', SM,I, NP
+c        write(*,*)'grad check', SM,I, NP
       end do
       write(*,*)
       END
@@ -171,7 +171,8 @@ C     ----------------------------------
       REAL COVAR(NP,*),SIGPAR(*)
       SMALL=1.0E-20
       do I=1,NP
-        SIGPAR(I)=SQRT(2.0*ABS(COVAR(I,I))+SMALL)
+        SIGPAR(I)=COVAR(I,I)
+c        SQRT(2.0*ABS(COVAR(I,I))+SMALL)
       end do
       END
 C     ----------------------------------------
@@ -213,6 +214,7 @@ C     ---------------------------------------------
       INTEGER INDX(*)
       SMALL=1.E-20
       DETLOG=0.0
+      write(*,*) 'invert'
       if (prog.eq.'s') then
        cov=2.0
       else
@@ -227,8 +229,15 @@ C     ---------------------------------------------
         DETLOG=DETLOG+LOG10(ABS(HESS(I,I))+SMALL)
         IF (HESS(I,I).LT.0.0) D=-D
       end do
+      write(*,*)'noooo', Np,D
+      do I=1, NP
+        write(*,*), I, INDX(I)
+      end do
       do I=1,NP
       CALL LUBKSB(HESS,NP,NP,INDX,COVAR(1,I))
+c      do jjj=1, NP
+c         write(*,*) 'tesataets', jjj, COVAR(jjj, I)
+c      end do
       end do
       END
 C     ---------------------------------
@@ -294,7 +303,7 @@ C     ------------------------------------------------
           do K=1,NDAT
            SM=SM+SIG(K)*DDDPAR(K,I)*DDDPAR(K,J)
           end do
-          HESS(I,J)=(HESS(I,J)+SM)*SCLVEC(I)*SCLVEC(J)
+          HESS(I,J)=(SM)*SCLVEC(I)*SCLVEC(J)
           HESS(J,I)=HESS(I,J)
         end do
       end do
