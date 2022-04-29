@@ -272,21 +272,23 @@ c      close(unit=1)
        FITPSV(3)=0.0
       endif
       IF (NFEW.LE.3) GOTO 1
-c      nd_out=NDAT
-c      do n=1,nd_out
-c       xout(n)=XDAT(n)
-c       yout(n)=DAT(n)
-c       if(SIG(n).gt.1.0e-10)then
-c        eout(n)=SQRT(2.0/SIG(n))
-c       else
-c        eout(n)=0.
-c       endif
-c      end do
-c      CALL PRBOUT(PRBSV,4,ISP,POUT)
-c      do l=1,4
-c       yprob(l)=POUT(l,isp)
-c      end do
-
+      nd_out=NDAT
+      do n=1,nd_out
+       xout(n)=XDAT(n)
+       yout(n)=DAT(n)
+       if(SIG(n).gt.1.0e-10)then
+        eout(n)=SQRT(2.0/SIG(n))
+       else
+        eout(n)=0.
+       endif
+      end do
+      CALL PRBOUT(PRBSV,4,ISP,POUT)
+      do l=1,4
+       yprob(l)=POUT(l,isp)
+      end do
+      do n =1, 4*m_sp 
+         write(*,*) POUT(n,1)
+      end do
 
 
       call open_f(1,dumpFile)

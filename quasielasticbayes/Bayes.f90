@@ -171,8 +171,7 @@ C     ----------------------------------
       REAL COVAR(NP,*),SIGPAR(*)
       SMALL=1.0E-20
       do I=1,NP
-        SIGPAR(I)=COVAR(I,I)
-c        SQRT(2.0*ABS(COVAR(I,I))+SMALL)
+        SIGPAR(I)=SQRT(2.0*ABS(COVAR(I,I))+SMALL)
       end do
       END
 C     ----------------------------------------

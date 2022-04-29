@@ -202,7 +202,7 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
        ###############################
        for counter in range(4): # equivalent of less than equal to 3
             if counter > 0: # skip on the first pass -> no peaks to find
-               print("hi")
+               #print("hi")
                HESS, COVAR, DPAR, DETLOG = find_latest_peak(COMS, GRAD,HESS,DPAR, INDX,COVAR, o_w1, prog, o_bgd, o_el, store, lptfile, DETLOG, construct_fit_and_chi)
 
             NPARMS=4+2*COMS["FIT"].NFEW # 4 default (BG and elastic params) plus 2 per peak
@@ -217,7 +217,7 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
             delta_chi_threshold=0.003
             # optimization steps
             for I in get_range(1,200):
-                print("test", I,NPARMS, len(HESS.output()))
+                #print("test", I,NPARMS, len(HESS.output()))
                 debug_dump(sfile[:l_fn]+'_test.python2.lpt',np.pad(HESS.output(),[0, (NPARMS*NPARMS)-len(HESS.output())], mode="constant"),  store) # keep this one
 
                 #######################################################################################################
@@ -226,21 +226,21 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
                 #######################################################################################################
                 DPAR, fit_params= update_fit_params(COVAR,GRAD,NPARMS,COMS["FIT"].NFEW,COMS["FIT"].FITP,prog,store, lptfile)
                 COMS["FIT"].FITP.copy(fit_params)
-                CNORM=CCHI(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
+                CNORM=construct_fit_and_chi(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
 
                 if CNORM<=chi_keep: # a better parameter set
                     #print("a")
                     chi_diff=(chi_keep-CNORM)/CNORM
                     if abs(chi_diff)<=delta_chi_threshold: 
                     #if abs(abs(CHIDIF)-CDIFMN)<=1.e-1: # fudge factor to make sure it does the same as Fortran 
-                        print("waaa")
+                        #print("waaa")
                         if IAGAIN==0:
-                            print('option1')
+                            #print('option1')
                             delta_chi_threshold=0.00005
                             step_size=0.15
                             IAGAIN=1
                         else:
-                            print('go to 3')
+                            #print('go to 3')
                             break
              
                     chi_keep=CNORM
@@ -249,7 +249,7 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
                     COMS["FIT"].FITP.copy(FITPSV.output_range(end=NPARMS))
                     step_size=step_size*0.6
                     if step_size<1.0E-10: # step size is too small
-                        print("another go to 3")
+                        #print("another go to 3")
                         break
             #######################################################################################################
             # come back to this one!!!!!        
@@ -258,15 +258,18 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
 
             HESS, COVAR, DETLOG = REFINE(COMS, GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,0.7, o_bgd, o_w1,o_el, prog)
             #######################################################################################################
-            SIGPAR = ERRBAR(COVAR,NPARMS)
+            SIGPAR = parameter_error_bars(COVAR,NPARMS)
 
-            tmp_p, tmp_s = SEEFIT(COMS, SIGPAR,CNORM, store, lptfile)
-            PRMSV.copy(tmp_p, 1,COMS["FIT"].NFEW+1,ISP)
-            SIGSV.copy(tmp_s,1,COMS["FIT"].NFEW+1,ISP )
-            OUTPRM(COMS["FIT"].FITP,COVAR,NPARMS,COMS["FIT"].NFEW,CNORM, store, [fileout1, fileout2, fileout3])
-
+            tmp_params, tmp_errors = record_fit_results(COMS, SIGPAR,CNORM, store, lptfile)
+            PRMSV.copy(tmp_params, 1,COMS["FIT"].NFEW+1,ISP)
+            SIGSV.copy(tmp_errors,1,COMS["FIT"].NFEW+1,ISP )
+            ##################################################################################################
+            OUTPRM(COMS["FIT"].FITP,COVAR,NPARMS,COMS["FIT"].NFEW,CNORM, store, [fileout1, fileout2, fileout3]) # need to translate
+        
             HESS, COVAR, DETLOG = REFINE(COMS, GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,0.25, o_bgd, o_w1,o_el, prog)
-            tmp, DETLOG= PROBN(COMS, CNORM,numb[3],DETLOG,COMS["FIT"].NFEW,3, prog, store, lptfile) # use numb encase NDAT in oms has been changed
+            #####################################################################################################
+
+            tmp, DETLOG= LogLikelihood(COMS, CNORM,numb[3],DETLOG,COMS["FIT"].NFEW,3, prog, store, lptfile) # use numb encase NDAT in oms has been changed
             PRBSV.set(COMS["FIT"].NFEW+1, ISP, tmp)
             noff=COMS["DATA"].NDAT*COMS["FIT"].NFEW # offset in vector
             for n in get_range(1,COMS["DATA"].NDAT):
@@ -276,7 +279,19 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
                 COMS["FIT"].FITP.set(3, 0.0)
                 FITPSV.set(3, 0.0)
       
+       nd_out = COMS["DATA"].NDAT
+       for n in get_range(1, nd_out):
+           xout.set(n, COMS["DATA"].XDAT(n))
+           yout.set(n, COMS["DATA"].DAT(n))
+           if COMS["DATA"].SIG(n) > 1e-10:
+               eout.set(n,np.sqrt(2./COMS["DATA"].SIG(n)))
+           else:
+               eout.set(n, 0.0)
 
+       PRBSV, POUT = PRBOUT(PRBSV,4,ISP)
+       print(POUT.output())
+       for l in get_range(1,4):
+           yprob.set(l, POUT(l,ISP))
        debug_dump(sfile[:l_fn]+'_test.python.lpt',HESS.output(),  store) # keep this one
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["Dintrp"].IPDAT.output_range(end=2000),  store) # keep this one
 
@@ -287,10 +302,10 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["FFT"].FWRK.output_range(end=2000), store)
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["Dintrp"].XPDAT.output_range(end=2000), store)
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["WORK"].WORK.output_range(1,1,end=2000), store)
-       print("hi", CNORM, DETLOG,PRMSV(1,COMS["FIT"].NFEW+1,ISP),SIGSV(1,COMS["FIT"].NFEW+1,ISP))
+       #print("hi", CNORM, DETLOG,PRMSV(1,COMS["FIT"].NFEW+1,ISP),SIGSV(1,COMS["FIT"].NFEW+1,ISP))
       
 
-      print("Hi It worked!!!!!!!!!!!!!! #actually doing QL data not res")
+      #print("Hi It worked!!!!!!!!!!!!!! #actually doing QL data not res")
       nd_out=10
       store.dump()
       return nd_out,xout.output(),yout.output(),eout.output(),yfit.output(),yprob.output()

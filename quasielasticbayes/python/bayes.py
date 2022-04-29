@@ -747,19 +747,67 @@ def PRINIT(NQMAX,IXSCAL,COMS,store, prog,lptfile, o_bgd ):
       COMS["FIT"].NFEW=0
      
 
+def parameter_error_bars(COVAR, NP):
+    # gets the error bars from the diag of the covarience matrix
+    SMALL = 1.e-20
+    parameter_error = vec(NP)
+    for I in get_range(1, NP):
+        parameter_error.set(I, sqrt(2.0*abs(COVAR(I,I))+SMALL))
+    return parameter_error
 
+@deprecated
 def ERRBAR(COVAR,NP):
     # gets the error bars from the diag of the covarience matrix
     SMALL=1.0E-20
     SIGPAR = vec(NP)
     for I in get_range(1,NP):
-        SIGPAR.set(I, COVAR(I,I))#sqrt(2.0*abs(COVAR(I,I))+SMALL))
+        SIGPAR.set(I, sqrt(2.0*abs(COVAR(I,I))+SMALL))
     return SIGPAR
 
 
 def FCTNLG(N):
     A = np.asarray([k+1 for k in range(N)])
     return np.sum(np.log10(A))
+
+
+def LogLikelihood(COMS, chi2,N_data_points,LOG_HESS_det,N_peaks,NMAX, prog, store, lptfile):
+      """   
+      log_10 probabilities -> priors
+      LOG_HESS_det is the sum of the logs of the diagonal elements of the hessian
+      this is an odd way of putting the likelihood (some factors have been dropped such as the ln(10)):
+          L = [(4*pi)^N_p/(A*W)^{N_p/2} ]*exp(-(chi^2+D)/2)*PI_i=1,N_P i
+          where A and W are the amplitude and width scale factors, D is LOG_HESS_det and N_P is the number of peaks
+          the 4*pi is an attempt at normalising the likelihood
+          PI signifies the multplication of a series
+      """
+      CHI_2=chi2*float(N_data_points) # scale to mumber of data points
+      LOG_CHI_2=-log10(np.exp(1.))*CHI_2/2.0
+
+      LOG_HESS_det=LOG_HESS_det-float(N_peaks*2)*log10(COMS["SCL"].ASCL*COMS["SCL"].WSCL) # scale the hessian logs correctly
+
+      log_likelihood = LOG_CHI_2 - (0.5*LOG_HESS_det) # the terms from "just the fit"
+      # Cost of extra parameters
+      log_likelihood -= float(N_peaks)*log10(COMS["SCL"].ASCL*COMS["SCL"].WSCL) # scale factor
+      log_likelihood += np.sum(np.log10(np.asarray([k+1 for k in range(N_peaks)]))) # cost of more parameters
+      log_likelihood += float(N_peaks)*log10(4.0*pi) #an attempt to normalise prob
+
+      store.open(53, lptfile)
+      fit_type = f'{N_peaks} Quasi-elastic lines'
+
+      if prog =='s':
+          fit_type = "Stretched exp"
+      elif prog == 'w':
+          fit_type = "Water"
+
+      store.write(53,f' Log10[Prob({fit_type} |DATA)] = {log_likelihood:11.1f}')
+      if N_peaks< NMAX and prog=='l':
+         store.write(53,' -------------------------')
+      elif N_peaks<1:
+         store.write(53,' -------------------------')
+            
+      store.close(unit=53)
+      return log_likelihood, LOG_HESS_det
+
 
 # log likelyhoods?
 def PROBN(COMS, CNORM,NDAT,DETLOG,NFEW,NMAX, prog, store, lptfile):
@@ -791,3 +839,20 @@ def PROBN(COMS, CNORM,NDAT,DETLOG,NFEW,NMAX, prog, store, lptfile):
       store.close(unit=53)
       #PRBSV.set(NFEW+1, PROBLG)
       return PROBLG, DETLOG
+
+
+def PRBOUT(P,NP,NQ):
+      #REAL  P(4,m_sp),POUT(4,m_sp)
+      POUT = matrix_2(4, m_sp)
+      J=NQ
+      SM=0.0
+      for I in get_range(1,NP):
+        SM=SM+pow(10.0, P(I,J)-P(NP,J))
+      PLMAX = max([P(3,J), P(4,J)])
+      PLNORM=log10(SM)+P(NP,J)
+      for I in get_range(1,NP):
+        P.set(I,J, P(I,J)-PLMAX)
+      
+      for I in get_range(1,NP):
+        POUT.set(I,J, P(I,J))
+      return P, POUT

@@ -29,7 +29,7 @@ def Re(x):
 
 def Im(x):
     y = []
-    print(x[0:10])
+    #print(x[0:10])
     for k in x:
         y.append(k.imag)
     return np.asarray(y)
