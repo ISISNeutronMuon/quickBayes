@@ -55,6 +55,7 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
       DTNORM,XSCALE = vec(m_sp), vec(m_sp)
       FITPSV = vec(m_p)
       PRBSV,POUT = matrix_2(4,m_sp), matrix_2(4,m_sp)
+      HESS = matrix_2(m_p,m_p)
       PRMSV,SIGSV = matrix_3(7,4,m_sp), matrix_3(7,4,m_sp)
       INDX = vec(m_p)
       LGOOD = BoolVec(m_sp)
@@ -195,12 +196,12 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
        write_file_info(3,ISP, COMS, store, [fileout1, fileout2, fileout3]) # dump data to file
 
        DETLOG = 0
-       HESS, COVAR, DPAR, DETLOG =refine_param_values(GRAD,3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, construct_fit_and_chi, prog, o_bgd,o_w1, o_el, store, lptfile)
+       HESS, COVAR, DPAR, DETLOG =refine_param_values(GRAD,HESS, 3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, construct_fit_and_chi, prog, o_bgd,o_w1, o_el, store, lptfile)
 
       ################################
        # chnage the code so it only calculates 0 and 1 elastic lines
        ###############################
-       for counter in range(4): # equivalent of less than equal to 3
+       for counter in range(3): # equivalent of less than equal to 3
             if counter > 0: # skip on the first pass -> no peaks to find
                #print("hi")
                HESS, COVAR, DPAR, DETLOG = find_latest_peak(COMS, GRAD,HESS,DPAR, INDX,COVAR, o_w1, prog, o_bgd, o_el, store, lptfile, DETLOG, construct_fit_and_chi)
@@ -218,7 +219,6 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
             # optimization steps
             for I in get_range(1,200):
                 #print("test", I,NPARMS, len(HESS.output()))
-                debug_dump(sfile[:l_fn]+'_test.python2.lpt',np.pad(HESS.output(),[0, (NPARMS*NPARMS)-len(HESS.output())], mode="constant"),  store) # keep this one
 
                 #######################################################################################################
                 # come back to this one!!!!!
@@ -294,6 +294,8 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
            yprob.set(l, POUT(l,ISP))
        debug_dump(sfile[:l_fn]+'_test.python.lpt',HESS.output(),  store) # keep this one
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["Dintrp"].IPDAT.output_range(end=2000),  store) # keep this one
+                 
+       debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["DATA"].SIG.output(),  store) # keep this one
 
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',HESS.output(), store)
        #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["SCL"].SCLVEC.output_range(1,2,end=2000), store)

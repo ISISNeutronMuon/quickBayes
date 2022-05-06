@@ -7,10 +7,7 @@
 from  quasielasticbayes.python.fortran_python import *
 from quasielasticbayes.Util import ludcmp2
 import math
-from math import log10, floor
 
-def round_sig(x, sig=6, small_value=1.0e-9):
-    return round(x, sig - int(floor(log10(max(abs(x), abs(small_value))))) - 1)
 
 """
 These could probably be made faster

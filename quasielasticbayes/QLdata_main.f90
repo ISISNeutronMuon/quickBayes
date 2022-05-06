@@ -212,13 +212,7 @@ c      close(unit=1)
       IAGAIN=0
       CDIFMN=0.003
       DO 10 I=1,200
-        open(unit=1,file=dumpFile2,access='append')
-         do n =1, NPARMS*NPARMS
-c         write(1,*) DDDPAR(n,6)
-          write(1,*) HESS(n,1)
-         
-         end do
-        close(unit=1)
+
 c       write(*,*)'test', I, NPARMS
        CALL REFINE(GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,STEPSZ)
           CALL NEWEST(COVAR,GRAD,NPARMS,NFEW,DPAR,FITP)
@@ -271,7 +265,7 @@ c      close(unit=1)
        FITP(3)=0.0
        FITPSV(3)=0.0
       endif
-      IF (NFEW.LE.3) GOTO 1
+      IF (NFEW.LE.2) GOTO 1
       nd_out=NDAT
       do n=1,nd_out
        xout(n)=XDAT(n)
@@ -286,10 +280,15 @@ c      close(unit=1)
       do l=1,4
        yprob(l)=POUT(l,isp)
       end do
-      do n =1, 4*m_sp 
-         write(*,*) POUT(n,1)
-      end do
+c      do n =1, 4*m_sp 
+c         write(*,*) POUT(n,1)
+c      end do
 
+        open(unit=1,file=dumpFile2,access='append')
+         do n =1, m_d
+          write(1,*) SIG(n)
+         end do
+        close(unit=1)
 
       call open_f(1,dumpFile)
       do n =1, NPARMS*NPARMS

@@ -143,9 +143,7 @@ C     --------------------------------------------
       do I=1,NP
         CALL VRDOTR(RESID,DDDPAR(1,I),NDAT,SM)
         GRAD(I)=SCLVEC(I)*SM
-c        write(*,*)'grad check', SM,I, NP
       end do
-      write(*,*)
       END
 C     --------------------------
       SUBROUTINE VRDOTR(A,B,N,C)
@@ -155,6 +153,15 @@ C     --------------------------
        C=C+A(I)*B(I)
       end do
       END
+
+      SUBROUTINE VRDOTR2(A,B,N,C)
+      REAL A(*),B(*)
+      C=0.0
+      do I=1,N
+       C=C+A(I)
+      end do
+      END
+
 C     ------------------------------------------------
       SUBROUTINE HESS0(HESS,NP,RESID,NDAT,DDDPAR,AJ,J)
       REAL HESS(NP,*),RESID(*),DDDPAR(*)
@@ -213,7 +220,6 @@ C     ---------------------------------------------
       INTEGER INDX(*)
       SMALL=1.E-20
       DETLOG=0.0
-      write(*,*) 'invert'
       if (prog.eq.'s') then
        cov=2.0
       else
@@ -228,15 +234,8 @@ C     ---------------------------------------------
         DETLOG=DETLOG+LOG10(ABS(HESS(I,I))+SMALL)
         IF (HESS(I,I).LT.0.0) D=-D
       end do
-      write(*,*)'noooo', Np,D
-      do I=1, NP
-        write(*,*), I, INDX(I)
-      end do
       do I=1,NP
       CALL LUBKSB(HESS,NP,NP,INDX,COVAR(1,I))
-c      do jjj=1, NP
-c         write(*,*) 'tesataets', jjj, COVAR(jjj, I)
-c      end do
       end do
       END
 C     ---------------------------------
@@ -296,13 +295,19 @@ C     ------------------------------------------------
       COMMON /DATCOM/ XDAT(m_d),DAT(m_d),SIG(m_d),NDAT
       COMMON /GRDCOM/ DDDPAR(m_d,m_p),FR2PIK(m_d2,2)
       REAL   HESS(NP,*),SCLVEC(*)
+      open(unit=1,file='hess.txt',access='append')
+      write(1,*) NP
+
       do J=1,NP
         do I=J,NP
           SM=0.0
           do K=1,NDAT
            SM=SM+SIG(K)*DDDPAR(K,I)*DDDPAR(K,J)
           end do
-          HESS(I,J)=(SM)*SCLVEC(I)*SCLVEC(J)
+          write(1,*) HESS(I,J), SM, I, J
+
+          HESS(I,J)=(HESS(I,J)+SM)*SCLVEC(I)*SCLVEC(J)
+c          HESS(I,J)=(SM)*SCLVEC(I)*SCLVEC(J)
           HESS(J,I)=HESS(I,J)
         end do
       end do
@@ -381,7 +386,6 @@ C     -------------------------------------------------------
       end do
       CALL GRADPR(GRAD,RESID,NDAT,NP,SCLVEC)
       CALL HESS1(HESS,NP,SCLVEC,0.3,NFEW)
-C    changes both hess and covar
       if (prog.eq.'s'.OR.prog.eq.'q') then
        CALL MTXINV(HESS,COVAR,NP,INDX,DETLOG)
       else

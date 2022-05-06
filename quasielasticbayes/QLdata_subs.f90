@@ -290,6 +290,7 @@ C
       B2=BSCL*V(2)
       A0=ASCL*V(3)
       DELTAX=V(4)
+
       NFT2=NFFT/2+1
       CALL CXSHFT(FRES,DELTAX,TWOPIK,FR2PIK,FR2PIK(1,2),NFT2)
       CALL VRFILL(WORK,A0,NFT2)
@@ -303,9 +304,6 @@ C
         do I=1,NXFT2
           EXPIJ=EXP(-TWOPIK(I)*SIGJ)
           EXPF(I,J)=EXPIJ
-c          if (I.eq. NXFT2) then
-c          write(*,*) 'hi', EXPIJ,EXPF(I,J), TWOPIK(I), SIGJ, I
-c          end if
           WORK(I,1)=WORK(I,1)+AJ*EXPIJ
         end do
       end do
@@ -356,7 +354,6 @@ C
       CMIN=1.0E20
       FITP(J-1)=0.1
       FITP(J)=1.0
-      write(*,*)'mooooo', NSRCH
       do I=1,NSRCH
         CALL REFINA(GRAD,HESS,DPAR,3+NFEW,DETLOG,INDX,COVAR)
         CNORM=CCHI(FITP)
@@ -366,7 +363,6 @@ C
         ENDIF
         FITP(J)=FITP(J)*DXLOG
       end do
-c      write(*,*) 'SIGJ', SIGJ, CMIN, CNORM,J
       FITP(J)=SIGJ
       CALL REFINA(GRAD,HESS,DPAR,3+NFEW,DETLOG,INDX,COVAR)
       END
@@ -387,6 +383,9 @@ C
       REAL            GRAD(*),HESS(NP,*),COVAR(NP,*)
       INTEGER         INDX(*)
       NFT2=NFFT/2+1
+      do I=1,10
+         write(*,*) FITP(I)
+      end do
       CNORM=CCHI(FITP)
       CALL VRFILL(HESS,0.0,NP*NP)
       CALL VMLTRC(WORK,FR2PIK(1,2),NFT2,FWRK)
@@ -406,36 +405,38 @@ C
       CALL VRDOTR(RESID,WORK,NDAT,HESS(3,4))
       HESS(4,3)=HESS(3,4)
       do I=1,NFEW
-        write(*,*) 'fdsfdsadfsdfsa'
         J=3+I+I
         AJ=FITP(J)*ASCL
-        CALL VMLTRC(EXPF(1,I),FR2PIK,NFT2,WORK)
-        CALL VCOPY(WORK,FWRK,NFFT+2)
-        CALL FOUR2(FWRK,NFFT,1,-1,-1)
-        CALL DEGRID(FWRK,DDDPAR(1,J))
-        CALL VMLTRC(TWOPIK,WORK,NFT2,FWRK)
-        CALL VCOPY(FWRK,WORK,NFFT+2)
-        CALL FOUR2(FWRK,NFFT,1,-1,-1)
-        CALL DEGRID(FWRK,DDDPAR(1,J+1))
-        CALL HESS0(HESS,NP,RESID,NDAT,DDDPAR(1,J+1),AJ,J)
-        CALL VMLTIC(WORK,NFT2,WORK)
-        CALL VCOPY(WORK,FWRK,NFFT+2)
-        CALL FOUR2(FWRK,NFFT,1,-1,-1)
-        CALL DEGRID(FWRK,WORK(1,2))
-        CALL VRDOTR(RESID,WORK(1,2),NDAT,HESS(4,J))
-        HESS(J,4)=HESS(4,J)
-        CALL VMLTRC(TWOPIK,WORK,NFT2,FWRK)
-        CALL VCOPY(FWRK,WORK,NFFT+2)
-        CALL FOUR2(FWRK,NFFT,1,-1,-1)
-        CALL DEGRID(FWRK,WORK(1,2))
-        CALL VRDOTR(RESID,WORK(1,2),NDAT,SM)
-        HESS(4,J+1)=-AJ*SM
-        HESS(J+1,4)=HESS(4,J+1)
-        CALL VMLTIC(WORK,NFT2,WORK)
-        CALL FOUR2(WORK,NFFT,1,-1,-1)
-        CALL DEGRID(WORK,FWRK)
-        CALL VRDOTR(RESID,FWRK,NDAT,SM)
+c        CALL VMLTRC(EXPF(1,I),FR2PIK,NFT2,WORK)
+c        CALL VCOPY(WORK,FWRK,NFFT+2)
+c        CALL FOUR2(FWRK,NFFT,1,-1,-1)
+c        CALL DEGRID(FWRK,DDDPAR(1,J))
+c        CALL VMLTRC(TWOPIK,WORK,NFT2,FWRK)
+c        CALL VCOPY(FWRK,WORK,NFFT+2)
+c        CALL FOUR2(FWRK,NFFT,1,-1,-1)
+c        CALL DEGRID(FWRK,DDDPAR(1,J+1))
+c        CALL HESS0(HESS,NP,RESID,NDAT,DDDPAR(1,J+1),AJ,J)
+c        CALL VMLTIC(WORK,NFT2,WORK)
+c        CALL VCOPY(WORK,FWRK,NFFT+2)
+c        CALL FOUR2(FWRK,NFFT,1,-1,-1)
+c        CALL DEGRID(FWRK,WORK(1,2))
+c        CALL VRDOTR(RESID,WORK(1,2),NDAT,HESS(4,J))
+c        HESS(J,4)=HESS(4,J)
+c        CALL VMLTRC(TWOPIK,WORK,NFT2,FWRK)
+c        CALL VCOPY(FWRK,WORK,NFFT+2)
+c        CALL FOUR2(FWRK,NFFT,1,-1,-1)
+c        CALL DEGRID(FWRK,WORK(1,2))
+c        CALL VRDOTR(RESID,WORK(1,2),NDAT,SM)
+c        HESS(4,J+1)=-AJ*SM
+c        HESS(J+1,4)=HESS(4,J+1)
+c        CALL VMLTIC(WORK,NFT2,WORK)
+c        CALL FOUR2(WORK,NFFT,1,-1,-1)
+c        CALL DEGRID(WORK,FWRK)
+        CALL VRDOTR2(RESID,FWRK,NDAT,SM)
         HESS(J+1,J+1)=-AJ*SM
+        IF(J+1.EQ.6) then
+            write(*,*) AJ, SM
+        end if
       end do
       CALL GRADPR(GRAD,RESID,NDAT,NP,SCLVEC(1,2))
       CALL HESS1(HESS,NP,SCLVEC(1,2),STEPSZ,NFEW)

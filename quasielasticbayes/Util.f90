@@ -58,8 +58,6 @@ C
         IF (AAMAX.EQ.0.0) STOP ' Singular matrix!'
         VV(I)=1.0/AAMAX
       end do
-
-
       do J=1,N
         IF (J.GT.1) THEN
           do I=1,J-1
@@ -75,18 +73,13 @@ C
         AAMAX=0.0
         do I=J,N
           SUM=A(I,J)
-          da = A(I,J)
           IF (J.GT.1) THEN
             do K=1,J-1
-c              write(*,*) SUM, K,A(I,K),A(K,J), A(I,K)*A(K,J), SUM-A(I,K)*A(K,J)
               SUM=SUM-A(I,K)*A(K,J)
             end do
             A(I,J)=SUM
           ENDIF
           DUM=VV(I)*ABS(SUM)
-c          IF (J.EQ.6) THEN
-c             write(*,*)'f', IMAX, I,J, SUM, da
-c          endif
           IF (DUM.GE.AAMAX) THEN
             IMAX=I
             AAMAX=DUM

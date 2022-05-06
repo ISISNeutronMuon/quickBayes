@@ -15,6 +15,11 @@ This is achived by this class making adjustments so that the syntax of the origi
 code is changed by as little as possible
 """
 
+from math import log10, floor
+
+def round_sig(x, sig=8, small_value=1.0e-9):
+    return round(x, sig - int(floor(log10(max(abs(x), abs(small_value))))) - 1)
+
 def get_range(start, end, dx=1):
     return range(start, int(end+1*np.sign(dx)),int(dx)) 
 
@@ -127,12 +132,17 @@ class matrix_2(vec):
         return tmp
                              
     def resize(self, new_m, new_n):
+
+        max_m = self._m
+        max_n = self._n
         if new_m < self._m or new_n < self._n:
-            raise ValueError("cannot resize matrix")
+        #    #raise ValueError(f'cannot resize matrix: going from {self._m}x{self._n} to {new_m}x{new_n}')
+            max_m = new_m
+            max_n = new_n
         new_vec = zeros(new_n*new_m, self._complex)
         k2 = 0
-        for j in range(self._n):
-            for i in range(self._m):
+        for j in range(max_n):
+            for i in range(max_m):
                 k = self._index_for_vec(i+1,j+1)
                 new_vec[k2] = self._vec[k]
                 k2+=1

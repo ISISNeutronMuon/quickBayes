@@ -93,9 +93,9 @@ def VMLTIC(C):
     return C*1j
 
 # shift bin values onto new grid
-def bin_shift( y_grid, COMS): # is this the slow down?
+def bin_shift( y_grid, COMS, plus=0): # is this the slow down?
       y_shifted = []
-      for I in get_range(1,COMS["DATA"].NDAT):
+      for I in get_range(1,COMS["DATA"].NDAT+plus):
         J=int(COMS["Dintrp"].IPDAT(I)) # get the index that says where the shift value is
         fractional_x_shift = COMS["Dintrp"].XPDAT(I) 
         # get fractions of original bins in the new shifted bin add sum (e.g fractional_x_shift = 0.2)
@@ -114,12 +114,18 @@ def DEGRID(YGRD, COMS): # is this the slow down?
       #return np.asarray(YDAT)
 
 def VRDOTR(A,B,N):
-    sm = 0.0
-    for j in get_range(1,N):
-        sm += A[j-1]*B[j-1]
-    #return np.sum(A*B)
-    return sm
+    #sm = 0.0
+    #for j in get_range(1,N):
+    #    sm += A[j-1]*B[j-1]
+    return np.sum(A*B)
+    #return sm
 
+
+def VRDOTR2(A,B,N):
+    sm = 0.0
+    for j in range(1,N):
+        sm += A[j]
+    return sm
 
 def construct_gradients(RESID,NDAT,NP,SCLVEC, COMS,col=1):
       GRAD = []
@@ -144,22 +150,41 @@ def GRADPR(RESID,NDAT,NP,SCLVEC, COMS,col=1):
 
 
 def HESS0(HESS, RESID, DDDPAR,AJ,J):
-      SM = np.sum(-RESID*DDDPAR)
+      SM = 0.0
+      for kk in range(len(RESID)):
+          SM =round_sig(SM -round_sig(RESID[kk])*round_sig(DDDPAR[kk]))
       HESS.set(J,J+1, SM)
       HESS.set(J+1,J,SM) # symmetric matrix
       return -DDDPAR*AJ, HESS
 
 # if HESS is None, then create an NP by NP Hessian matrix
 def make_hessian(N_params,scale_vector,step,N_QE, prog, COMS, o_el, HESS=None):
-      if HESS is None:
-          HESS = matrix_2(N_params ,N_params)
+      if HESS:
+          HESS.resize(N_params,N_params)
+      #else:
+      #  HESS = matrix_2(N_params ,N_params)
+      full_path = os.path.join("C:\\Users\\BTR75544\\work\\quasielasticbayes","HESS_python.txt")
+      new_file = open(full_path, "a")
+      new_file.write(str(N_params))
+      new_file.write("\n")
+
+      #new_file.write("\n")
+
       for J in get_range(1,N_params):
         for I in get_range(J,N_params):
+
           # sum weights*evaluation for individual function_I * evaluation for individual function_J 
           SM=np.sum(COMS["DATA"].SIG.output_range(end=COMS["DATA"].NDAT)*COMS["GRD"].DDDPAR.output_range(1,I,COMS["DATA"].NDAT+1)*COMS["GRD"].DDDPAR.output_range(1,J,COMS["DATA"].NDAT+1))
-          HESS.set(I,J, +SM*scale_vector[I-1]*scale_vector[J-1]) # this uses the previous value to give some influence to the history of the hessian
+          new_file.write(str(HESS(I,J))+ "   "+str(SM)+f'   {I}     {J}')
+          new_file.write("\n")
+          #print(HESS(I,J), I,J)
+          #HESS.set(I,J, (HESS(I,J)+SM)*scale_vector[I-1]*scale_vector[J-1]) # this uses the previous value to give some influence to the history of the hessian
+          HESS.set(I,J, (HESS(I,J)+SM)*scale_vector[I-1]*scale_vector[J-1]) # this uses the previous value to give some influence to the history of the hessian
+ 
+ 
           HESS.set(J,I, HESS(I,J)) # symmetric hessian
-
+      #print()
+      new_file.close()
       BEEFUP=2.0/(step*step)
       for I in get_range(1,N_params):
         HESS.set(I,I, HESS(I,I)+BEEFUP)
@@ -290,11 +315,11 @@ def NEWEST(COVAR,GRAD,NP,NFEW,FITP, prog, store,lptfile):
       #return DPAR
 
 
-def refine_param_values(GRAD,NP,DETLOG,INDX,COVAR, COMS, make_fit_and_chi_func, prog, o_bgd,o_w1, o_el, store, lptfile):
+def refine_param_values(GRAD,HESS, NP,DETLOG,INDX,COVAR, COMS, make_fit_and_chi_func, prog, o_bgd,o_w1, o_el, store, lptfile):
       # HESS, COVAR, DPAR, FFT FWRK, GRD DDDPAR, FIT FITP
       NFT2 = 1 + COMS["FFT"].NFFT//2
       CNORM = make_fit_and_chi_func(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
-
+      HESS = matrix_2(NP, NP)
       resolution_FT = COMS["GRD"].FR2PIK.output_range(1,1,COMS["FFT"].NFFT+2) 
       resolution_FT = np.pad(resolution_FT, pad_width=(0, m_d2 - len(resolution_FT)%m_d2),mode= 'constant')
       resolution=flatten(FOUR2_IFT(resolution_FT,COMS["FFT"].NFFT,1,-1)) # resolution*osc in origianl domain
@@ -312,7 +337,7 @@ def refine_param_values(GRAD,NP,DETLOG,INDX,COVAR, COMS, make_fit_and_chi_func, 
       ################################################################################
       # up to here
       ###################################################################################   
-      HESS=make_hessian(NP,COMS["SCL"].SCLVEC.output(),0.3,COMS["FIT"].NFEW, prog, COMS,o_el, HESS=None) # create HESS matrix function
+      HESS=make_hessian(NP, COMS["SCL"].SCLVEC.output(),0.3,COMS["FIT"].NFEW, prog, COMS,o_el, HESS) # create HESS matrix function
       covar_default = 1
       if prog == 's':
           covar_default = 2
@@ -332,10 +357,12 @@ def refine_param_values(GRAD,NP,DETLOG,INDX,COVAR, COMS, make_fit_and_chi_func, 
 
 # should we define grad in here too?
 @deprecated 
-def REFINA(GRAD,NP,DETLOG,INDX,COVAR, COMS, CNORM_FUNC, prog, o_bgd,o_w1, o_el, store, lptfile):
-      return refine_param_values(GRAD,NP,DETLOG,INDX,COVAR, COMS, CNORM_FUNC, prog, o_bgd,o_w1, o_el, store, lptfile)
+def REFINA(GRAD,HESS, NP,DETLOG,INDX,COVAR, COMS, CNORM_FUNC, prog, o_bgd,o_w1, o_el, store, lptfile):
+      return refine_param_values(GRAD, HESS, NP,DETLOG,INDX,COVAR, COMS, CNORM_FUNC, prog, o_bgd,o_w1, o_el, store, lptfile)
       # HESS, COVAR, DPAR, FFT FWRK, GRD DDDPAR, FIT FITP
       #NFT2=int(COMS["FFT"].NFFT/2+1)
+      #HESS.fill(0.0, NP*NP)
+
       #CNORM=CNORM_FUNC(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
       #HESS.fill(0.0,NP*NP)
       #COMS["FFT"].FWRK.copy(COMS["GRD"].FR2PIK.output_range(1,1,COMS["FFT"].NFFT+2))
@@ -467,7 +494,8 @@ def calculate_sample_bins(IREAD,DTNORM, efix, ntc, COMS, store,lptfile):
       # load sample data
       # these are already in sample data COM
       COMS["DATA"].XDAT.copy(COMS["DATA"].xin.output_range(end=COMS["sample_data"].N))
-      COMS["DATA"].DAT.copy(COMS["DATA"].yin.output_range(end=COMS["sample_data"].N))
+      tmp = COMS["DATA"].yin.output_range(end=COMS["sample_data"].N)*DTNRM 
+      COMS["DATA"].DAT.copy(tmp)
 
       for I in get_range(1,COMS["DATA"].NDAT):
        sigma = COMS["sample_data"].e_data(I)*DTNRM
@@ -509,7 +537,8 @@ def DATIN(IREAD,DTNORM, efix, ntc, COMS, store,lptfile):
 
       # laod sample data
       COMS["DATA"].XDAT.copy(COMS["DATA"].xin.output_range(end=COMS["DATA"].NDAT))
-      COMS["DATA"].DAT.copy(COMS["DATA"].yin.output_range(end=COMS["DATA"].NDAT))
+      tmp = COMS["DATA"].yin.output_range(end=COMS["sample_data"].N)*DTNRM 
+      COMS["DATA"].DAT.copy(tmp)
       # these are already in sample data COM
       for I in get_range(1,COMS["DATA"].NDAT):
        COMS["DATA"].SIG.set(I, COMS["DATA"].ein(I)*DTNRM)
