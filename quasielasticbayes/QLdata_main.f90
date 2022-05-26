@@ -265,7 +265,7 @@ c      close(unit=1)
        FITP(3)=0.0
        FITPSV(3)=0.0
       endif
-      IF (NFEW.LE.2) GOTO 1
+      IF (NFEW.LE.3) GOTO 1
       nd_out=NDAT
       do n=1,nd_out
        xout(n)=XDAT(n)

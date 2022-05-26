@@ -576,7 +576,11 @@ def construct_fit_and_chi(fit_params,COMS, o_bgd, o_w1):
 
       diff = fit_in_original_domain - data
       resid = diff*weights # residuals, sig is a weighting
-      CHI = np.sum(diff*resid)
+      CHI = 0.0
+      
+      for K in range(COMS["DATA"].NDAT):
+        resid[K] =  round_sig(round_sig(diff[K])*round_sig(weights[K]))
+        CHI += diff[K]*resid[K]
 
       COMS["FIT"].FIT.copy(fit_in_original_domain) # does not match at later indicies -> probably fine
       COMS["FIT"].RESID.copy(resid)
@@ -654,6 +658,12 @@ def CCHI(V,COMS, o_bgd, o_w1):
 
 def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1,o_el, prog):
       # FFT FWRK, WORK WORK, GRD DDDPAR
+
+      #full_path = os.path.join("C:\\Users\\BTR75544\\work\\quasielasticbayes","HESS_python.txt")
+      #new_file = open(full_path, "a")
+      #new_file.write(str(NP))
+      #new_file.write("\n")
+
       NFT2=int(COMS["FFT"].NFFT/2)+1
       print(COMS["FIT"].FITP.output()) # these match
       CNORM=CCHI(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
@@ -686,56 +696,56 @@ def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1,o_el, prog):
       tmp =VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["WORK"].WORK.output_range(1,1,end=COMS["DATA"].NDAT+1),COMS["DATA"].NDAT-1) 
       HESS.set(3,4,tmp)
       HESS.set(4,3, tmp)
-
       for I in get_range(1,COMS["FIT"].NFEW):
         J=3+I+I
         AJ=COMS["FIT"].FITP(J)*COMS["SCL"].ASCL
 
-        #tmp= VMLTRC(COMS["FIT"].EXPF.output_range(1,I, end = NFT2+2),compress(COMS["GRD"].FR2PIK.output_range(1,1,2*(2+NFT2))))
-        #COMS["WORK"].WORK.copy(flatten(tmp))
-        #COMS["FFT"].FWRK.copy(COMS["WORK"].WORK.output_range(1,1,COMS["FFT"].NFFT+2))
-        #tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
-        #COMS["FFT"].FWRK.copy(flatten(tmp))   
-        #COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J)
-        #tmp= VMLTRC(COMS["FFT"].TWOPIK.output_range(end = NFT2),compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2+1))))
-        #COMS["FFT"].FWRK.copy(flatten(tmp))
-        #COMS["WORK"].WORK.copy(COMS["FFT"].FWRK.output_range(end=COMS["FFT"].NFFT+2))
-        #tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
-        #COMS["FFT"].FWRK.copy(flatten(tmp))
-        #COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J+1)# -> this changes the result (corrct if the above is commented out)
-        #tmp, HESS = HESS0(HESS,COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["GRD"].DDDPAR.output_range(1,J+1,COMS["DATA"].NDAT+1),AJ,J) # the return vals for tmp are causing a huge slow down
-        #COMS["GRD"].DDDPAR.copy(tmp, 1,J+1)
+        tmp= VMLTRC(COMS["FIT"].EXPF.output_range(1,I, end = NFT2+2),compress(COMS["GRD"].FR2PIK.output_range(1,1,2*(2+NFT2))))
+        COMS["WORK"].WORK.copy(flatten(tmp))
+        COMS["FFT"].FWRK.copy(COMS["WORK"].WORK.output_range(1,1,COMS["FFT"].NFFT+2))
+        tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+        COMS["FFT"].FWRK.copy(flatten(tmp))   
+        COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J)
+        tmp= VMLTRC(COMS["FFT"].TWOPIK.output_range(end = NFT2),compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2+1))))
+        COMS["FFT"].FWRK.copy(flatten(tmp))
+        COMS["WORK"].WORK.copy(COMS["FFT"].FWRK.output_range(end=COMS["FFT"].NFFT+2))
+        tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+        COMS["FFT"].FWRK.copy(flatten(tmp))
+        COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,J+1)# -> this changes the result (corrct if the above is commented out)
+        tmp, HESS = HESS0(HESS,COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["GRD"].DDDPAR.output_range(1,J+1,COMS["DATA"].NDAT+1),AJ,J, COMS['DATA'].NDAT) # the return vals for tmp are causing a huge slow down
+        COMS["GRD"].DDDPAR.copy(tmp, 1,J+1)
 
 
-        #tmp = compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2+1)))
-        #COMS["WORK"].WORK.copy(flatten(VMLTIC(tmp)))
-        
-        #COMS["FFT"].FWRK.copy(COMS["WORK"].WORK.output_range(1,1,end=COMS["FFT"].NFFT+3))
-        #tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
-        #COMS["FFT"].FWRK.copy(flatten(tmp))       
-        #COMS["WORK"].WORK.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,2)
-        #tmp =VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT+1),COMS["WORK"].WORK.output_range(1,2,end=COMS["DATA"].NDAT+2),COMS["DATA"].NDAT-1) 
-        #HESS.set(4,J,tmp)
-        #HESS.set(J,4,tmp)
-        #tmp= VMLTRC(COMS["FFT"].TWOPIK.output_range(end = NFT2),compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2+1))))
-        #COMS["FFT"].FWRK.copy(flatten(tmp))
-        
-        #COMS["WORK"].WORK.copy(COMS["FFT"].FWRK.output_range(1,end=COMS["FFT"].NFFT+2))
-        #tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
-        #COMS["FFT"].FWRK.copy(flatten(tmp))    
-        #COMS["WORK"].WORK.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,2)
-        #SM =VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT+1),COMS["WORK"].WORK.output_range(1,2,end=COMS["DATA"].NDAT+2),COMS["DATA"].NDAT-1) 
-        #HESS.set(4, J+1, -AJ*SM)
-        #HESS.set(J+1, 4, -AJ*SM)
-        #tmp = compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2+1)))
-        #COMS["WORK"].WORK.copy(tmp)
-        #tmp=FOUR2(COMS["WORK"].WORK,COMS["FFT"].NFFT,1,-1,-1)
-        #COMS["WORK"].WORK.copy(flatten(tmp))
-        #COMS["FFT"].FWRK.copy(DEGRID(COMS["WORK"].WORK,COMS),1)
+        tmp = compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2+1)))
+        COMS["WORK"].WORK.copy(flatten(VMLTIC(tmp)))
+        COMS["FFT"].FWRK.copy(COMS["WORK"].WORK.output_range(1,1,end=COMS["FFT"].NFFT+3))
+        tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+        COMS["FFT"].FWRK.copy(flatten(tmp))       
+        COMS["WORK"].WORK.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,2)
+        tmp =VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT+1),COMS["WORK"].WORK.output_range(1,2,end=COMS["DATA"].NDAT+2),COMS["DATA"].NDAT-1) 
+        HESS.set(4,J,tmp)
+        HESS.set(J,4,tmp)
+
+        tmp= VMLTRC(COMS["FFT"].TWOPIK.output_range(end = NFT2),compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2+1))))
+        COMS["FFT"].FWRK.copy(flatten(tmp))
+        COMS["WORK"].WORK.copy(COMS["FFT"].FWRK.output_range(1,end=COMS["FFT"].NFFT+2))
+        tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+        COMS["FFT"].FWRK.copy(flatten(tmp))    
+        COMS["WORK"].WORK.copy(DEGRID(COMS["FFT"].FWRK,COMS),1,2)
+        SM =VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT+1),COMS["WORK"].WORK.output_range(1,2,end=COMS["DATA"].NDAT+2),COMS["DATA"].NDAT-1) 
+        HESS.set(4, J+1, -AJ*SM)
+        HESS.set(J+1, 4, -AJ*SM)
+
+        tmp = compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2)))
+        COMS["WORK"].WORK.copy(flatten(VMLTIC2(tmp)))
+        tmp=FOUR2(COMS["WORK"].WORK,COMS["FFT"].NFFT,1,-1,-1)
+        COMS["WORK"].WORK.copy(flatten(tmp))
+        COMS["FFT"].FWRK.copy(DEGRID(COMS["WORK"].WORK,COMS),1)
         SM =VRDOTR2(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["FFT"].FWRK.output_range(1,end=COMS["DATA"].NDAT),COMS["DATA"].NDAT) # RSID is wrong!
-        if(J+1==6):
-            print(AJ, SM)
+        #if(J+1==6):
+        #    print(AJ, SM)
         HESS.set(J+1, J+1, -AJ*SM)
+
       GRAD.copy(GRADPR(COMS["FIT"].RESID,COMS["DATA"].NDAT,NP,COMS["SCL"].SCLVEC, COMS, col=2)) # Grad has different sign in index 3, I think it is "zero" (e-4)
       HESS=HESS1(NP,COMS["SCL"].SCLVEC.output_col(2),STEPSZ,COMS["FIT"].NFEW, prog, COMS,o_el, HESS=HESS) 
       if o_w1==1 and NP>6:
@@ -836,7 +846,7 @@ def OUTPRM(P,C,NP,NFEW,CNORM, store, files):
         store.write(NFEW, f'{C(3,7):13.4e}   {C(5,7):13.4e}   {C(6,7):13.4e}    {C(7,7):13.4e}')
         store.write(NFEW, f'{C(3,8):13.4e}   {C(5,8):13.4e}   {C(6,8):13.4e}   {C(7,8):13.4e}   {C(8,8):13.4e}')
       
-      elif NFEW>2:
+      if NFEW>2:
         store.write(NFEW, f'{C(3,9):13.4e}   {C(5,9):13.4e}   {C(6,9):13.4e}   {C(7,9):13.4e}   {C(8,9):13.4e}   {C(9,9):13.4e}')
         store.write(NFEW, f'{C(3,10):13.4e}   {C(5,10):13.4e}   {C(6,10):13.4e}    {C(7,10):13.4e}     {C(8,10):13.4e}   {C(9,10):13.4e}    {C(10,10):13.4e}')
       

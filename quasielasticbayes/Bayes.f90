@@ -113,6 +113,20 @@ C     -------------------------
         CI(J)=CMPLX(-B,A)
       end do
       END
+
+      SUBROUTINE VMLTIC2(C,N,CI)
+      COMPLEX C(*),CI(*)
+c      open(unit=1,file='vrdotr.txt',access='append')
+      do J=1,N
+        A=REAL(C(J))
+        B=AIMAG(C(J))
+        CI(J)=CMPLX(-B,A)
+c        write(1,*) C(J), CMPLX(-B,A), A, B, J
+
+      end do
+c      close(1)
+      END
+
 C     ---------------------------
       SUBROUTINE MLTMXV(P,OP,N,D)
       REAL P(*),OP(N,N),D(*)
@@ -157,21 +171,30 @@ C     --------------------------
       SUBROUTINE VRDOTR2(A,B,N,C)
       REAL A(*),B(*)
       C=0.0
+      open(unit=13,file='vrdotr.txt',access='append')
       do I=1,N
-       C=C+A(I)
+       C=C+B(I)*A(I)
+       write(13,*) C, A(I), B(I), I
       end do
+      write(13,*) 'mooo'
+      close(13)
       END
 
 C     ------------------------------------------------
       SUBROUTINE HESS0(HESS,NP,RESID,NDAT,DDDPAR,AJ,J)
       REAL HESS(NP,*),RESID(*),DDDPAR(*)
       SM=0.0
+      open(unit=1,file='hess.txt',access='append')
       do I=1,NDAT
         SM=SM-RESID(I)*DDDPAR(I)
+c        SM=SM +RESID(I)
+        write(1,*) SM, RESID(I), I
         DDDPAR(I)=-AJ*DDDPAR(I)
       end do
       HESS(J,J+1)=SM
       HESS(J+1,J)=SM
+      write(1,*) 'a', HESS(J,J+1), J, NP
+      close(1)
       END
 C     ----------------------------------
       SUBROUTINE ERRBAR(COVAR,NP,SIGPAR)
@@ -218,6 +241,8 @@ C     ---------------------------------------------
       INCLUDE 'options.f90'
       REAL    HESS(NP,*),COVAR(NP,*)
       INTEGER INDX(*)
+c      open(unit=1,file='hess.txt',access='append')
+c      write(1,*) NP
       SMALL=1.E-20
       DETLOG=0.0
       if (prog.eq.'s') then
@@ -229,14 +254,25 @@ C     ---------------------------------------------
       do I=1,NP
        COVAR(I,I)=cov
       end do
+
       CALL LUDCMP(HESS,NP,NP,INDX,D)
       do I=1,NP
         DETLOG=DETLOG+LOG10(ABS(HESS(I,I))+SMALL)
         IF (HESS(I,I).LT.0.0) D=-D
       end do
+c      do J=1,NP
+c        do I=J,NP
+c          write(1,*) 'b', HESS(I,J), I, J
+c        end do
+c        end do
       do I=1,NP
       CALL LUBKSB(HESS,NP,NP,INDX,COVAR(1,I))
       end do
+c      do J=1,NP
+c        do I=J,NP
+c          write(1,*) 'a', HESS(I,J), I, J
+c        end do
+c        end do
       END
 C     ---------------------------------
       SUBROUTINE PRBOUT(P,NP,NQ,POUT)
@@ -295,8 +331,8 @@ C     ------------------------------------------------
       COMMON /DATCOM/ XDAT(m_d),DAT(m_d),SIG(m_d),NDAT
       COMMON /GRDCOM/ DDDPAR(m_d,m_p),FR2PIK(m_d2,2)
       REAL   HESS(NP,*),SCLVEC(*)
-      open(unit=1,file='hess.txt',access='append')
-      write(1,*) NP
+c      open(unit=1,file='hess.txt',access='append')
+c      write(1,*) NP
 
       do J=1,NP
         do I=J,NP
@@ -304,10 +340,15 @@ C     ------------------------------------------------
           do K=1,NDAT
            SM=SM+SIG(K)*DDDPAR(K,I)*DDDPAR(K,J)
           end do
-          write(1,*) HESS(I,J), SM, I, J
+c          a = HESS(I,J)+SM
+c          b = SCLVEC(I)*SCLVEC(J)
+
+c          write(1,*) HESS(I,J), SM, I, J,a,b
 
           HESS(I,J)=(HESS(I,J)+SM)*SCLVEC(I)*SCLVEC(J)
 c          HESS(I,J)=(SM)*SCLVEC(I)*SCLVEC(J)
+c          write(1,*) HESS(I,J), I, J
+
           HESS(J,I)=HESS(I,J)
         end do
       end do

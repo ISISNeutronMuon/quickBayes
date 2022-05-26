@@ -313,6 +313,7 @@ C
       X1=XDAT(1)
       if(o_bgd.eq.2) BNRM=(B2-B1)/(XDAT(NDAT)-X1)
 C     avoid conflict BNORM with ModPars
+
       do I=1,NDAT
         FIT(I)=FIT(I)+B1
          if(o_bgd.eq.2) FIT(I)=FIT(I)+BNRM*(XDAT(I)-X1)
@@ -382,6 +383,10 @@ C
       COMMON /QW1COM/ QW1(m_sp),SIGQW1(m_sp),ISPEC
       REAL            GRAD(*),HESS(NP,*),COVAR(NP,*)
       INTEGER         INDX(*)
+
+c      open(unit=1,file='hess.txt',access='append')
+c      write(1,*) NP, NFEW
+
       NFT2=NFFT/2+1
       do I=1,10
          write(*,*) FITP(I)
@@ -404,40 +409,51 @@ C
       CALL DEGRID(FWRK,WORK)
       CALL VRDOTR(RESID,WORK,NDAT,HESS(3,4))
       HESS(4,3)=HESS(3,4)
+
       do I=1,NFEW
+
         J=3+I+I
         AJ=FITP(J)*ASCL
-c        CALL VMLTRC(EXPF(1,I),FR2PIK,NFT2,WORK)
-c        CALL VCOPY(WORK,FWRK,NFFT+2)
-c        CALL FOUR2(FWRK,NFFT,1,-1,-1)
-c        CALL DEGRID(FWRK,DDDPAR(1,J))
-c        CALL VMLTRC(TWOPIK,WORK,NFT2,FWRK)
-c        CALL VCOPY(FWRK,WORK,NFFT+2)
-c        CALL FOUR2(FWRK,NFFT,1,-1,-1)
-c        CALL DEGRID(FWRK,DDDPAR(1,J+1))
-c        CALL HESS0(HESS,NP,RESID,NDAT,DDDPAR(1,J+1),AJ,J)
-c        CALL VMLTIC(WORK,NFT2,WORK)
-c        CALL VCOPY(WORK,FWRK,NFFT+2)
-c        CALL FOUR2(FWRK,NFFT,1,-1,-1)
-c        CALL DEGRID(FWRK,WORK(1,2))
-c        CALL VRDOTR(RESID,WORK(1,2),NDAT,HESS(4,J))
-c        HESS(J,4)=HESS(4,J)
-c        CALL VMLTRC(TWOPIK,WORK,NFT2,FWRK)
-c        CALL VCOPY(FWRK,WORK,NFFT+2)
-c        CALL FOUR2(FWRK,NFFT,1,-1,-1)
-c        CALL DEGRID(FWRK,WORK(1,2))
-c        CALL VRDOTR(RESID,WORK(1,2),NDAT,SM)
-c        HESS(4,J+1)=-AJ*SM
-c        HESS(J+1,4)=HESS(4,J+1)
-c        CALL VMLTIC(WORK,NFT2,WORK)
-c        CALL FOUR2(WORK,NFFT,1,-1,-1)
-c        CALL DEGRID(WORK,FWRK)
+        CALL VMLTRC(EXPF(1,I),FR2PIK,NFT2,WORK)
+        CALL VCOPY(WORK,FWRK,NFFT+2)
+        CALL FOUR2(FWRK,NFFT,1,-1,-1)
+        CALL DEGRID(FWRK,DDDPAR(1,J))
+        CALL VMLTRC(TWOPIK,WORK,NFT2,FWRK)
+        CALL VCOPY(FWRK,WORK,NFFT+2)
+        CALL FOUR2(FWRK,NFFT,1,-1,-1)
+        CALL DEGRID(FWRK,DDDPAR(1,J+1))
+        CALL HESS0(HESS,NP,RESID,NDAT,DDDPAR(1,J+1),AJ,J)
+        
+        CALL VMLTIC(WORK,NFT2,WORK)
+        CALL VCOPY(WORK,FWRK,NFFT+2)
+        CALL FOUR2(FWRK,NFFT,1,-1,-1)
+        CALL DEGRID(FWRK,WORK(1,2))
+        CALL VRDOTR(RESID,WORK(1,2),NDAT,HESS(4,J))
+        HESS(J,4)=HESS(4,J)
+
+        CALL VMLTRC(TWOPIK,WORK,NFT2,FWRK)
+        CALL VCOPY(FWRK,WORK,NFFT+2)
+        CALL FOUR2(FWRK,NFFT,1,-1,-1)
+        CALL DEGRID(FWRK,WORK(1,2))
+        CALL VRDOTR(RESID,WORK(1,2),NDAT,SM)
+        HESS(4,J+1)=-AJ*SM
+        HESS(J+1,4)=HESS(4,J+1)
+
+        CALL VMLTIC2(WORK,NFT2,WORK)
+        CALL FOUR2(WORK,NFFT,1,-1,-1)
+        CALL DEGRID(WORK,FWRK)
         CALL VRDOTR2(RESID,FWRK,NDAT,SM)
         HESS(J+1,J+1)=-AJ*SM
-        IF(J+1.EQ.6) then
-            write(*,*) AJ, SM
-        end if
+c        IF(J+1.EQ.6) then
+c            write(*,*) AJ, SM
+c        end if
       end do
+c      do JJ=1,NP
+c        do II=JJ,NP
+c          write(1,*) 'a', HESS(II,JJ), II, JJ, NFEW
+c        end do
+c        end do
+c        write(1,*)'mooo'
       CALL GRADPR(GRAD,RESID,NDAT,NP,SCLVEC(1,2))
       CALL HESS1(HESS,NP,SCLVEC(1,2),STEPSZ,NFEW)
       if(o_w1.eq.1)then

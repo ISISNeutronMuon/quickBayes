@@ -24,16 +24,17 @@ class QLdataTest(unittest.TestCase):
         temp_dir = os.path.join(os.path.realpath(__file__), "..","..") #tempfile.TemporaryDirectory()	
         inputs['wrks'] = add_path(temp_dir, inputs['wrks'])
         #inputs['wrks'] = add_path(temp_dir.name, inputs['wrks'])
+        
         nd, xout, yout, eout, yfit, yprob = qldata(inputs['numb'], inputs['Xv'], inputs['Yv'], inputs['Ev'],
                                                   inputs['reals'], inputs['fitOp'],
                                                   inputs['Xdat'], inputs['Xb'], inputs['Yb'], inputs['Eb'],
                                                   inputs['Wy'], inputs['We'], 
                                                   inputs['wrks'], inputs['wrkr'], inputs['lwrk'])
-        #nd, xout, yout, eout, yfit, yprob = QLdata(inputs['numb'], inputs['Xv'], inputs['Yv'], inputs['Ev'],
-        #                                          inputs['reals'], inputs['fitOp'],
-        #                                          inputs['Xdat'], inputs['Xb'], inputs['Yb'], inputs['Eb'],
-        #                                          inputs['Wy'], inputs['We'], 
-        #                                          inputs['wrks'], inputs['wrkr'], inputs['lwrk'])
+        nd, xout, yout, eout, yfit, yprob = QLdata(inputs['numb'], inputs['Xv'], inputs['Yv'], inputs['Ev'],
+                                                  inputs['reals'], inputs['fitOp'],
+                                                  inputs['Xdat'], inputs['Xb'], inputs['Yb'], inputs['Eb'],
+                                                  inputs['Wy'], inputs['We'], 
+                                                  inputs['wrks'], inputs['wrkr'], inputs['lwrk'])
         # verify
         with open(os.path.join(DATA_DIR, 'qldata', 'qldata_output.json'), 'r') as fh:
             reference = load_json(fh)

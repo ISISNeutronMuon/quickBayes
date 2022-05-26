@@ -164,44 +164,44 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
        store.open(2,fileout2)
        store.open(3,fileout3)
        for n in get_range(1,3):
-            #store.write(n,' Data : '+name) # no idea what name is
+            store.write(n,' Data : ')#+name) # no idea what name is
             store.write(n,title[:l_title])
             store.write(n,user[:l_user])
-            store.write(n, f"{NSPEC}, {COMS['DATA'].NDAT}, {xin(COMS['Params'].IMIN):10.3f}, {xin(COMS['Params'].IMAX):10.3f}")
+            store.write(n, f"{NSPEC}     {COMS['DATA'].NDAT}      {xin(COMS['Params'].IMIN):10.3f}     {xin(COMS['Params'].IMAX):10.3f}")
             store.write(n,'-------------------------------------------------')
             store.write(n,rfile)
             store.write(n,n)
             store.write(n,'-------------------------------------------------')
             store.read(n)
             store.close(unit=n)
-       IDUF = 0
-       XBLR,YBLR=bin_resolution(NB,0,IDUF, COMS, store, lptfile) # rebin + FFT of splined data -> make bins even spaced
+      IDUF = 0
+      XBLR,YBLR=bin_resolution(NB,0,IDUF, COMS, store, lptfile) # rebin + FFT of splined data -> make bins even spaced
 
-       #debug_dump(sfile[:l_fn]+'_test.python.lpt', COMS["FFT"].FRES.output(),  store) # keep this one
-       #debug_dump(sfile[:l_fn]+'_test.python2.lpt', flatten(COMS["res_data"].FTY.output()),  store) # keep this one
+      #debug_dump(sfile[:l_fn]+'_test.python.lpt', COMS["FFT"].FRES.output(),  store) # keep this one
+      #debug_dump(sfile[:l_fn]+'_test.python2.lpt', flatten(COMS["res_data"].FTY.output()),  store) # keep this one
+      bin_offsets(COMS)
+      normalize_x_range(COMS) # record fractional original x bins
+      # read in sample data and rebin it to even bins
+      IDUF = calculate_sample_bins(ISP,DTNORM, efix, ntc, COMS, store, lptfile) 
+      # get inverse FFT for resolution data (if IDUF !=0)
+      XBLR, YBLR = bin_resolution(NB,ISP,IDUF, COMS, store, lptfile)
 
-       bin_offsets(COMS)
-       normalize_x_range(COMS) # record fractional original x bins
-       # read in sample data and rebin it to even bins
-       IDUF = calculate_sample_bins(ISP,DTNORM, efix, ntc, COMS, store, lptfile) 
-       # get inverse FFT for resolution data (if IDUF !=0)
-       XBLR, YBLR = bin_resolution(NB,ISP,IDUF, COMS, store, lptfile)
-       if IDUF!=0:
+      if IDUF!=0:
           LGOOD.set(ISP, False)
 
-       # this might not even do anything
-       bin_offsets(COMS) # get offsets for binned sample data
-       set_sacle_factors(3,1, COMS, store, prog, lptfile, o_bgd) # rescale the sample data to make it easier to fit. Set up fits
+      # this might not even do anything
+      bin_offsets(COMS) # get offsets for binned sample data
+      set_sacle_factors(3,1, COMS, store, prog, lptfile, o_bgd) # rescale the sample data to make it easier to fit. Set up fits
 
-       write_file_info(3,ISP, COMS, store, [fileout1, fileout2, fileout3]) # dump data to file
+      write_file_info(3,ISP, COMS, store, [fileout1, fileout2, fileout3]) # dump data to file
 
-       DETLOG = 0
-       HESS, COVAR, DPAR, DETLOG =refine_param_values(GRAD,HESS, 3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, construct_fit_and_chi, prog, o_bgd,o_w1, o_el, store, lptfile)
+      DETLOG = 0
+      HESS, COVAR, DPAR, DETLOG =refine_param_values(GRAD,HESS, 3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, construct_fit_and_chi, prog, o_bgd,o_w1, o_el, store, lptfile)
 
       ################################
-       # chnage the code so it only calculates 0 and 1 elastic lines
-       ###############################
-       for counter in range(3): # equivalent of less than equal to 3
+      # chnage the code so it only calculates 0 and 1 elastic lines
+      ###############################
+      for counter in range(4): # equivalent of less than equal to 3
             if counter > 0: # skip on the first pass -> no peaks to find
                #print("hi")
                HESS, COVAR, DPAR, DETLOG = find_latest_peak(COMS, GRAD,HESS,DPAR, INDX,COVAR, o_w1, prog, o_bgd, o_el, store, lptfile, DETLOG, construct_fit_and_chi)
@@ -279,8 +279,9 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
                 COMS["FIT"].FITP.set(3, 0.0)
                 FITPSV.set(3, 0.0)
       
-       nd_out = COMS["DATA"].NDAT
-       for n in get_range(1, nd_out):
+      nd_out = COMS["DATA"].NDAT
+     
+      for n in get_range(1, nd_out):
            xout.set(n, COMS["DATA"].XDAT(n))
            yout.set(n, COMS["DATA"].DAT(n))
            if COMS["DATA"].SIG(n) > 1e-10:
@@ -288,26 +289,25 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
            else:
                eout.set(n, 0.0)
 
-       PRBSV, POUT = PRBOUT(PRBSV,4,ISP)
-       print(POUT.output())
-       for l in get_range(1,4):
+      PRBSV, POUT = PRBOUT(PRBSV,4,ISP)
+      #print(POUT.output())
+      for l in get_range(1,4):
            yprob.set(l, POUT(l,ISP))
-       debug_dump(sfile[:l_fn]+'_test.python.lpt',HESS.output(),  store) # keep this one
-       #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["Dintrp"].IPDAT.output_range(end=2000),  store) # keep this one
+      debug_dump(sfile[:l_fn]+'_test.python.lpt',HESS.output(),  store) # keep this one
+      #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["Dintrp"].IPDAT.output_range(end=2000),  store) # keep this one
                  
-       debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["DATA"].SIG.output(),  store) # keep this one
+      debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["DATA"].SIG.output(),  store) # keep this one
 
-       #debug_dump(sfile[:l_fn]+'_test.python2.lpt',HESS.output(), store)
-       #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["SCL"].SCLVEC.output_range(1,2,end=2000), store)
-       #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["GRD"].DDDPAR.output_range(1,6,end=2000), store)
-       #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["FIT"].FITP.output(),store)#COMS["FFT"].FWRK.output_range(end=2000), store)
-       #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["FFT"].FWRK.output_range(end=2000), store)
-       #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["Dintrp"].XPDAT.output_range(end=2000), store)
-       #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["WORK"].WORK.output_range(1,1,end=2000), store)
-       #print("hi", CNORM, DETLOG,PRMSV(1,COMS["FIT"].NFEW+1,ISP),SIGSV(1,COMS["FIT"].NFEW+1,ISP))
+      #debug_dump(sfile[:l_fn]+'_test.python2.lpt',HESS.output(), store)
+      #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["SCL"].SCLVEC.output_range(1,2,end=2000), store)
+      #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["GRD"].DDDPAR.output_range(1,6,end=2000), store)
+      #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["FIT"].FITP.output(),store)#COMS["FFT"].FWRK.output_range(end=2000), store)
+      #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["FFT"].FWRK.output_range(end=2000), store)
+      #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["Dintrp"].XPDAT.output_range(end=2000), store)
+      #debug_dump(sfile[:l_fn]+'_test.python2.lpt',COMS["WORK"].WORK.output_range(1,1,end=2000), store)
+      #print("hi", CNORM, DETLOG,PRMSV(1,COMS["FIT"].NFEW+1,ISP),SIGSV(1,COMS["FIT"].NFEW+1,ISP))
       
 
       #print("Hi It worked!!!!!!!!!!!!!! #actually doing QL data not res")
-      nd_out=10
       store.dump()
       return nd_out,xout.output(),yout.output(),eout.output(),yfit.output(),yprob.output()
