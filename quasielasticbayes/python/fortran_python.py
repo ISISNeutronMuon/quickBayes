@@ -239,12 +239,15 @@ class storage(object):
             self.read(1)
             self.close(1)
 
-    def dump(self):
+    def dump(self, overwrite):
         file_path = os.path.realpath(__file__)
+        write_status = "a"
+        if overwrite:
+            write_status="w"
         for file_name in self.store.keys():
             full_path = os.path.join(file_path, "..","..",file_name)
             print("writting to", full_path)
-            new_file = open(full_path, "w")
+            new_file = open(full_path, write_status)
             for line in self.store[file_name]:
                 new_file.write(line)
                 new_file.write("\n")

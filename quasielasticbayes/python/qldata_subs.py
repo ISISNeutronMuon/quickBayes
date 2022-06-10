@@ -24,49 +24,9 @@ def SPLINE(X,Y,N,YP1,YPN,Y2):
       """
       return interp1d(X.output(), Y.output(), kind='cubic')
 
-      NMAX=10000
-      U = vec(NMAX)
-      if YP1 > .99E30:
-        Y2.set(1,0.)
-        U.set(1,0.)
-      else:
-        Y2.set(1,-0.5)
-        U.set(1,(3./(X(2)-X(1)))*((Y(2)-Y(1))/(X(2)-X(1))-YP1))
-      
-      for I in get_range(2,N-1):
-        SIG=(X(I)-X(I-1))/(X(I+1)-X(I-1))
-        P=SIG*Y2(I-1)+2.
-        Y2.set(I,(SIG-1.)/P)
-        U.set(I,(6.*((Y(I+1)-Y(I))/(X(I+1)-X(I))-(Y(I)-Y(I-1))/(X(I)-X(I-1)))/(X(I+1)-X(I-1))-SIG*U(I-1))/P)
-
-      QN, UN = 0,0
-      if YPN <= .99E30:
-        QN=0.5
-        UN=(3./(X(N)-X(N-1)))*(YPN-(Y(N)-Y(N-1))/(X(N)-X(N-1)))
-
-      Y2.set(N,(UN-QN*U(N-1))/(QN*Y2(N-1)+1.))
-      for K in get_range(N-1,1,-1):
-        Y2.set(K,Y2(K)*Y2(K+1)+U(K))
-
 
 def SPLINT(X, func):
       return func(X)
-
-      KLO=1
-      KHI=N
-      while KHI-KLO <= 1:
-        K=(KHI+KLO)/2
-        if XA(K) > X:
-          KHI=K
-        else:
-          KLO=K
-
-      H=XA(KHI)-XA(KLO)
-      if H==0:
-         raise ValueError('Bad XA input.')
-      A=(XA(KHI)-X)/H
-      B=(X-XA(KLO))/H
-      Y=A*YA(KLO)+B*YA(KHI)+((A**3-A)*Y2A(KLO)+(B**3-B)*Y2A(KHI))*(H**2)/6.
 
 def rm_BG(x_bin,y_bin,N_bin, YMAX,LST,COMS, store, lptfile):
       # DATA XDAT NDAT, FFT XJ, N
@@ -168,91 +128,90 @@ def rm_BG(x_bin,y_bin,N_bin, YMAX,LST,COMS, store, lptfile):
 
 @deprecated
 def XGINIT(XB,YB,NB,YMAX,LST, COMS, store, lptfile):
-      #return rm_BG(XB,YB,NB,YMAX,LST, COMS, store, lptfile)
-      # DATA XDAT NDAT, FFT XJ, N
-      XDMIN=COMS["DATA"].XDAT(1)
-      XDMAX=COMS["DATA"].XDAT(COMS["DATA"].NDAT)
-      Y0=YMAX/10.0
+      return rm_BG(XB,YB,NB,YMAX,LST, COMS, store, lptfile)
+      #XDMIN=COMS["DATA"].XDAT(1)
+      #XDMAX=COMS["DATA"].XDAT(COMS["DATA"].NDAT)
+      #Y0=YMAX/10.0
       # these two check seem to be finiding the first y value greater than some ref value
       # that is also before the x range
-      def check_data_from_below(XB, YB, Y0, XDMIN, I):
-           return YB(I)>=Y0 and XB(I)>XDMIN
-      I = find_index((XB, YB, Y0, XDMIN),1, NB, check_data_from_below)
+      #def check_data_from_below(XB, YB, Y0, XDMIN, I):
+      #     return YB(I)>=Y0 and XB(I)>XDMIN
+      #I = find_index((XB, YB, Y0, XDMIN),1, NB, check_data_from_below)
 
-      XMIN=XB(I)
-      def check_data_from_above(XB, YB, Y0, XDMAX, I):
-          return YB(I)>=Y0 and XB(I)<XDMAX
-      I = find_index((XB, YB, Y0, XDMAX),NB,1, check_data_from_above, step=-1)
-      XMAX=XB(I)
+      #XMIN=XB(I)
+      #def check_data_from_above(XB, YB, Y0, XDMAX, I):
+      #    return YB(I)>=Y0 and XB(I)<XDMAX
+      #I = find_index((XB, YB, Y0, XDMAX),NB,1, check_data_from_above, step=-1)
+      #XMAX=XB(I)
 
       # this section seems to get values for FFT
-      BWIDTH=XMAX-XMIN
-      DXJ=BWIDTH/20.0
+      #BWIDTH=XMAX-XMIN
+      #DXJ=BWIDTH/20.0
 
-      AXMAX=abs(COMS["DATA"].XDAT(1))
-      if abs(COMS["DATA"].XDAT(COMS["DATA"].NDAT))>AXMAX:
-         AXMAX=abs(COMS["DATA"].XDAT(COMS["DATA"].NDAT))
-      XNDMAX=500.0
-      if COMS["DATA"].NDAT > int(XNDMAX):
-         XNDMAX=float(COMS["DATA"].NDAT)
+      #AXMAX=abs(COMS["DATA"].XDAT(1))
+      #if abs(COMS["DATA"].XDAT(COMS["DATA"].NDAT))>AXMAX:
+      #   AXMAX=abs(COMS["DATA"].XDAT(COMS["DATA"].NDAT))
+      #XNDMAX=500.0
+      #if COMS["DATA"].NDAT > int(XNDMAX):
+      #   XNDMAX=float(COMS["DATA"].NDAT)
 
-      DXDAT=2.0*AXMAX/XNDMAX
-      if DXDAT>DXJ:
-         DXJ=DXDAT
+      #DXDAT=2.0*AXMAX/XNDMAX
+      #if DXDAT>DXJ:
+      #   DXJ=DXDAT
 
-      XNGD=(2.0*AXMAX)/DXJ
-      NGD=NINT(np.log(XNGD-1.0)/np.log(2.0))+1
-      NGD=pow(2,NGD)
+      #XNGD=(2.0*AXMAX)/DXJ
+      #NGD=NINT(np.log(XNGD-1.0)/np.log(2.0))+1
+      #NGD=pow(2,NGD)
       
-      if NGD>m_d:
-       store.open(53,lptfile)
-       store.write(53,' ERROR in XGINIT : too many points')
-       store.close(unit=53)
-       return
-      COMS["FFT"].NFFT=NGD
+      #if NGD>m_d:
+      # store.open(53,lptfile)
+      # store.write(53,' ERROR in XGINIT : too many points')
+      # store.close(unit=53)
+      # return
+      #COMS["FFT"].NFFT=NGD
 
       # set FFT XJ values
-      COMS["FFT"].XJ.set(1, -DXJ*float(COMS["FFT"].NFFT/2))
-      for j in get_range(2,COMS["FFT"].NFFT):
-          COMS["FFT"].XJ.set(j,COMS["FFT"].XJ(j-1)+DXJ)
+      #COMS["FFT"].XJ.set(1, -DXJ*float(COMS["FFT"].NFFT/2))
+      #for j in get_range(2,COMS["FFT"].NFFT):
+      #    COMS["FFT"].XJ.set(j,COMS["FFT"].XJ(j-1)+DXJ)
       # get the energy range
-      XMIN=XMIN-5.0*BWIDTH
-      XMAX=XMAX+5.0*BWIDTH
-      if XMIN<XB(1):
-         XMIN=XB(1)
-      if XMAX>XB(NB):
-         XMAX=XB(NB)
-      if XMIN<XDMIN:
-         XMIN=XDMIN
-      if XMAX>XDMAX:
-         XMAX=XDMAX
-      if LST:
-       store.open(53,lptfile)
+      #XMIN=XMIN-5.0*BWIDTH
+      #XMAX=XMAX+5.0*BWIDTH
+      #if XMIN<XB(1):
+      #   XMIN=XB(1)
+      #if XMAX>XB(NB):
+      #   XMAX=XB(NB)
+      #if XMIN<XDMIN:
+      #   XMIN=XDMIN
+      #if XMAX>XDMAX:
+      #   XMAX=XDMAX
+      #if LST:
+      # store.open(53,lptfile)
 
-       store.write(53,f' Resolution Range: {XMIN} to {XMAX} ueV')
-       store.close(unit=53)
+      # store.write(53,f' Resolution Range: {XMIN} to {XMAX} ueV')
+      # store.close(unit=53)
       
       # get x range -> via indices
-      def check_data_x_min(XB, XMIN, I):
-          return  XB(I)>=XMIN
-      I = find_index((XB, XMIN),1,NB, check_data_x_min)
-      IMIN=I
-
-      B1=0.0
-      B2=0.0
+      #def check_data_x_min(XB, XMIN, I):
+      #    return  XB(I)>=XMIN
+      #I = find_index((XB, XMIN),1,NB, check_data_x_min)
+      #IMIN=I
+      #
+      #B1=0.0
+      #B2=0.0
       # get mean value for 5 bins (that are in range) closest to min/max
-      for I in get_range(1,5):
-        B1=B1+YB(IMIN+I-1)
-        B2=B2+YB(IMAX-I+1)
-      B1=B1/5.0
-      B2=B2/5.0
-      DB=(B2-B1)/float(max(IMAX-IMIN-4,1)) # no idea where the 4 comes from
-      B=B1
+      #for I in get_range(1,5):
+      #  B1=B1+YB(IMIN+I-1)
+      #  B2=B2+YB(IMAX-I+1)
+      #B1=B1/5.0
+      #B2=B2/5.0
+      #DB=(B2-B1)/float(max(IMAX-IMIN-4,1)) # no idea where the 4 comes from
+      #B=B1
       # set uniform increase in YB
-      for I in get_range(IMIN,IMAX):
-        YB.set(I, YB(I)-B)
-        B=B+DB
-      return XMIN, XMAX, YB
+      #for I in get_range(IMIN,IMAX):
+      #  YB.set(I, YB(I)-B)
+      #  B=B+DB
+      #return XMIN, XMAX, YB
 
 """
 ***<set up blur function>**********************************************
@@ -322,8 +281,6 @@ def BINBLR(WX,WY,WE,NB,NBIN):
 
 
 def bin_resolution(N_bin,IREAD,IDUF,COMS,store,lptfile):
-      # data XDAT, NDAT
-
       LSTART = True
       if IREAD==0:
          LSTART=False
@@ -423,99 +380,98 @@ def bin_resolution(N_bin,IREAD,IDUF,COMS,store,lptfile):
 
 @deprecated
 def BLRINT(NB,IREAD,IDUF,COMS,store,lptfile):
-      # data XDAT, NDAT
-      #return bin_resolution(NB,IREAD,IDUF,COMS,store,lptfile)
-      DER2 = vec(m_d)
-      LSTART = True
-      if IREAD==0:
-         LSTART=False
+      return bin_resolution(NB,IREAD,IDUF,COMS,store,lptfile)
+      #DER2 = vec(m_d)
+      #LSTART = True
+      #if IREAD==0:
+      #   LSTART=False
 
-      SMALL=1.0E-20
-      COMS["FFT"].NFFT=m_d
-      COMS["res_data"].N_FT = m_d//2
-      xr = vec(m_d)
-      yr = vec(m_d)
-      er = vec(m_d)
+      #SMALL=1.0E-20
+      #COMS["FFT"].NFFT=m_d
+      #COMS["res_data"].N_FT = m_d//2
+      #xr = vec(m_d)
+      #yr = vec(m_d)
+      #er = vec(m_d)
       # copy resolution data
-      xr.copy(COMS["Res"].xres.output_range(1,NB))
-      yr.copy(COMS["Res"].yres.output_range(1,NB))
-      er.copy(COMS["Res"].eres.output_range(1,NB))
+      #xr.copy(COMS["Res"].xres.output_range(1,NB))
+      #yr.copy(COMS["Res"].yres.output_range(1,NB))
+      #er.copy(COMS["Res"].eres.output_range(1,NB))
 
       # rebin the resolution data as it is not on an evenly spaced grid
-      XB, YB = rebin(xr,yr,er,NB,COMS["Res"].nrbin)
+      #XB, YB = rebin(xr,yr,er,NB,COMS["Res"].nrbin)
         
-      XDMIN=COMS["DATA"].XDAT(1)
-      XDMAX=COMS["DATA"].XDAT(COMS["DATA"].NDAT)
-      YMAX=0.0
-      YSUM=0.0
+      #XDMIN=COMS["DATA"].XDAT(1)
+      #XDMAX=COMS["DATA"].XDAT(COMS["DATA"].NDAT)
+      #YMAX=0.0
+      #YSUM=0.0
       # get indicies for valid x range
-      first_index = np.argmax(XB.output() >=XDMIN)+1
-      last_index = np.argmin(XB.output()<=XDMAX)+1
+      #first_index = np.argmax(XB.output() >=XDMIN)+1
+      #last_index = np.argmin(XB.output()<=XDMAX)+1
 
       # get total and max Y binned values within valid x range
-      YSUM = np.sum(YB.output_range(first_index, last_index))
-      YMAX = np.max(YB.output_range(first_index, last_index))
+      #YSUM = np.sum(YB.output_range(first_index, last_index))
+      #YMAX = np.max(YB.output_range(first_index, last_index))
 
-      if YSUM<SMALL:
-       store.open(53,lptfile)
-       store.write(53,' Ysum is too small')
-       IDUF=1
-       store.close(unit=53)
-       return
+      #if YSUM<SMALL:
+      # store.open(53,lptfile)
+      # store.write(53,' Ysum is too small')
+      # IDUF=1
+      # store.close(unit=53)
+      # return
 
-      XBMIN, XBMAX, YB = rm_BG(XB,YB,NB,YMAX,LSTART, COMS,store, lptfile) # subtracts BG off YB
+      #XBMIN, XBMAX, YB = rm_BG(XB,YB,NB,YMAX,LSTART, COMS,store, lptfile) # subtracts BG off YB
       # populate FRES with spline of evenly spaced binned data -> data to FFT later
-      func=SPLINE(XB,YB,NB,0.0,0.0,DER2)
-      TWOPIN=2.0*np.pi/float(COMS["FFT"].NFFT)
-      COMS["FFT"].FRES.fill(0.0, COMS["FFT"].NFFT)
-      XX=0.0
-      DXJ=COMS["FFT"].XJ(2)-COMS["FFT"].XJ(1) # bin width
-      COMS["FFT"].FRES.set(1,SPLINT(XX,func))
-      SUM=COMS["FFT"].FRES(1)
-      for I in get_range(1,int(COMS["FFT"].NFFT/2)):#use symmetry to have the range we need to loop
-        XX=XX+DXJ
-        if XX < XBMAX:
-           COMS["FFT"].FRES.set(I+1,SPLINT(XX,func))
-        if -XX > XBMIN:
-           COMS["FFT"].FRES.set(COMS["FFT"].NFFT+1-I,SPLINT(-XX,func))
-        SUM+=COMS["FFT"].FRES(I+1)+COMS["FFT"].FRES(COMS["FFT"].NFFT+1-I)
-        # set phases
-        COMS["FFT"].TWOPIK.set(I,TWOPIN*float(I-1)) # looks to be the phase
-        COMS["res_data"].phases.set(I,TWOPIN*float(I-1))
-      COMS["FFT"].TWOPIK.set(int(COMS["FFT"].NFFT/2)+1,TWOPIN*float(COMS["FFT"].NFFT/2))
-      COMS["res_data"].phases.set(int(COMS["res_data"].N_FT)+1,TWOPIN*float(COMS["res_data"].N_FT))
+      #func=SPLINE(XB,YB,NB,0.0,0.0,DER2)
+      #TWOPIN=2.0*np.pi/float(COMS["FFT"].NFFT)
+      #COMS["FFT"].FRES.fill(0.0, COMS["FFT"].NFFT)
+      #XX=0.0
+      #DXJ=COMS["FFT"].XJ(2)-COMS["FFT"].XJ(1) # bin width
+      #COMS["FFT"].FRES.set(1,SPLINT(XX,func))
+      #SUM=COMS["FFT"].FRES(1)
+      #for I in get_range(1,int(COMS["FFT"].NFFT/2)):#use symmetry to have the range we need to loop
+      #  XX=XX+DXJ
+      #  if XX < XBMAX:
+      #     COMS["FFT"].FRES.set(I+1,SPLINT(XX,func))
+      #  if -XX > XBMIN:
+      #     COMS["FFT"].FRES.set(COMS["FFT"].NFFT+1-I,SPLINT(-XX,func))
+      #  SUM+=COMS["FFT"].FRES(I+1)+COMS["FFT"].FRES(COMS["FFT"].NFFT+1-I)
+      #  # set phases
+      #  COMS["FFT"].TWOPIK.set(I,TWOPIN*float(I-1)) # looks to be the phase
+      #  COMS["res_data"].phases.set(I,TWOPIN*float(I-1))
+      #COMS["FFT"].TWOPIK.set(int(COMS["FFT"].NFFT/2)+1,TWOPIN*float(COMS["FFT"].NFFT/2))
+      #COMS["res_data"].phases.set(int(COMS["res_data"].N_FT)+1,TWOPIN*float(COMS["res_data"].N_FT))
     
       # average y value in each bin -> integral of all data is 1
-      BNORM=1./(SUM*float(COMS["FFT"].NFFT))
-      tmp = COMS["FFT"].FRES.output_range(1,COMS["FFT"].NFFT)
-      tmp = tmp*BNORM # scale the splined data
-      COMS["FFT"].FRES.copy(tmp)
-      out = FOUR2(COMS["FFT"].FRES, COMS["FFT"].NFFT,1,1,0)
-      COMS["FFT"].FRES.copy(flatten(out))
-      COMS["res_data"].FTY.copy(out)
-
+      #BNORM=1./(SUM*float(COMS["FFT"].NFFT))
+      #tmp = COMS["FFT"].FRES.output_range(1,COMS["FFT"].NFFT)
+      #tmp = tmp*BNORM # scale the splined data
+      #COMS["FFT"].FRES.copy(tmp)
+      #out = FOUR2(COMS["FFT"].FRES, COMS["FFT"].NFFT,1,1,0)
+      #COMS["FFT"].FRES.copy(flatten(out))
+      #COMS["res_data"].FTY.copy(out)
+      
       # some rotations?
-      for I in get_range(3,COMS["FFT"].NFFT,4):
-        COMS["FFT"].FRES.set(I,-COMS["FFT"].FRES(I))
-        COMS["FFT"].FRES.set(I+1, -COMS["FFT"].FRES(I+1))
-
-      for k in get_range(2, COMS["res_data"].N_FT, 2):
-          COMS["res_data"].FTY.set(k, -COMS["res_data"].FTY(k))
-
+      #for I in get_range(3,COMS["FFT"].NFFT,4):
+      #  COMS["FFT"].FRES.set(I,-COMS["FFT"].FRES(I))
+      #  COMS["FFT"].FRES.set(I+1, -COMS["FFT"].FRES(I+1))
+      
+      #for k in get_range(2, COMS["res_data"].N_FT, 2):
+      #    COMS["res_data"].FTY.set(k, -COMS["res_data"].FTY(k))
+      
       # IFT of resolution
-      if not LSTART:
-        tmp = COMS["FFT"].FRES.output_range(end=COMS["FFT"].NFFT+2)
-        COMS["FFT"].FWRK.copy(tmp)
-        out = FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
-        COMS["FFT"].FWRK.copy(flatten(out[0:m_d2]))
+      #if not LSTART:
+      #  tmp = COMS["FFT"].FRES.output_range(end=COMS["FFT"].NFFT+2)
+      #  COMS["FFT"].FWRK.copy(tmp)
+      #  out = FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
+      #  COMS["FFT"].FWRK.copy(flatten(out[0:m_d2]))
 
 
-        COMS["res_data"].IFTY.copy(COMS["res_data"].FTY.output_range(end=COMS["res_data"].N_FT))
-        out2 = FOUR2(COMS["res_data"].IFTY, COMS["res_data"].N_FT, 1, -1,-1)
-        COMS["res_data"].IFTY.copy(out[0:m_d2])
+      #  COMS["res_data"].IFTY.copy(COMS["res_data"].FTY.output_range(end=COMS["res_data"].N_FT))
+      #  out2 = FOUR2(COMS["res_data"].IFTY, COMS["res_data"].N_FT, 1, -1,-1)
+      #  COMS["res_data"].IFTY.copy(out[0:m_d2])
 
-      LSTART= True
-      return XB, YB
+      #LSTART= True
+      #return XB, YB
 
 
 def construct_fit_and_chi(fit_params,COMS, o_bgd, o_w1):
@@ -657,15 +613,7 @@ def CCHI(V,COMS, o_bgd, o_w1):
 
 
 def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1,o_el, prog):
-      # FFT FWRK, WORK WORK, GRD DDDPAR
-
-      #full_path = os.path.join("C:\\Users\\BTR75544\\work\\quasielasticbayes","HESS_python.txt")
-      #new_file = open(full_path, "a")
-      #new_file.write(str(NP))
-      #new_file.write("\n")
-
       NFT2=int(COMS["FFT"].NFFT/2)+1
-      print(COMS["FIT"].FITP.output()) # these match
       CNORM=CCHI(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
       HESS = matrix_2(NP,NP)
       tmp = VMLTRC(COMS["WORK"].WORK.output_range(1,1,end=NFT2+1),compress(COMS["GRD"].FR2PIK.output_range(1,2,end=2*NFT2+2)))
@@ -737,13 +685,11 @@ def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1,o_el, prog):
         HESS.set(J+1, 4, -AJ*SM)
 
         tmp = compress(COMS["WORK"].WORK.output_range(1,1,2*(NFT2)))
-        COMS["WORK"].WORK.copy(flatten(VMLTIC2(tmp)))
+        COMS["WORK"].WORK.copy(flatten(VMLTIC(tmp)))
         tmp=FOUR2(COMS["WORK"].WORK,COMS["FFT"].NFFT,1,-1,-1)
         COMS["WORK"].WORK.copy(flatten(tmp))
         COMS["FFT"].FWRK.copy(DEGRID(COMS["WORK"].WORK,COMS),1)
-        SM =VRDOTR2(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["FFT"].FWRK.output_range(1,end=COMS["DATA"].NDAT),COMS["DATA"].NDAT) # RSID is wrong!
-        #if(J+1==6):
-        #    print(AJ, SM)
+        SM =VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT),COMS["FFT"].FWRK.output_range(1,end=COMS["DATA"].NDAT),COMS["DATA"].NDAT) # RSID is wrong!
         HESS.set(J+1, J+1, -AJ*SM)
 
       GRAD.copy(GRADPR(COMS["FIT"].RESID,COMS["DATA"].NDAT,NP,COMS["SCL"].SCLVEC, COMS, col=2)) # Grad has different sign in index 3, I think it is "zero" (e-4)
@@ -903,7 +849,6 @@ def SEARCH(COMS, GRAD,HESS,DPAR, INDX,COVAR, o_w1, prog, o_bgd, o_el, store, lpt
       COMS["FIT"].FITP.set(J-1, 0.1)
       COMS["FIT"].FITP.set(J, 1.0)
       SIGJ=COMS["FIT"].FITP(J)
-      #print("moooo", NSRCH)
       for I in get_range(1,NSRCH):
         HESS, COVAR, DPAR, DETLOG=REFINA(GRAD, HESS, 3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, Chi_func, prog, o_bgd,o_w1, o_el, store, lptfile)
         CNORM=Chi_func(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
@@ -912,6 +857,5 @@ def SEARCH(COMS, GRAD,HESS,DPAR, INDX,COVAR, o_w1, prog, o_bgd, o_el, store, lpt
           SIGJ=COMS["FIT"].FITP(J)
        
         COMS["FIT"].FITP.set(J, COMS["FIT"].FITP(J)*DXLOG)
-#      print("SIGJ", SIGJ, CMIN, CNORM, J)
       COMS["FIT"].FITP.set(J, SIGJ)
       return REFINA(GRAD,HESS, 3+COMS["FIT"].NFEW,DETLOG,INDX,COVAR, COMS, Chi_func, prog, o_bgd,o_w1, o_el, store, lptfile) 

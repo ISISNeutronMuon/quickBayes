@@ -92,18 +92,6 @@ def VMLTRC(R,C):
 def VMLTIC(C):
     return C*1j
 
-def VMLTIC2(C):
-    #full_path = os.path.join("C:\\Users\\BTR75544\\work\\quasielasticbayes","vrdotr_python.txt")
-    #new_file = open(full_path, "a")
-    out = []
-    #C[184] = complex(0.0, 0.0)
-    for k in range(len(C)):
-        out.append(round_sig(1j*C[k]))
-        #new_file.write(f'{C[k]}    {out[k]}      {k}')
-        #new_file.write("\n")
-    #new_file.close()
-    return np.asarray(out)
-
 # shift bin values onto new grid
 def bin_shift( y_grid, COMS, plus=0): # is this the slow down?
       y_shifted = []
@@ -126,24 +114,7 @@ def DEGRID(YGRD, COMS): # is this the slow down?
       #return np.asarray(YDAT)
 
 def VRDOTR(A,B,N):
-    #sm = 0.0
-    #for j in get_range(1,N):
-    #    sm += A[j-1]*B[j-1]
     return np.sum(A*B)
-    #return sm
-
-
-def VRDOTR2(A,B,N):
-    sm = 0.0
-    full_path = os.path.join("C:\\Users\\BTR75544\\work\\quasielasticbayes","vrdotr_python.txt")
-    new_file = open(full_path, "a")
-    for j in range(N):
-        sm +=round_sig(round_sig(B[j])*round_sig(A[j]))
-        new_file.write(f'{sm}    {A[j]}      {B[j]}      {j}')
-        new_file.write("\n")
-    new_file.write("mooooo \n")
-    new_file.close()
-    return sm
 
 def construct_gradients(RESID,NDAT,NP,SCLVEC, COMS,col=1):
       GRAD = []
@@ -170,36 +141,21 @@ def GRADPR(RESID,NDAT,NP,SCLVEC, COMS,col=1):
 def HESS0(HESS, RESID, DDDPAR,AJ,J,N):
       SM = 0.0
       NP = HESS._m
-      full_path = os.path.join("C:\\Users\\BTR75544\\work\\quasielasticbayes","HESS_python.txt")
-      new_file = open(full_path, "a")
-
       magic = 6
 
       for kk in range(N):
           SM = round_sig(SM,magic) + round_sig(round_sig(RESID[kk],magic)*round_sig(DDDPAR[kk],magic),magic)
-          new_file.write(f'{SM}      {RESID[kk]}         {kk}')
-          new_file.write("\n")
 
       HESS.set(J,J+1, SM)
       HESS.set(J+1,J,SM) # symmetric matrix
-      new_file.write(f'a    {HESS(J,J+1)}       {J}     {NP}')
-      new_file.write("\n")
-
-      new_file.close()
       return -DDDPAR*AJ, HESS
 
 # if HESS is None, then create an NP by NP Hessian matrix
 def make_hessian(N_params,scale_vector,step,N_QE, prog, COMS, o_el, HESS=None):
       if HESS:
           HESS.resize(N_params,N_params)
-      #else:
-#      #  HESS = matrix_2(N_params ,N_params)
-#     full_path = os.path.join("C:\\Users\\BTR75544\\work\\quasielasticbayes","HESS_python.txt")
-#     new_file = open(full_path, "a")
-#     new_file.write(str(N_params))
-#     new_file.write("\n")
-
-      #new_file.write("\n")
+      else:
+        HESS = matrix_2(N_params ,N_params)
 
       for J in get_range(1,N_params):
         for I in get_range(J,N_params):
@@ -207,23 +163,10 @@ def make_hessian(N_params,scale_vector,step,N_QE, prog, COMS, o_el, HESS=None):
           # sum weights*evaluation for individual function_I * evaluation for individual function_J 
           SM=np.sum(COMS["DATA"].SIG.output_range(end=COMS["DATA"].NDAT)*COMS["GRD"].DDDPAR.output_range(1,I,COMS["DATA"].NDAT+1)*COMS["GRD"].DDDPAR.output_range(1,J,COMS["DATA"].NDAT+1))
           SM = round_sig(SM)
-          a = round_sig(round_sig(HESS(I,J))+round_sig(SM))
-          sf = round_sig(round_sig(scale_vector[I-1])*round_sig(scale_vector[J-1]))
-#          new_file.write(str(HESS(I,J))+ "   "+str(SM)+f'   {I}     {J}      {a}    {sf}')
-#          new_file.write("\n")
-          #print(HESS(I,J), I,J)
-          #HESS.set(I,J, (HESS(I,J)+SM)*scale_vector[I-1]*scale_vector[J-1]) # this uses the previous value to give some influence to the history of the hessian
-
-          #HESS.set(I,J, (HESS(I,J)+SM)*scale_vector[I-1]*scale_vector[J-1]) # this uses the previous value to give some influence to the history of the hessian
-          HESS.set(I,J, round_sig(a*sf)) # this uses the previous value to give some influence to the history of the hessian
-#          new_file.write(str(HESS(I,J))+f'   {I}     {J}')
-#          new_file.write("\n")
-
-
- 
+          element = round_sig(round_sig(HESS(I,J))+round_sig(SM))
+          scale_factor = round_sig(round_sig(scale_vector[I-1])*round_sig(scale_vector[J-1]))
+          HESS.set(I,J, round_sig(element*scale_factor)) # this uses the previous value to give some influence to the history of the hessian
           HESS.set(J,I, HESS(I,J)) # symmetric hessian
-      #print()
-#      new_file.close()
       BEEFUP=2.0/(step*step)
       for I in get_range(1,N_params):
         HESS.set(I,I, HESS(I,I)+BEEFUP)
@@ -261,41 +204,19 @@ def INVERT(NP, INDX, covar_default, HESS=None, COVAR=None):
     if COVAR is None:
         COVAR = matrix_2(NP,NP)
     SMALL=1.E-20
-#    full_path = os.path.join("C:\\Users\\BTR75544\\work\\quasielasticbayes","HESS_python.txt")
-#    new_file = open(full_path, "a")
-#    new_file.write(str(NP))
-#    new_file.write("\n")
     DETLOG=0.0
     COVAR.fill(0.0, NP*NP)
     # set diagonal for covariance matrix
     for I in get_range(1,NP):
         COVAR.set(I,I, covar_default)
-
           
     INDX,D, HESS=LUDCMP(HESS,NP,NP)
-
-          
     for I in get_range(1,NP):
       DETLOG=DETLOG+log10(abs(HESS(I,I))+SMALL)
-        
-    #print("nooo", NP, INDX.output())
-#    for J in get_range(1,NP):
-#        for I in get_range(J,NP):
-#          new_file.write(f'b   {HESS(I,J)}       {I}        {J}')
-#          new_file.write("\n")
 
     for I in get_range(1,NP):
         tmp = LUBKSB(HESS,NP,NP,INDX,COVAR.output_col(I))
         COVAR.copy(tmp, 1,I)
-        #for j in get_range(1,NP):
-        #    print("tmp", j, tmp[j-1], len(tmp))
-
-#    for J in get_range(1,NP):
-#        for I in get_range(J,NP):
-#          new_file.write(f'a    {HESS(I,J)}       {I}        {J}')
-#          new_file.write("\n")
-
-#    new_file.close()
         
     return HESS, COVAR, DETLOG
 
@@ -393,9 +314,7 @@ def refine_param_values(GRAD,HESS, NP,DETLOG,INDX,COVAR, COMS, make_fit_and_chi_
         COMS["GRD"].DDDPAR.copy(peak_in_original_domain,1,3+I) # store the individual peaks convolved with resolution func
 
       GRAD.copy(construct_gradients(COMS["FIT"].RESID,COMS["DATA"].NDAT,NP,COMS["SCL"].SCLVEC, COMS))
-      ################################################################################
-      # up to here
-      ###################################################################################   
+ 
       HESS=make_hessian(NP, COMS["SCL"].SCLVEC.output(),0.3,COMS["FIT"].NFEW, prog, COMS,o_el, HESS) # create HESS matrix function
       covar_default = 1
       if prog == 's':

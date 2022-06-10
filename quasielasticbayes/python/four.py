@@ -29,7 +29,6 @@ def Re(x):
 
 def Im(x):
     y = []
-    #print(x[0:10])
     for k in x:
         y.append(k.imag)
     return np.asarray(y)
@@ -178,7 +177,6 @@ def COOL2(DATA,NPREV,N,NREM,ISIGN):
                 I3A=I5
                 I3B=int(I3A+IP2)
                 TMP=DATA[I3B-1]
-                #print("p", I1, I5, I3A, I3B, DATA[I3A-1]) # these all match
                 DATA[I3B-1]=DATA[I3A-1]-TMP
                 DATA[I3A-1]=DATA[I3A-1]+TMP
                 flag = True
@@ -207,13 +205,10 @@ def COOL2(DATA,NPREV,N,NREM,ISIGN):
                         I3B=int(I3A+IP2)
                         I3C=int(I3B+IP2)
                         I3D=int(I3C+IP2)
-                        #print("p", DATA[I3B-1],I1, I5, "W2", W2,"expect",DATA[I3B-1].imag*W2.real, DATA[I3B-1].real*W2.imag)
                         if I2-1 >0:
-                            ##print("hi", I2)
                             DATA[I3B-1]=W2*DATA[I3B-1]
                             DATA[I3C-1]=W*DATA[I3C-1]
                             DATA[I3D-1]=W3*DATA[I3D-1]
-                        #print("p2", DATA[I3B-1],I3A, I3B, I3C, I3D)
                         T0=DATA[I3A-1]+DATA[I3B-1]
                         T1=DATA[I3A-1]-DATA[I3B-1]
                         T2=DATA[I3C-1]+DATA[I3D-1]
@@ -227,7 +222,6 @@ def COOL2(DATA,NPREV,N,NREM,ISIGN):
                         DATA[I3D-1]=T1-TEMP # here
                 W=W*WSTP+W
             IP2=IP3
-            #print("p", IP3, IP4, DATA[0], DATA[1], DATA[2], DATA[3], DATA[4])
       return DATA
 
 
