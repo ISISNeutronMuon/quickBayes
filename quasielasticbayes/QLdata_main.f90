@@ -40,7 +40,6 @@ cf2py intent(out) :: yfit                                !fit values
 cf2py intent(out) :: yprob                               !probability values
       integer l_title,l_user
       character*80 user,title
-      character*140 dumpFile, dumpFile2
       real xres(m_d),yres(m_d),eres(m_d),
      1 XBLR(m_d),YBLR(m_d)
       REAL  GRAD(m_p),HESS(m_p,m_p),DPAR(m_p),COVAR(m_p,m_p)
@@ -112,15 +111,12 @@ c     reals = [efix, theta[isp], rscl, bnorm]
       fileout1=''
       fileout2=''
       fileout3=''
-      dumpFile =''
       l_lpt=l_fn+8
       lptfile(1:l_lpt)=sfile(1:l_fn)//'_QLd.lpt'
       l_file=l_fn+8
       fileout1(1:l_lpt)=sfile(1:l_fn)//'_QLd.ql1'
       fileout2(1:l_lpt)=sfile(1:l_fn)//'_QLd.ql2'
       fileout3(1:l_lpt)=sfile(1:l_fn)//'_QLd.ql3'
-      dumpFile(1:l_lpt)=sfile(1:l_fn)//'_test.txt'
-      dumpFile2(1:l_lpt)=sfile(1:l_fn)//'_test2.txt'
       l_title=9
       title='<unknown>'
       l_user=9
@@ -181,14 +177,6 @@ c     reals = [efix, theta[isp], rscl, bnorm]
 c
       CALL VLFILL(LGOOD,.TRUE.,m_sp)
       CALL BLRINT(XBLR,YBLR,NB,0,IDUF)
-
-c      call open_f(1,dumpFile)
-c      do n =1, 2000
-c         write(1,*) FWRK(n)
-c      end do
-c      close(unit=1)
-
-
       CALL DPINIT
       CALL GDINIT
       CALL DATIN(ISP,DTNORM,IDUF)
@@ -202,8 +190,7 @@ c      close(unit=1)
       CALL REFINA(GRAD,HESS,DPAR,3+NFEW,DETLOG,INDX,COVAR)
 
       GOTO 2
-   1  write(*,*)'hi'
-      CALL SEARCH(GRAD,HESS,DPAR,NFEW,INDX,COVAR,FITP)
+   1  CALL SEARCH(GRAD,HESS,DPAR,NFEW,INDX,COVAR,FITP)
    2  NPARMS=4+2*NFEW
       CHIOLD=CCHI(FITP)
       CALL VCOPY(FITP,FITPSV,NPARMS)
@@ -212,22 +199,17 @@ c      close(unit=1)
       IAGAIN=0
       CDIFMN=0.003
       DO 10 I=1,200
-
-c       write(*,*)'test', I, NPARMS
        CALL REFINE(GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,STEPSZ)
           CALL NEWEST(COVAR,GRAD,NPARMS,NFEW,DPAR,FITP)
           CNORM=CCHI(FITP)
           IF (CNORM.LE.CHIOLD) THEN
             CHIDIF=(CHIOLD-CNORM)/CNORM
             IF (ABS(CHIDIF).LE.CDIFMN) THEN
-              write(*,*) 'waaaa', CNORM, CHIOLD, CHIDIF, IAGAIN
               IF (IAGAIN.EQ.0) THEN
-                write(*,*) 'option1'
                 CDIFMN=0.00005
                 STEPSZ=0.15
                 IAGAIN=1
               ELSE
-              write(*,*) 'go to 3'
                GOTO 3
               ENDIF
             ENDIF
@@ -236,20 +218,8 @@ c       write(*,*)'test', I, NPARMS
           ELSE
             CALL VCOPY(FITPSV,FITP,NPARMS)
             STEPSZ=STEPSZ*0.6
-            IF (STEPSZ.LT.1.0E-10) then
-               write(*,*) 'another go to 3'
-               GOTO 3
-            ENDIF
           ENDIF
   10    CONTINUE
-
-c   3   call open_f(1,dumpFile2)
-c      do n =1, 100
-c         write(1,*) DDDPAR(n,6)
-c         write(1,*) HESS(n,1)        
-c      end do
-c      close(unit=1)
-
    3  CALL REFINE(GRAD,HESS,NPARMS,DETLOG,INDX,COVAR,0.7)
       CALL ERRBAR(COVAR,NPARMS,SIGPAR)
       CALL SEEFIT(SIGPAR,CNORM,PRMSV(1,NFEW+1,ISP),SIGSV(1,NFEW+1,ISP))
@@ -280,24 +250,5 @@ c      close(unit=1)
       do l=1,4
        yprob(l)=POUT(l,isp)
       end do
-c      do n =1, 4*m_sp 
-c         write(*,*) POUT(n,1)
-c      end do
-
-        open(unit=1,file=dumpFile2,access='append')
-         do n =1, m_d
-          write(1,*) SIG(n)
-         end do
-        close(unit=1)
-
-      call open_f(1,dumpFile)
-      do n =1, NPARMS*NPARMS
-         write(1,*) HESS(n,1)
-c         write(1,*) IPDAT(n)
-      end do
-      close(unit=1)
-
-      write(*,*) CNORM, DETLOG
-
       RETURN
       END

@@ -384,13 +384,7 @@ C
       REAL            GRAD(*),HESS(NP,*),COVAR(NP,*)
       INTEGER         INDX(*)
 
-c      open(unit=1,file='hess.txt',access='append')
-c      write(1,*) NP, NFEW
-
       NFT2=NFFT/2+1
-      do I=1,10
-         write(*,*) FITP(I)
-      end do
       CNORM=CCHI(FITP)
       CALL VRFILL(HESS,0.0,NP*NP)
       CALL VMLTRC(WORK,FR2PIK(1,2),NFT2,FWRK)
@@ -439,21 +433,12 @@ c      write(1,*) NP, NFEW
         HESS(4,J+1)=-AJ*SM
         HESS(J+1,4)=HESS(4,J+1)
 
-        CALL VMLTIC2(WORK,NFT2,WORK)
+        CALL VMLTIC(WORK,NFT2,WORK)
         CALL FOUR2(WORK,NFFT,1,-1,-1)
         CALL DEGRID(WORK,FWRK)
-        CALL VRDOTR2(RESID,FWRK,NDAT,SM)
+        CALL VRDOTR(RESID,FWRK,NDAT,SM)
         HESS(J+1,J+1)=-AJ*SM
-c        IF(J+1.EQ.6) then
-c            write(*,*) AJ, SM
-c        end if
       end do
-c      do JJ=1,NP
-c        do II=JJ,NP
-c          write(1,*) 'a', HESS(II,JJ), II, JJ, NFEW
-c        end do
-c        end do
-c        write(1,*)'mooo'
       CALL GRADPR(GRAD,RESID,NDAT,NP,SCLVEC(1,2))
       CALL HESS1(HESS,NP,SCLVEC(1,2),STEPSZ,NFEW)
       if(o_w1.eq.1)then
