@@ -38,7 +38,7 @@ try:
     os.remove("quasielastic_test.python2.lpt")
 except:
     pass
-install()
+#install()
 subprocess.call(["python", "quasielasticbayes\\test\\qldata_test.py"])
 
 

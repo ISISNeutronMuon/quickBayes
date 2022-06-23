@@ -5,7 +5,9 @@ import numpy as np
 from quasielasticbayes.testing import load_json, add_path
 import tempfile
 from quasielasticbayes.QLdata import qldata
-from quasielasticbayes.python.qldata_main import QLdata
+from quasielasticbayes.python.qldata_main import QLdata, _QLdata
+import timeit
+
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
 
@@ -25,19 +27,43 @@ class QLdataTest(unittest.TestCase):
         inputs['wrks'] = add_path(temp_dir, inputs['wrks'])
         #inputs['wrks'] = add_path(temp_dir.name, inputs['wrks'])
         
-        nd, xout, yout, eout, yfit, yprob = qldata(inputs['numb'], inputs['Xv'], inputs['Yv'], inputs['Ev'],
-                                                  inputs['reals'], inputs['fitOp'],
-                                                  inputs['Xdat'], inputs['Xb'], inputs['Yb'], inputs['Eb'],
-                                                  inputs['Wy'], inputs['We'], 
-                                                  inputs['wrks'], inputs['wrkr'], inputs['lwrk'])
-        self.validate(DATA_DIR, xout, yout, eout, yprob, yfit, nd)
+        #nd, xout, yout, eout, yfit, yprob = qldata(inputs['numb'], inputs['Xv'], inputs['Yv'], inputs['Ev'],
+        #                                          inputs['reals'], inputs['fitOp'],
+        #                                          inputs['Xdat'], inputs['Xb'], inputs['Yb'], inputs['Eb'],
+        #                                          inputs['Wy'], inputs['We'], 
+        #                                          inputs['wrks'], inputs['wrkr'], inputs['lwrk'])
+        #self.validate(DATA_DIR, xout, yout, eout, yprob, yfit, nd)
+        av = False
+        val = False
 
-        nd, xout, yout, eout, yfit, yprob = QLdata(inputs['numb'], inputs['Xv'], inputs['Yv'], inputs['Ev'],
+        if val:
+            nd, xout, yout, eout, yfit, yprob = _QLdata(inputs['numb'], inputs['Xv'], inputs['Yv'], inputs['Ev'],
                                                   inputs['reals'], inputs['fitOp'],
                                                   inputs['Xdat'], inputs['Xb'], inputs['Yb'], inputs['Eb'],
                                                   inputs['Wy'], inputs['We'], 
                                                   inputs['wrks'], inputs['wrkr'], inputs['lwrk'])
-        self.validate(DATA_DIR, xout, yout, eout, yprob, yfit, nd)
+            self.validate(DATA_DIR, xout, yout, eout, yprob, yfit, nd)
+        elif av:
+
+         times = []
+         for k in range(20):
+            start = timeit.default_timer()
+            nd, xout, yout, eout, yfit, yprob = _QLdata(inputs['numb'], inputs['Xv'], inputs['Yv'], inputs['Ev'],
+                                                  inputs['reals'], inputs['fitOp'],
+                                                  inputs['Xdat'], inputs['Xb'], inputs['Yb'], inputs['Eb'],
+                                                  inputs['Wy'], inputs['We'], 
+                                                  inputs['wrks'], inputs['wrkr'], inputs['lwrk'])
+            times.append(timeit.default_timer()-start)
+         print("mean", np.average(times), "min", np.min(times), "max", np.max(times))
+        else:
+
+            nd, xout, yout, eout, yfit, yprob = QLdata(inputs['numb'], inputs['Xv'], inputs['Yv'], inputs['Ev'],
+                                                  inputs['reals'], inputs['fitOp'],
+                                                  inputs['Xdat'], inputs['Xb'], inputs['Yb'], inputs['Eb'],
+                                                  inputs['Wy'], inputs['We'], 
+                                                  inputs['wrks'], inputs['wrkr'], inputs['lwrk'])
+
+        #self.validate(DATA_DIR, xout, yout, eout, yprob, yfit, nd)
 
         temp_dir.cleanup()
 

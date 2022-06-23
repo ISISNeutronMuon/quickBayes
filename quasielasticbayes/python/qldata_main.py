@@ -11,7 +11,9 @@ from quasielasticbayes.python.data import *
 from quasielasticbayes.python.qldata_subs import *
 from quasielasticbayes.python.bayes import *
 
-def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rfile,l_fn, overwrite=False):
+import pstats, cProfile
+
+def _QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rfile,l_fn, overwrite=True):
       COMS = {}
       COMS["FFT"] = FFTCom(m_d, m_d1, m_d2)
       COMS["DATA"] = DatCom(m_d,m_sp)
@@ -254,3 +256,11 @@ def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rf
 
       store.dump(overwrite)
       return nd_out,xout.output(),yout.output(),eout.output(),yfit.output(),yprob.output()
+
+# cython: profile=True
+def QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rfile,l_fn, overwrite=True):
+
+    cProfile.runctx("_QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,rfile,l_fn, overwrite)", globals(), locals(), "Profile.prof")
+
+    s = pstats.Stats("Profile.prof")
+    s.strip_dirs().sort_stats("time").print_stats()

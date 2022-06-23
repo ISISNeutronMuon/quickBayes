@@ -6,12 +6,17 @@
 # SPDX - License - Identifier: GPL - 3.0 +
 
 from quasielasticbayes.python.fortran_python import *
-#from quasielasticbayes.python.constants import *
-#from quasielasticbayes.python.four import *
+from quasielasticbayes.python.constants import *
+from quasielasticbayes.python.four import flatten, compress, FOUR2, FOUR2_IFT
+from quasielasticbayes.python.bayes_C import bin_shift_vecs, HESS0_calc
 from math import pi, log10, sqrt
-import numpy as np
-from quasielasticbayes.python.four import *
+
+#from quasielasticbayes.python.four import *
 from quasielasticbayes.python.util import *
+
+#from libc.math cimport sin, cos
+import numpy as np
+from numpy import sin, cos
 
 def bin_offsets(COMS):
       I=1
@@ -27,6 +32,7 @@ def bin_offsets(COMS):
         # normalised XDAT-JDAT
         COMS["Dintrp"].XPDAT.set(K, (COMS["DATA"].XDAT(K)-COMS["FFT"].XJ(J-1))/COMS["SCL"].GSCL) # fractional offset in the bin values
         I=J
+
 
 
 @deprecated
@@ -70,7 +76,7 @@ def GDINIT(COMS):
 #fres, DELTAX, 
 def complex_shift(RK,DX,TWOPIK):
     XX = TWOPIK*DX # oscillation term (bin_width*phase factor)
-    XC = np.cos(XX)+ 1j*np.sin(XX)
+    XC = cos(XX)+ 1j*sin(XX)
     RKEXP = RK*XC # FT(resolution)*oscillations -> Fourier cosine plus Fourier Sin transformation args
     # this multiplies the above by 2i*pi*k -> normalisation from FT?
     RKEXP2 = TWOPIK*RKEXP*1j
@@ -79,7 +85,7 @@ def complex_shift(RK,DX,TWOPIK):
 @deprecated
 def CXSHFT(RK,DX,TWOPIK):
     XX = TWOPIK*DX # oscillation term (offset*phase factor)
-    XC = np.cos(XX)+ 1j*np.sin(XX)
+    XC = cos(XX)+ 1j*sin(XX)
     RKEXP = RK*XC # FT(resolution)*oscillations
     RKEXP2 = VMLTRC(TWOPIK,RKEXP) # multiply together to get even and odd part
     RKEXP2=VMLTIC(RKEXP2) # times by i -> phase factors are missing an i
@@ -92,15 +98,9 @@ def VMLTRC(R,C):
 def VMLTIC(C):
     return C*1j
 
-# shift bin values onto new grid
 def bin_shift( y_grid, COMS, plus=0): # is this the slow down?
-      y_shifted = []
-      for I in get_range(1,COMS["DATA"].NDAT+plus):
-        J=int(COMS["Dintrp"].IPDAT(I)) # get the index that says where the shift value is
-        fractional_x_shift = COMS["Dintrp"].XPDAT(I) 
-        # get fractions of original bins in the new shifted bin add sum (e.g fractional_x_shift = 0.2)
-        y_shifted.append(y_grid[J-1]*(1-fractional_x_shift) + fractional_x_shift*y_grid[J])
-      return np.asarray(y_shifted)
+      N = int(COMS["DATA"].NDAT+plus)
+      return bin_shift_vecs(y_grid, N ,COMS["Dintrp"].IPDAT.output(), COMS["Dintrp"].XPDAT.output()) 
 
 
 # seems to rescale the YGRD data
@@ -139,13 +139,7 @@ def GRADPR(RESID,NDAT,NP,SCLVEC, COMS,col=1):
 
 
 def HESS0(HESS, RESID, DDDPAR,AJ,J,N):
-      SM = 0.0
-      NP = HESS._m
-      magic = 6
-
-      for kk in range(N):
-          SM = round_sig(SM,magic) + round_sig(round_sig(RESID[kk],magic)*round_sig(DDDPAR[kk],magic),magic)
-
+      SM = HESS0_calc(RESID, DDDPAR, N)
       HESS.set(J,J+1, SM)
       HESS.set(J+1,J,SM) # symmetric matrix
       return -DDDPAR*AJ, HESS
@@ -456,7 +450,7 @@ def calculate_sample_bins(IREAD,DTNORM, efix, ntc, COMS, store,lptfile):
       DSUM=0.0
 
       # get Average Q value
-      COS2TH=2.0*np.cos(COMS["DATA"].theta(IREAD)*pi/180.0)
+      COS2TH=2.0*cos(COMS["DATA"].theta(IREAD)*pi/180.0)
       QQ=efix+efix-COS2TH*abs(efix)
       COMS["DATA"].QAVRG.set(IREAD, 0.69469*np.sqrt(QQ))
       store.open(53,lptfile)
@@ -501,7 +495,7 @@ def DATIN(IREAD,DTNORM, efix, ntc, COMS, store,lptfile):
       DSUM=0.0
 
       # get Average Q value
-      COS2TH=2.0*np.cos(COMS["DATA"].theta(IREAD)*pi/180.0)
+      COS2TH=2.0*cos(COMS["DATA"].theta(IREAD)*pi/180.0)
       QQ=efix+efix-COS2TH*abs(efix)
       COMS["DATA"].QAVRG.set(IREAD, 0.69469*np.sqrt(QQ))
       store.open(53,lptfile)

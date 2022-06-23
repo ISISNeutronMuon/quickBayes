@@ -12,6 +12,19 @@ from quasielasticbayes.python.bayes import *
 from math import pi
 import numpy as np
 from scipy.interpolate import interp1d
+
+
+#import cython
+# "cimport" is used to import special compile-time information
+# about the numpy module (this is stored in a file numpy.pxd which is
+# currently part of the Cython distribution).
+#cimport numpy as np
+# It's necessary to call "import_array" if you use any part of the
+# numpy PyArray_* API. From Cython 3, accessing attributes like
+# ".shape" on a typed Numpy array use this API. Therefore we recommend
+# always calling "import_array" whenever you "cimport numpy"
+#np.import_array()
+
 """
 <numerical recipes routines>****************************************
 """
@@ -612,7 +625,135 @@ def CCHI(V,COMS, o_bgd, o_w1):
 
 
 
+def refine_matrices(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1,o_el, prog):
+      NFT2=int(COMS["FFT"].NFFT/2)+1
+      NDAT = COMS["DATA"].NDAT
+      NFFT = COMS["FFT"].NFFT
+      CNORM=CCHI(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
+      HESS = matrix_2(NP,NP)
+
+
+      # update freq copy
+      freq_copy = COMS["FFT"].FWRK.output()
+      tmp = VMLTRC(COMS["WORK"].WORK.output_range(1,1,end=NFT2+1),compress(COMS["GRD"].FR2PIK.output_range(1,2,end=2*NFT2+2)))# multiple work by complex vectors
+      freq_copy = update_vec(flatten(tmp), freq_copy)
+      tmp=FOUR2_raw(freq_copy, NFFT,1,-1,-1)
+      IFT_copy = update_vec(flatten(tmp), freq_copy) #IFT = inverse FT
+      COMS["GRD"].DDDPAR.copy(bin_shift(IFT_copy,COMS),1,4)# map inverse transform back onto "real" space
+
+      # update work copy
+      work_copy = COMS["WORK"].WORK.output()
+      tmp = VMLTRC(COMS["FFT"].TWOPIK.output_range(end=NFT2+1),compress(IFT_copy[:2*(NFT2+2)]))
+
+      work_copy = update_vec(flatten(tmp), work_copy) #COMS
+      tmp = compress(work_copy[:2*(NFT2+1)])
+      tmp = flatten(VMLTIC(tmp))
+      work_copy = update_vec(tmp, work_copy)
+      tmp=FOUR2_raw(work_copy, NFFT,1,-1,-1)
+      work_copy = update_vec(flatten(tmp), work_copy)
+      COMS["WORK"].WORK.copy(work_copy)
+
+      IFT_copy = update_vec(bin_shift(work_copy,COMS), IFT_copy)
+      HESS.set(4,4,VRDOTR(COMS["FIT"].RESID.output_range(end=NDAT),IFT_copy[:NDAT+1], NDAT-1))
+      freq_copy = update_vec(COMS["GRD"].FR2PIK.output_range(1,1,end=NFFT+2), freq_copy) 
+
+
+      tmp =FOUR2_raw(freq_copy, NFFT,1,-1,-1)
+      IFT_copy = update_vec(flatten(tmp), IFT_copy)
+      COMS["GRD"].DDDPAR.copy(bin_shift(IFT_copy,COMS),1,3)
+      freq_copy = update_vec(COMS["GRD"].FR2PIK.output_range(1,2,end= NFFT+2), freq_copy)
+      tmp=FOUR2_raw(freq_copy, NFFT,1,-1,-1)
+      IFT_copy = update_vec(flatten(tmp), IFT_copy)
+
+      work_copy = update_vec(bin_shift(IFT_copy, COMS), work_copy)
+      tmp =VRDOTR(COMS["FIT"].RESID.output_range(end=NDAT),work_copy[:NDAT+1], NDAT-1) 
+      HESS.set(3,4,tmp)
+      HESS.set(4,3, tmp)
+
+
+
+      for I in get_range(1,COMS["FIT"].NFEW):
+        J=3+I+I
+        AJ=COMS["FIT"].FITP(J)*COMS["SCL"].ASCL
+
+        tmp= VMLTRC(COMS["FIT"].EXPF.output_range(1,I, end = NFT2+2),compress(COMS["GRD"].FR2PIK.output_range(1,1,2*(2+NFT2))))
+        tmp_freq_copy = update_vec(flatten(tmp), work_copy) # it needs this to work
+        freq_copy = update_vec(flatten(tmp), freq_copy) # construct freq * exp stuff
+
+        tmp=FOUR2_raw(freq_copy, NFFT,1,-1,-1)
+        IFT_copy = update_vec(flatten(tmp), IFT_copy)   
+        
+        COMS["GRD"].DDDPAR.copy(bin_shift(IFT_copy,COMS),1,J) # transform back onto original bins
+
+        # rotate freq values
+        tmp= VMLTRC(COMS["FFT"].TWOPIK.output_range(end = NFT2),compress(tmp_freq_copy[:2*(NFT2+1)]))
+        freq_copy = update_vec(flatten(tmp), freq_copy)
+
+        tmp_freq_copy = update_vec(freq_copy[:NFFT+3], tmp_freq_copy)
+
+        tmp=FOUR2_raw(freq_copy, NFFT,1,-1,-1)
+        IFT_copy = update_vec(flatten(tmp), IFT_copy)
+        COMS["GRD"].DDDPAR.copy(bin_shift(freq_copy,COMS),1,J+1)
+
+        tmp, HESS = HESS0(HESS,COMS["FIT"].RESID.output_range(end=NDAT),COMS["GRD"].DDDPAR.output_range(1,J+1,NDAT+1),AJ,J, NDAT) # the return vals for tmp are causing a huge slow down
+        COMS["GRD"].DDDPAR.copy(tmp, 1,J+1)
+
+
+        tmp = compress(tmp_freq_copy[:2*(NFT2+2)])
+        tmp_freq_copy = update_vec(flatten(VMLTIC(tmp)), tmp_freq_copy) # freq*i
+
+        freq_copy = update_vec(tmp_freq_copy[:NFFT+2], freq_copy)
+        
+        tmp=FOUR2_raw(freq_copy, NFFT,1,-1,-1)
+        IFT_copy = update_vec(flatten(tmp), IFT_copy)
+        
+        work_copy_col_2 = bin_shift(IFT_copy,COMS)
+        tmp =VRDOTR(COMS["FIT"].RESID.output_range(end=COMS["DATA"].NDAT-1),work_copy_col_2, NDAT-1) 
+        HESS.set(4,J,tmp)
+        HESS.set(J,4,tmp)
+
+        tmp= VMLTRC(COMS["FFT"].TWOPIK.output_range(end = NFT2),compress(work_copy[:2*(NFT2+1)]))
+        freq_copy = update_vec(flatten(tmp), freq_copy)
+        COMS["WORK"].WORK.copy(freq_copy[:NFFT+2]) ########
+        
+
+        tmp=FOUR2_raw(freq_copy,NFFT,1,-1,-1)
+        IFT_copy = update_vec(flatten(tmp), IFT_copy)  
+        
+        work_copy_col_2 = update_vec(bin_shift(IFT_copy,COMS),work_copy_col_2)
+
+        # residuals mapped onto origianl bins
+        SM =VRDOTR(COMS["FIT"].RESID.output_range(end=NDAT-1),work_copy_col_2[:NDAT],NDAT-1) 
+        HESS.set(4, J+1, -AJ*SM)
+        HESS.set(J+1, 4, -AJ*SM)
+
+        # this bit is odd, the dimensions don't follow but it works (assuming FOUR2_raw is an IFT)
+        tmp = compress(work_copy[:2*(NFT2)])
+        work_copy = update_vec(flatten(VMLTIC(tmp)), work_copy)
+        tmp=FOUR2_raw(work_copy, NFFT,1,-1,-1)
+        work_copy = update_vec(flatten(tmp), work_copy)
+        freq_copy = update_vec(bin_shift(work_copy,COMS),freq_copy)
+        COMS["FFT"].FWRK.copy(bin_shift(work_copy,COMS),1)
+        SM =VRDOTR(COMS["FIT"].RESID.output_range(end=NDAT),freq_copy[:NDAT+1],NDAT) 
+        HESS.set(J+1, J+1, -AJ*SM)
+
+      GRAD.copy(GRADPR(COMS["FIT"].RESID, NDAT,NP,COMS["SCL"].SCLVEC, COMS, col=2))
+      HESS=HESS1(NP,COMS["SCL"].SCLVEC.output_col(2),STEPSZ,COMS["FIT"].NFEW, prog, COMS,o_el, HESS=HESS) 
+      if o_w1==1 and NP>6:
+          DIF=COMS["SCL"].WSCL*COMS["FIT"].FITP(6)-COMS["QW1"].QW1(COMS["QW1"].ISPEC)
+          SIG2=2.0/pow(COMS["QW"].SIGQW1(COMS["QW"].ISPEC),2)
+          GRAD.set(6, GRAD(6)+SIG2*DIF*COMS["SCL"].WSCL)
+          HESS.set(6,6, HESS(6,6)+SIG2*pow(COMS["SCL"].WSCL,2))
+      covar_default = 1.
+      if prog=='s':
+          cov=2.0
+      HESS, COVAR, DETLOG = INVERT(NP,INDX,covar_default, HESS)
+      return HESS, COVAR, DETLOG
+
 def REFINE(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1,o_el, prog):
+    return refine_matrices(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1,o_el, prog)
+
+def REFINE_0(COMS, GRAD,HESS,NP,DETLOG,INDX,COVAR,STEPSZ, o_bgd, o_w1,o_el, prog):
       NFT2=int(COMS["FFT"].NFFT/2)+1
       CNORM=CCHI(COMS["FIT"].FITP,COMS, o_bgd, o_w1)
       HESS = matrix_2(NP,NP)

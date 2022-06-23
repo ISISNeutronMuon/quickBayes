@@ -6,20 +6,37 @@
 # SPDX - License - Identifier: GPL - 3.0 +
 
 import numpy as np
-import math
 from scipy import linalg
 import os
+from libc.math cimport log10, round, ceil, pow, abs
+import cython
+from libc.math cimport sin
+
+cimport numpy as np
+np.import_array()
+
 """
 This file contains methods and classes to make converting Fortran to Python easier.
 This is achived by this class making adjustments so that the syntax of the original
 code is changed by as little as possible
 """
 
-from math import log10, floor
+def update_vec(np.ndarray[np.float_t] new_vec, np.ndarray[np.float_t] vec):
+    vec[:len(new_vec)] = new_vec
+    return vec
 
-def round_sig(x, sig=8, small_value=1.0e-9):
-    return round(x, sig - int(floor(log10(max(abs(x), abs(small_value))))) - 1)
 
+def round_sig(float x,int sig=8, float small_value = 1.0e-9):
+    if x == 0.0:
+        return 0.0
+    cdef float a = abs(x)
+    cdef float l = log10(a)
+    cdef float power = sig - ceil(log10(abs(x)))
+    cdef float factor = pow(10, power)
+    
+    result = round(x*factor)
+    return result/factor
+    
 def get_range(start, end, dx=1):
     return range(start, int(end+1*np.sign(dx)),int(dx)) 
 
@@ -254,7 +271,8 @@ class storage(object):
             new_file.close()
 
 # often want to find an index where func is true
-def find_index(data, start, end, condition, step =1):
+def find_index(data,int start,int end, condition,int step =1):
+    cdef int j
     for j in get_range(start,end,step):
         if condition(*data,j):
             return j
@@ -274,3 +292,6 @@ def deprecated(func):
         result = func(*arg)
         return result
     return wrapper
+
+
+print("hi")

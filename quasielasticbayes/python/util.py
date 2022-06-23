@@ -8,7 +8,6 @@ from  quasielasticbayes.python.fortran_python import *
 from quasielasticbayes.Util import ludcmp2
 import math
 
-
 """
 These could probably be made faster
 These (supposedly) do Lower matrix decomposition. 
