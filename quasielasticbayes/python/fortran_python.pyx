@@ -26,7 +26,7 @@ def update_vec(np.ndarray[np.float_t] new_vec, np.ndarray[np.float_t] vec):
     return vec
 
 
-def round_sig(float x,int sig=8, float small_value = 1.0e-9):
+cpdef round_sig(float x,int sig=8, float small_value = 1.0e-9):
     if x == 0.0:
         return 0.0
     cdef float a = abs(x)
@@ -37,7 +37,7 @@ def round_sig(float x,int sig=8, float small_value = 1.0e-9):
     result = round(x*factor)
     return result/factor
     
-def get_range(start, end, dx=1):
+cpdef get_range(start, end, dx=1):
     return range(start, int(end+1*np.sign(dx)),int(dx)) 
 
 def NINT(value):
@@ -46,10 +46,10 @@ def NINT(value):
 def CMPLX(A,B):
     return np.cdouble(complex(A,B))
 
-def complex_zeros(n):
+cpdef complex_zeros(n):
     return np.asarray([complex(0,0) for _ in range(n)])
 
-def zeros(n, complex=False):
+cdef zeros(n, complex=False):
     if complex:
         return complex_zeros(n)
     else:
@@ -92,6 +92,7 @@ class vec(object):
 
     def dimensions(self):
         return 1
+
 
 class BoolVec(vec):
     def __init__(self, n,complex=False):
@@ -170,7 +171,123 @@ class matrix_2(vec):
 
     def dimensions(self):
         return 2
+
+cdef class c_vec(object):
+    cdef double[:] _vec
+
+    def __cinit__(self,int n):
+        self._vec = np.zeros(n)
         
+    def __call__(self,j):
+        return self._vec[j-1]
+        
+    cpdef set(self,size_t j,double value):
+        self._vec[j-1] = value
+
+    cpdef output(self):
+        return np.array(self._vec)
+
+
+    cpdef output_c(self):
+        return self._vec
+
+    cpdef output_range(self,size_t start=1,size_t end=2):
+        cdef double[:] tmp = self._vec[start-1:end+1]
+        return np.array(tmp)
+
+    cpdef fill(self,float value,size_t n, size_t start=1):
+        self._vec[start-1:n+start-2] = value
+        
+    cpdef get_from(self,size_t start=1):
+        cdef double[:] tmp = self._vec[start-1:]
+        return np.array(tmp)
+        
+    cpdef copy(self,np.ndarray[double] vector, size_t start_i=1):
+       cdef int k
+       for k in range(len(vector)):
+            self._vec[start_i+k-1] = vector[k]
+
+    cpdef dimensions(self):
+        return 1 
+        
+cdef class c_matrix_2(object):
+    cdef int _m, _n
+    cdef double[:] _vec
+
+    def __init__(self,int m, int n):
+        self._vec = np.zeros(n*m)
+        self._m = m
+        self._n = n
+        
+    cdef _index_for_vec(self,size_t i,size_t j):
+        return (j-1)*self._m+i-1  
+        
+    cpdef fill(self,float value,int n,size_t start_i=1, size_t start_j=1):
+        cdef size_t k = self._index_for_vec(start_i,start_j)
+        self._vec[k:n+k-1] = value
+    
+    def __call__(self,size_t i, size_t j):
+        cdef size_t k =self._index_for_vec(i,j) 
+        return self._vec[k]
+        
+    cpdef set(self, i,j, value):
+        cdef size_t k =self._index_for_vec(i,j) 
+        self._vec[k] = value
+                        
+    cpdef output_from(self,size_t i, size_t j):
+        cdef size_t k = self._index_for_vec(i,j)
+        cdef double[:] tmp = self._vec[k:]
+        return np.array(tmp)
+
+    cpdef output_range(self,size_t i,size_t j,size_t end):
+        cdef size_t k = self._index_for_vec(i,j)
+        cdef double[:] tmp = self._vec[k:k+end]
+        return np.array(tmp)
+
+    cpdef output(self):
+        return np.array(self._vec)
+
+    cpdef output_col(self, size_t j):
+        cdef size_t k = self._index_for_vec(1,j)
+        return np.array(self._vec[k:k+self._m])
+
+    cpdef mat(self):
+        mat = np.asarray([np.asarray(self.output_col(j)) for j in get_range(1,self._n)])
+        return mat   
+
+    cpdef copy(self,np.ndarray[np.float_t]  vec, size_t start_i=1,size_t start_j=1):
+       cdef size_t k = self._index_for_vec(start_i,start_j)
+       cdef size_t mm
+       for mm in range(len(vec)):
+            self._vec[k+mm]=vec[mm]
+   
+    cpdef output_as_vec(self):
+        cdef c_vec tmp = c_vec(self._m*self._n)
+        tmp.copy(self.output())
+        return np.array(tmp)
+                             
+    cpdef resize(self,int new_m,int new_n):
+
+        cdef int max_m = self._m
+        cdef int max_n = self._n
+        if new_m < self._m or new_n < self._n:
+            max_m = new_m
+            max_n = new_n
+        cdef np.ndarray[float] new_vec = np.zeros(new_n*new_m, self._complex)
+        cdef size_t k2 = 0
+        cdef size_t j, i, k
+        for j in range(max_n):
+            for i in range(max_m):
+                k = self._index_for_vec(i+1,j+1)
+                new_vec[k2] = self._vec[k]
+                k2+=1
+            k2+= (new_m -self._m)
+        self._m = new_m
+        self._n = new_n
+        self._vec = new_vec
+
+    cpdef dimensions(self):
+        return 2
         
 class matrix_3(vec):
     def __init__(self, m,n,p, complex=False):
@@ -293,5 +410,3 @@ def deprecated(func):
         return result
     return wrapper
 
-
-print("hi")

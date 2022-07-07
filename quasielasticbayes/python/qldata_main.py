@@ -27,6 +27,20 @@ def _QLdata(numb,x_in,y_in,e_in,reals,opft,XD_in,X_r,Y_r,E_r,Wy_in,We_in,sfile,r
       COMS["WORK"] = WRKCom(m_d2)
       COMS["Res"] = ModResidual(m_d)
       COMS["Params"] = ModParams()
+
+
+      x_in = np.array(x_in)
+      y_in = np.array(y_in)
+      e_in = np.array(e_in)
+
+      XD_in = np.array(XD_in)
+      X_r = np.array(X_r)
+      Y_r = np.array(Y_r)
+      E_r = np.array(E_r)
+
+      Wy_in = np.array(Wy_in)
+      Wy_in = np.array(Wy_in)
+
       STExp = STEXP()
       store = storage()
       print("PYTHON>>>>>")

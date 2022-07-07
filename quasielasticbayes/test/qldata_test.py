@@ -33,7 +33,7 @@ class QLdataTest(unittest.TestCase):
         #                                          inputs['Wy'], inputs['We'], 
         #                                          inputs['wrks'], inputs['wrkr'], inputs['lwrk'])
         #self.validate(DATA_DIR, xout, yout, eout, yprob, yfit, nd)
-        av = False
+        av = True
         val = False
 
         if val:
@@ -54,7 +54,7 @@ class QLdataTest(unittest.TestCase):
                                                   inputs['Wy'], inputs['We'], 
                                                   inputs['wrks'], inputs['wrkr'], inputs['lwrk'])
             times.append(timeit.default_timer()-start)
-         print("mean", np.average(times), "min", np.min(times), "max", np.max(times))
+         print("mean", np.average(times), "min", np.min(times), "max", np.max(times), "std", np.std(times))
         else:
 
             nd, xout, yout, eout, yfit, yprob = QLdata(inputs['numb'], inputs['Xv'], inputs['Yv'], inputs['Ev'],

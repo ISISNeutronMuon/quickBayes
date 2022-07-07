@@ -58,6 +58,82 @@ cmdclass = {'build_ext': build_ext},
 ext_modules = ext_modules
 )
 ############################################################
+# bayes
+############################################################
+
+#ext_modules = [Extension('bayes',
+#                         sources=['bayes.pyx'],include_dirs=[numpy.get_include()],
+#                         language=lang,annotate=True
+#                        )]
+
+#setup(
+#name = 'bayes',
+#cmdclass = {'build_ext': build_ext},
+#ext_modules = ext_modules
+#)
+
+############################################################
+# constants
+############################################################
+
+#ext_modules = [Extension('constants',
+#                         sources=['constants.pyx'],include_dirs=[numpy.get_include()],
+#                         language=lang,annotate=True
+#                        )]
+
+#setup(
+#name = 'constants',
+#cmdclass = {'build_ext': build_ext},
+#ext_modules = ext_modules
+#)
+
+############################################################
+# data
+############################################################
+
+#ext_modules = [Extension('data',
+#                         sources=['data.pyx'],include_dirs=[numpy.get_include()],
+#                         language=lang,annotate=True
+#                        )]
+
+#setup(
+#name = 'data',
+#cmdclass = {'build_ext': build_ext},
+#ext_modules = ext_modules
+#)
+
+############################################################
+# util
+############################################################
+ext_modules = [Extension('util',
+                         sources=['util.pyx'],include_dirs=[numpy.get_include()],
+                         language=lang,annotate=True
+                        )]
+
+setup(
+name = 'util',
+cmdclass = {'build_ext': build_ext},
+ext_modules = ext_modules
+)
+
+############################################################
+# ql data main
+############################################################
+#ext_modules = [Extension('qldata_main',
+#                         sources=['qldata_main.pyx'],include_dirs=[numpy.get_include()],
+#                         language=lang,annotate=True
+#                        )]
+
+#setup(
+#name = 'qldata_main',
+#cmdclass = {'build_ext': build_ext},
+#ext_modules = ext_modules
+#)
+
+
+
+
+############################################################
 # qldata_subs
 ############################################################
 
