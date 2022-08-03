@@ -16,6 +16,7 @@ jobs:
     strategy:
       matrix:
           os: [windows-latest]
+
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -30,10 +31,9 @@ jobs:
           echo "::set-output name=date::$(/bin/date -u "+%Y%V")"
           echo ${{ matrix.os }}
           if [[ ${{ matrix.os }} == "windows-latest" ]]; then
-             echo "hi"
+              echo "hi"
           fi
-            
-       shell: bash
+        shell: bash
 
       - name: Setup Mambaforge
         uses: conda-incubator/setup-miniconda@v2.1.1
@@ -53,23 +53,19 @@ jobs:
         run:  |
              ls MinGW64/bin
              echo "MinGW64/bin" >> $GITHUB_PATH
-            
       - name: check install
         shell: bash -l {0}
         run:  |
              which gfortran
              mamba env list
              python --version; conda list ; pip list
-
       - name: compile
         shell: bash -l {0}
         run:  |
             conda activate quasielasticbayes-dev
             python -m pip install -v --editable .
-
       - name: run tests
         timeout-minutes: 10
         shell: bash -l {0}
         run:  |
              python -m pytest
-
