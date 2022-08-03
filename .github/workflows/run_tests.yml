@@ -29,11 +29,6 @@ jobs:
         id: get-date
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y%V")"
-          echo "$RUNNER_OS"
-          if ["$RUNNER_OS" == "$Windows"]; then
-             echo 'hi'  
-          fi
-
         shell: bash
 
       - name: Setup Mambaforge
@@ -46,6 +41,8 @@ jobs:
           auto-activate-base: false
           use-mamba: true
 
+      - if: ${{ matrix.os == "windows-latest" }}
+        run: echo ' hi'
       - name: extract
         run: 7z x MinGW64.7z
 
