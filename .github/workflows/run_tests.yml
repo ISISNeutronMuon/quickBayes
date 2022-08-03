@@ -41,7 +41,10 @@ jobs:
           miniforge-version: latest
           miniforge-variant: Mambaforge
           activate-environment: quasielasticbayes-dev
-          environment-file: quasielasticbayes-dev-win.yml
+          if [[ ${{matrix.os }} == "windows-latest"]]; then
+              environment-file: quasielasticbayes-dev-win.yml
+          else;
+              environment-file: quasielasticbayes-dev-linux.yml
           auto-activate-base: false
           use-mamba: true
 
