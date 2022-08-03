@@ -29,7 +29,8 @@ jobs:
         id: get-date
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y%V")"
-          if ["$RUNNER_OS" == 'windows-latest']; then
+          echo "$RUNNER_OS"
+          if ["$RUNNER_OS" == 'Windows']; then
              echo 'hi'  
           fi
 
