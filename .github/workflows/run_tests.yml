@@ -15,7 +15,7 @@ jobs:
   test:
     strategy:
       matrix:
-          os: [windows-latest]
+          os: [windows-latest, ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -30,10 +30,7 @@ jobs:
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y%V")"
           echo ${{ matrix.os }}
-          if [[ ${{ matrix.os }} == "windows-latest" ]]; then
-              echo "hi"
-          fi
-        shell: bash
+       shell: bash
 
       - name: Setup Mambaforge
         uses: conda-incubator/setup-miniconda@v2.1.1
@@ -51,8 +48,11 @@ jobs:
       - name: install fortran
         shell: bash -l {0}
         run:  |
-             ls MinGW64/bin
-             echo "MinGW64/bin" >> $GITHUB_PATH
+             if [[ ${{ matrix.os }} == "windows-latest" ]]; then
+                echo "hi"
+                ls MinGW64/bin
+                echo "MinGW64/bin" >> $GITHUB_PATH
+             fi
       - name: check install
         shell: bash -l {0}
         run:  |
