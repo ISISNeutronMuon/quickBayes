@@ -41,7 +41,7 @@ jobs:
           auto-activate-base: false
           use-mamba: true
 
-      - if: ${{ matrix.os == "windows-latest" }}
+      - if: ${{ matrix.os == windows-latest }}
         run: echo ' hi'
       - name: extract
         run: 7z x MinGW64.7z
