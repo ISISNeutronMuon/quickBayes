@@ -53,9 +53,9 @@ jobs:
         run:  |
              if [[ ${{ matrix.os }} == "windows-latest" ]]; then
                  echo "hi"
+                 ls MinGW64/bin
+                 echo "MinGW64/bin" >> $GITHUB_PATH
              fi
-             ls MinGW64/bin
-             echo "MinGW64/bin" >> $GITHUB_PATH
       - name: check install
         shell: bash -l {0}
         run:  |
