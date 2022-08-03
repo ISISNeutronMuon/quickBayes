@@ -1,4 +1,4 @@
-name: Windows and Linux unit tests
+name: run unit tests
 
 on:
   push:
@@ -14,11 +14,11 @@ on:
 jobs:
   test:
     build:
-      strategy:
-        fail-fast: false
-        matrix:
-            os: [windows-latest, ubuntu-latest]
-      runs-on: ${{ matrix.os }}
+        #strategy:
+        #fail-fast: false
+        #matrix:
+        #    os: [ubuntu-latest]
+      runs-on: ubuntu-latest # ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v3
