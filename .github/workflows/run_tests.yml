@@ -41,11 +41,10 @@ jobs:
           miniforge-version: latest
           miniforge-variant: Mambaforge
           activate-environment: quasielasticbayes-dev
+          environment-file: quasielasticbayes-dev-win.yml
           auto-activate-base: false
           use-mamba: true
-          environment-file: quasielasticbayes-dev-linux.yml
-          if: ${{ matrix.os }} == "windows-latest"
-              environment-file: quasielasticbayes-dev-win.yml
+
       - name: extract
         run: 7z x MinGW64.7z
 
