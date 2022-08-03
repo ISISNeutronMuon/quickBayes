@@ -51,6 +51,9 @@ jobs:
       - name: install fortran
         shell: bash -l {0}
         run:  |
+             if [[ ${{ matrix.os }} == "windows-latest" ]]; then
+                 echo "hi"
+             fi
              ls MinGW64/bin
              echo "MinGW64/bin" >> $GITHUB_PATH
       - name: check install
