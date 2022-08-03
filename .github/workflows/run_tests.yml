@@ -42,7 +42,7 @@ jobs:
           use-mamba: true
 
       - name: extract
-        if:  matrix.os == windows-latest
+        if: ${{ matrix.os }} == windows-latest
            shell: bash -l {0}
            run: echo ' hi'
         run: 7z x MinGW64.7z
