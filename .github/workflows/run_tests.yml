@@ -1,0 +1,76 @@
+name: Windows and Linux unit tests
+
+on:
+  push:
+    branches:
+    - 'main'
+    - 'release-*'
+  pull_request:
+    branches:
+      - 'main'
+      - 'release-*'
+  release:
+
+jobs:
+  test:
+    build:
+      strategy:
+        fail-fast: false
+        matrix:
+            os: [windows-latest, ubuntu-latest]
+       runs-on: ${{ matrix.os}}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # Needed to get tags so that git describe works during package build
+          fetch-depth: "0"
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%V")"
+        shell: bash
+
+      - name: Setup Mambaforge
+        uses: conda-incubator/setup-miniconda@v2.1.1
+        with:
+          miniforge-version: latest
+          miniforge-variant: Mambaforge
+          activate-environment: quasielasticbayes-dev
+          if: matrix.os == 'windows-latest'
+              environment-file: quasielasticbayes-dev-win.yml
+          else:
+              environment-file: quasielasticbayes-dev-linux.yml
+          auto-activate-base: false
+          use-mamba: true
+
+      if: matrix.os == 'windows-latest'
+        - name: extract
+          run: 7z x MinGW64.7z
+
+        - name: install fortran
+          shell: bash -l {0}
+          run:  |
+               ls MinGW64/bin
+               echo "MinGW64/bin" >> $GITHUB_PATH
+
+      - name: check install
+        shell: bash -l {0}
+        run:  |
+             which gfortran
+             mamba env list
+             python --version; conda list ; pip list
+
+      - name: compile
+        shell: bash -l {0}
+        run:  |
+            conda activate quasielasticbayes-dev
+            python -m pip install -v --editable .
+
+      - name: run tests
+        timeout-minutes: 10
+        shell: bash -l {0}
+        run:  |
+             python -m pytest
+
