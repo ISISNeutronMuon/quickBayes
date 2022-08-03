@@ -29,6 +29,7 @@ jobs:
         id: get-date
         run: |
           echo "::set-output name=date::$(/bin/date -u "+%Y%V")"
+          echo "hi"
         shell: bash
 
       - name: Setup Mambaforge
@@ -42,9 +43,6 @@ jobs:
           use-mamba: true
 
       - name: extract
-        if: ${{ runner.os }} == 'windows-latest'
-           shell: bash -l {0}
-           run: echo ' hi'
         run: 7z x MinGW64.7z
 
       - name: install fortran
