@@ -49,6 +49,8 @@ jobs:
         run:  |
              ls MinGW64/bin
              echo "MinGW64/bin" >> $GITHUB_PATH
+             if: matrix.os == 'windows-latest'
+                echo 'hi'  
 
       - name: check install
         shell: bash -l {0}
