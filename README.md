@@ -24,6 +24,8 @@ A system package manager can be used but [mamba](https://github.com/conda-forge/
 
 Download and install the latest version of `mamba` for your platform from the link above by running the script you download and following the instructions.
 
+To activate pre-commit, setup the Conda environment and then type ``pre-commit install`` into your terminal (Git bash on Windows).
+
 ### Linux
 
 Create a minimal conda environment named `quasielasticbayes-dev` (you can use another name if you prefer):
@@ -66,9 +68,7 @@ python -m pip install -v --editable .
 We currently rely on an external fortran compiler, `tdm64-gcc 4.6.1`, as the current code is sensitive
 to the compiler version. To install:
 
-- Download [tdm64-gcc-4.6.1.exe](https://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Installer/Previous/1.1006.0/tdm64-gcc-4.6.1.exe/download) and install it to ``C:\MinGW64``
-- Download [gcc-4.6.1-tdm64-1-fortran.zip](https://sourceforge.net/projects/tdm-gcc/files/TDM-GCC%20Old%20Releases/TDM-GCC%204.6%20series/4.6.1-tdm64-1/gcc-4.6.1-tdm64-1-fortran.zip/download)
-- Right-click on ``gcc-4.6.1-tdm64-1-fortran.zip``, select "Extract All" and enter the location as ``C:\MinGW64``
+- Download MinGW64.7z and unzip it into ``C:\MinGW64``
 - Add ``C:\MinGW64\bin`` to your ``PATH`` environment variable ([instructions here](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/))
 - Restart any terminal or powershell instances to capture the new environment variable settings
 

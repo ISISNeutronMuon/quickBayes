@@ -12,7 +12,7 @@ on:
   release:
 
 jobs:
-  test:
+  flake8:
     runs-on: ubuntu-latest
 
     steps:
