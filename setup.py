@@ -1,4 +1,4 @@
-" ""
+"""
 Setuptools support for building the Fortran extensions with
 numpy.f2py
 """
