@@ -35,13 +35,25 @@ jobs:
           fi
         shell: bash
 
-      - name: Setup Mambaforge
+      - name: Setup Mambaforge windows
+        if: matrix.os == 'windows-latest'
         uses: conda-incubator/setup-miniconda@v2.1.1
         with:
           miniforge-version: latest
           miniforge-variant: Mambaforge
           activate-environment: quasielasticbayes-dev
           environment-file: quasielasticbayes-dev-win.yml
+          auto-activate-base: false
+          use-mamba: true
+
+      - name: Setup Mambaforge linux
+        if: matrix.os == 'ubuntu-latest'
+        uses: conda-incubator/setup-miniconda@v2.1.1
+        with:
+          miniforge-version: latest
+          miniforge-variant: Mambaforge
+          activate-environment: quasielasticbayes-dev
+          environment-file: quasielasticbayes-dev-linux.yml
           auto-activate-base: false
           use-mamba: true
 
