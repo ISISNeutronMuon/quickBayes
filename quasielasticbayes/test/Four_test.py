@@ -110,8 +110,12 @@ class FourTest(unittest.TestCase):
         yy = vec(4098, True)
         yy.copy(y)
         N = 1024
-        out = flatten(four(y,N,1,-1,-1))
+
+        # need to convert to complex 128 as Fortran return complex 64
+        tmp = four(y, N, 1, -1, -1)
+        out = flatten(np.array([np.complex128(x) for x in tmp]))
         out2 = flatten(FOUR2(yy,N,1,-1,-1))
+
         x = np.asarray([k for k in range(len(out))])
         x2 = np.asarray([k for k in range(len(out2))])
 
