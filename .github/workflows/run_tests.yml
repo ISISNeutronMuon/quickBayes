@@ -81,5 +81,6 @@ jobs:
         timeout-minutes: 10
         shell: bash -l {0}
         run:  |
+             python -c "help('modules')"
              python -c "help('quasielasticbayes')"
              python -m pytest
