@@ -1,11 +1,9 @@
 default_language_version:
   python: python3
 
-  #exclude: ^$|instrument/
 
 ci:
   autofix_prs: false
-  skip: [clang-format]
 
 repos:
 

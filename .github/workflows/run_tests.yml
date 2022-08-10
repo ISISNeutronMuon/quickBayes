@@ -4,11 +4,9 @@ on:
   push:
     branches:
     - 'main'
-    - 'release-*'
   pull_request:
     branches:
       - 'main'
-      - 'release-*'
   release:
 
 jobs:
@@ -55,14 +53,13 @@ jobs:
 
       - name: extract
         if: matrix.os == 'windows-latest'
-        run: 7z x MinGW64.7z
+        run: 7z x tools/vendored/mingw/MinGW64-4-6-1.7z .
 
       - name: install fortran
         if: matrix.os == 'windows-latest'
         shell: bash -l {0}
         run:  |
              if [[ ${{ matrix.os }} == "windows-latest" ]]; then
-                 echo "hi"
                  ls MinGW64/bin
                  echo "MinGW64/bin" >> $GITHUB_PATH
              fi
@@ -78,7 +75,7 @@ jobs:
         shell: bash -l {0}
         run:  |
             conda activate quasielasticbayes-dev
-            python -m pip install -v --editable .
+            python -m pip install -v
 
       - name: run tests
         timeout-minutes: 10
