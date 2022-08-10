@@ -81,4 +81,5 @@ jobs:
         timeout-minutes: 10
         shell: bash -l {0}
         run:  |
+             python -c "import quasieleasticbayes"
              python -m pytest
