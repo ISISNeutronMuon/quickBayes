@@ -29,7 +29,7 @@ Then once its updated type ``pre-commit install``, this generates a bash style f
 However, this will produce an error when you try to run it (a known issue with pre-commit).
 In your terminal type `` mamba env update --file quasielasticbayes-dev-win.yml --prune``
 Once it has completed, close the terminal and open a new one and activate the Conda environment.
-In your terminal (Gitbash on Windows) you will now be able to run pre-commit checks (outside of your Conda environment). 
+In your terminal (Gitbash on Windows) you will now be able to run pre-commit checks (outside of your Conda environment).
 
 ### Linux
 
@@ -73,7 +73,7 @@ python -m pip install -v --editable .
 We currently rely on an external fortran compiler, `tdm64-gcc 4.6.1`, as the current code is sensitive
 to the compiler version. To install:
 
-- Download MinGW64.7z and unzip it into ``C:\MinGW64``
+- Download ``tools/vendored.mingw/MinGW64-4-6-1.7z and unzip it into ``C:\MinGW64``
 - Add ``C:\MinGW64\bin`` to your ``PATH`` environment variable ([instructions here](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/))
 - Restart any terminal or powershell instances to capture the new environment variable settings
 

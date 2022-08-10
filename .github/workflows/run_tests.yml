@@ -82,5 +82,6 @@ jobs:
         shell: bash -l {0}
         run:  |
              python -c "help('modules')"
+             python -c "done"
              python -c "help('quasielasticbayes')"
              python -m pytest
