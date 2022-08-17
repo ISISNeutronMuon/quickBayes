@@ -129,7 +129,7 @@ extensions = [create_fortran_extension(name,
 setup(
     name=PACKAGE_NAME,
     install_requires=['numpy>=1.12'],
-    packages=[PACKAGE_NAME],
+    # packages=[PACKAGE_NAME],
     description='A Bayesian fitting package used for fitting '
                 'quasi-elastic neutron scattering data.',
     long_description='This package wraps fortran Bayesian '
