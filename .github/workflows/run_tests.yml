@@ -75,7 +75,7 @@ jobs:
         shell: bash -l {0}
         run:  |
             conda activate quasielasticbayes-dev
-            python -m pip install -v quasielasticbayes
+            python -m pip install .
 
       - name: run tests
         timeout-minutes: 10
