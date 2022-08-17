@@ -119,8 +119,8 @@ module_source_map = {
                                'Bayes.f90',
                                'Four.f90',
                                'Util.f90'],
-    f'{PACKAGE_NAME}.Four': [f'{PACKAGE_NAME}.Four_main.f90',
-                             f'{PACKAGE_NAME}.Four.f90']
+    f'{PACKAGE_NAME}.Four': ['Four_main.f90',
+                             'Four.f90']
 }
 extensions = [create_fortran_extension(name,
               source_paths(PurePosixPath('quasielasticbayes'), sources)) for
