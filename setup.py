@@ -8,6 +8,7 @@ from pathlib import PurePosixPath
 # IDEs/static analysis.
 import sys
 from typing import Sequence, Tuple
+import setuptools # noqa F401
 from setuptools import find_packages # noqa F401
 from numpy.distutils.core import (Extension as FortranExtension, setup)
 from numpy.distutils.command.build_ext import build_ext as _build_ext
@@ -54,7 +55,7 @@ def compiler_flags() -> Tuple[Sequence[str], Sequence[str], Sequence[str]]:
         # wheel that assumes compatible versions of bases
         # libraries are installed.
         extra_compile_args = []
-        extra_f90_compile_args = ["-fallow-argument-mismatch"]
+        extra_f90_compile_args = ["-01", "-fallow-argument-mismatch"]
         extra_link_args = []
 
     return extra_compile_args, extra_f90_compile_args, extra_link_args
