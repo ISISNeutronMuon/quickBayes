@@ -83,5 +83,5 @@ jobs:
         run:  |
              python -c "help('modules')"
              python -c "print('done')"
-             python -c "help('quasielasticbayes.test')"
+             python -c "help('quasielasticbayes')"
              python -m pytest
