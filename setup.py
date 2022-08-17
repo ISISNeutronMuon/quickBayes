@@ -8,7 +8,7 @@ from pathlib import PurePosixPath
 # IDEs/static analysis.
 import sys
 from typing import Sequence, Tuple
-import setuptools # noqa F401
+from setuptools import find_packages # noqa F401
 from numpy.distutils.core import (Extension as FortranExtension, setup)
 from numpy.distutils.command.build_ext import build_ext as _build_ext
 
@@ -139,6 +139,8 @@ setup(
                      'neutron scattering data in Mantid '
                      '(https://www.mantidproject.org)',
     author='Mantid Team',
+    package_dir={"": "quasielasticbayes"},
+    packages=find_packages(where="quasielasticbayes"),
     ext_modules=extensions,
     author_email="mantid-help@mantidproject.org",
     url='https://www.mantidproject.org',
