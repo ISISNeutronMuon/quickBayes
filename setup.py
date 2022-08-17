@@ -55,7 +55,7 @@ def compiler_flags() -> Tuple[Sequence[str], Sequence[str], Sequence[str]]:
         # wheel that assumes compatible versions of bases
         # libraries are installed.
         extra_compile_args = []
-        extra_f90_compile_args = ["-01", "-fallow-argument-mismatch"]
+        extra_f90_compile_args = ["-O1", "-fallow-argument-mismatch"]
         extra_link_args = []
 
     return extra_compile_args, extra_f90_compile_args, extra_link_args
