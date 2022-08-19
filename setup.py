@@ -44,15 +44,17 @@ def compiler_flags() -> Tuple[Sequence[str], Sequence[str], Sequence[str]]:
         extra_link_args = ["-static-libgfortran", "-static-libgcc"]
     elif sys.platform == 'darwin':
         extra_compile_args = ['-Wno-argument-mismatch']
-        extra_f90_compile_args = ["-O1"]
-        extra_link_args = ["-static", "-static-libgfortran", "-static-libgcc"]
+        extra_f90_compile_args = ["-ff2c"]
+        extra_link_args = ['-dynamiclib', '-lgfortran',
+                           '-Bstatic', '-static-libgfortran',
+                           "-static-libgcc"]
     else:
         # On Linux we build a manylinux2010
         # (https://www.python.org/dev/peps/pep-0571/#the-manylinux2010-policy)
         # wheel that assumes compatible versions of bases libraries are
         # installed.
         extra_compile_args = []
-        extra_f90_compile_args = ["-O1"]
+        extra_f90_compile_args = ["-fallow-argument-mismatch"]
         extra_link_args = []
 
     return extra_compile_args, extra_f90_compile_args, extra_link_args
