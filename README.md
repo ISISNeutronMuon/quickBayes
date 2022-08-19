@@ -24,10 +24,10 @@ A system package manager can be used but [mamba](https://github.com/conda-forge/
 
 Download and install the latest version of `mamba` for your platform from the link above by running the script you download and following the instructions.
 
-To activate pre-commit, setup the Conda environment and then type ``mamba pre-commit update``.
+To activate pre-commit, setup the Conda environment and then type ``mamba update pre-commit``.
 Then once its updated type ``pre-commit install``, this generates a bash style file.
 However, this will produce an error when you try to run it (a known issue with pre-commit).
-In your terminal type `` mamba env update --file quasielasticbayes-dev-win.yml --prune``
+In your terminal, but outside of your environment, type `` mamba env update --file quasielasticbayes-dev-win.yml --prune``
 Once it has completed, close the terminal and open a new one and activate the Conda environment.
 In your terminal (Gitbash on Windows) you will now be able to run pre-commit checks (outside of your Conda environment).
 

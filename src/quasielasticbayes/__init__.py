@@ -1,4 +1,0 @@
-# SPDX - License - Identifier: BSD-3-Clause
-
-# --- Public API --------------------------------------------------------------
-from . import QLdata, QLres, ResNorm, QLse # noqa F401
