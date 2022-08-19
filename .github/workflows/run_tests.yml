@@ -60,7 +60,9 @@ jobs:
         shell: bash -l {0}
         run:  |
              if [[ ${{ matrix.os }} == "windows-latest" ]]; then
-                 ls tools/vendored/mingw/MinGW64/bin
+                 ls
+                 echo "next"
+                 ls tools/vendored/mingw/
                  echo "tools/vendored/mingw/MinGW64/bin" >> $GITHUB_PATH
              fi
 
