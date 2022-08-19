@@ -53,16 +53,14 @@ jobs:
 
       - name: extract
         if: matrix.os == 'windows-latest'
-        run: 7z x tools/vendored/mingw/MinGW64-4-6-1.7z .
+        run: 7z x tools/vendored/mingw/MinGW64-4-6-1.7z
 
       - name: install fortran
         if: matrix.os == 'windows-latest'
         shell: bash -l {0}
         run:  |
              if [[ ${{ matrix.os }} == "windows-latest" ]]; then
-                 ls *
-                 echo "next"
-                 ls tools/vendored/mingw/
+                 ls tools/vendored/mingw/*
                  echo "tools/vendored/mingw/MinGW64/bin" >> $GITHUB_PATH
              fi
 
