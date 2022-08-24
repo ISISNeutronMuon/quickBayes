@@ -1,0 +1,26 @@
+name: Flake8
+
+on:
+  push:
+    branches:
+    - 'main'
+  pull_request:
+    branches:
+      - 'main'
+  release:
+
+jobs:
+  flake8:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Needed to get tags so that git describe works during package build
+          fetch-depth: "0"
+
+      - name: set up python
+        uses: actions/setup-python@v2
+      - name: check flake8
+        uses: py-actions/flake8@v2
+

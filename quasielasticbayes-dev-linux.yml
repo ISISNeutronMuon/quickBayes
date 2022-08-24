@@ -4,8 +4,8 @@ channels:
   - conda-forge
 
 dependencies:
-  # A fortran compiler must be provided separately as we require a very specific version of mingw
-  - fortran-compiler
+  - gfortran>=2.2
   - python=3.6.*
   - numpy=1.16.*
   - pytest
+  - pre-commit >=2.15
