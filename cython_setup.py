@@ -10,7 +10,7 @@ from os.path import join
 # import setuptools
 # import sys
 from typing import Sequence
-
+from Cython.Build import cythonize
 # import copy
 import numpy
 
@@ -44,6 +44,6 @@ def get_cython_extensions(PACKAGE_NAME):
     module_source_map = {
         f'{PACKAGE_NAME}.stuff':
             ['stuff.pyx']}
-    return [create_extension(name,
-            source_paths(str(join('src', 'c_python')), sources)) for
-            name, sources in module_source_map.items()]
+    return cythonize([create_extension(name,
+                      source_paths(str(join('src', 'c_python')), sources)) for
+                      name, sources in module_source_map.items()])
