@@ -8,6 +8,7 @@ dependencies:
   - python=3.6.*
   - numpy=1.16.*
   - pytest
+  - cython
   - pre-commit >=2.15
   - clang
   - aws-sdk-cpp
