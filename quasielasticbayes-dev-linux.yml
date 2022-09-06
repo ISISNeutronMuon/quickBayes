@@ -9,6 +9,6 @@ dependencies:
   - numpy=1.16.*
   - pytest
   - pre-commit >=2.15
-  - gxx_linux-64 # needed for linking
+  - gcc # needed for linking
   - pip:
      - cython>=0.29.32 # needed due to conda getting the wrong version
