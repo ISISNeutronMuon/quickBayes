@@ -80,7 +80,6 @@ class FortranExtensionBuilder(fort_build_ext):
             self.compiler = 'mingw32'
 
 
-# Start setup
 # Create extension builders
 def get_fortran_extensions(PACKAGE_NAME):
     module_source_map = {

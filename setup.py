@@ -1,15 +1,15 @@
 """
 Setuptools support for building the Fortran extensions with
-numpy.f2py
+numpy.f2py and cython extensions
 """
+import os
+from setuptools.command.build_py import build_py as _build_py
+import sysconfig
 from numpy.distutils.core import setup
 from numpy.distutils.command.build_src import build_src as _build_src
 from cython_setup import get_cython_extensions
-
 from fortran_setup import get_fortran_extensions, FortranExtensionBuilder
 
-import sysconfig
-from setuptools.command.build_py import build_py as _build_py
 
 PACKAGE_NAME = 'quasielasticbayes'
 

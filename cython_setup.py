@@ -1,22 +1,13 @@
-# from numpy.distutils.command.build_ext import build_ext as _build_ext
-# from numpy.distutils.command.build_src import build_src as _build_src
-# from distutils.command.build import build
+import numpy
 from distutils.core import Extension
-from Cython.Compiler import Options
 from os.path import join
-# Importing setuptools modifies the behaviour of setup from distutils
-# to support building wheels. It will be marked as unused by IDEs/static
-# analysis.
-# import setuptools
-# import sys
 from typing import Sequence
 from Cython.Build import cythonize
-# import copy
-import numpy
+from Cython.Compiler import Options
 
 
 def create_extension(fq_name: str,
-                             sources: Sequence[str]) -> Extension:
+                     sources: Sequence[str]) -> Extension:
     """
     Create an extension module to be built by f2py
     :param fq_name: The final fully-qualified name of the module
@@ -24,7 +15,8 @@ def create_extension(fq_name: str,
     :return: An Extension class to be built
     """
     lang = 'C'
-    Options.annotate = True
+    # set to True for profiling
+    Options.annotate = False
     return Extension(name=fq_name,
                      sources=sources,
                      include_dirs=[numpy.get_include()],
