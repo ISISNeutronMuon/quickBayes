@@ -7,8 +7,8 @@ dependencies:
   - gfortran>=2.2
   - python =3.8.*
   - numpy=1.16.*
+  - scipy
   - pytest
   - pre-commit >=2.15
   - pip:
      - cython>=0.29.32 # needed due to conda getting the wrong version
-     - scipy
