@@ -5,7 +5,7 @@ from quasielasticbayes.data import DatCom
 
 class StuffTest(unittest.TestCase):
     def test_primes(self):
-        a = DatCom()
+        a = DatCom(2. 3)
         self.assertTrue(a is not None)
         self.assertEqual(1, 1)
 
