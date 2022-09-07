@@ -41,7 +41,9 @@ def get_cython_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.util':
             ['util.pyx'],
         f'{PACKAGE_NAME}.four_python':
-            ['four.pyx']
+            ['four.pyx'],
+        f'{PACKAGE_NAME}.bayes_C':
+            ['bayes_C.pyx']
 
         }
     return cythonize([create_extension(name,
