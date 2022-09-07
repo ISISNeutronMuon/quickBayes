@@ -37,7 +37,10 @@ def get_cython_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.fortran_python':
             ['fortran_python.pyx'],
         f'{PACKAGE_NAME}.data':
-            ['data.py']}
+            ['data.py'],
+        f'{PACKAGE_NAME}.util':
+            ['util.pyx']
+        }
     return cythonize([create_extension(name,
                       source_paths(str(join('src', 'c_python')), sources)) for
                       name, sources in module_source_map.items()])
