@@ -39,7 +39,10 @@ def get_cython_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.data':
             ['data.py'],
         f'{PACKAGE_NAME}.util':
-            ['util.pyx']
+            ['util.pyx'],
+        f'{PACKAGE_NAME}.four_python':
+            ['four.pyx']
+
         }
     return cythonize([create_extension(name,
                       source_paths(str(join('src', 'c_python')), sources)) for
