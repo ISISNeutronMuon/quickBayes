@@ -1,6 +1,7 @@
 """Characterization tests for QLres module"""
 import unittest
 from quasielasticbayes.data import DatCom
+from quasielasticbayes.util import LUDCMP  # noqa: F401
 
 
 class StuffTest(unittest.TestCase):

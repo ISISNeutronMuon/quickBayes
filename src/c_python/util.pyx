@@ -1,4 +1,4 @@
-from fortran_python import vec, get_range, round_sig
+from quasielasticbayes.fortran_python import vec, get_range, round_sig
 import math
 
 """
