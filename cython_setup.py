@@ -34,8 +34,8 @@ def source_paths(dirname: str, filenames: Sequence[str]) -> Sequence[str]:
 def get_cython_extensions(PACKAGE_NAME):
 
     module_source_map = {
-        f'{PACKAGE_NAME}.stuff':
-            ['stuff.pyx']}
+        f'{PACKAGE_NAME}.fortran_python':
+            ['fortran_python.pyx']}
     return cythonize([create_extension(name,
                       source_paths(str(join('src', 'c_python')), sources)) for
                       name, sources in module_source_map.items()])
