@@ -720,7 +720,7 @@ def DATIN(IREAD, DTNORM, efix, ntc, COMS, store, lptfile):
     for II in get_range(1, COMS["DATA"].NDAT):
         COMS["DATA"].SIG.set(II, COMS["DATA"].ein(II) * DTNRM)
         # only record values if errors are above a tol
-        if COMS["DATA"].SIG(I) > SMALL:
+        if COMS["DATA"].SIG(II) > SMALL:
             COMS["DATA"].SIG.set(II, pow(COMS["DATA"].SIG(II), 2))
             DSUM = DSUM + COMS["DATA"].DAT(II)
         else:
@@ -896,7 +896,7 @@ def PRINIT(NQMAX, IXSCAL, COMS, store, prog, lptfile, o_bgd):
         NSUM = 0
         # get upto 10 "large" values in SIG from first 20 values
         for II in get_range(1, 20):
-            if COMS["DATA"].SIG(I) >= SMALL:
+            if COMS["DATA"].SIG(II) >= SMALL:
                 NSUM = NSUM + 1
                 SM = SM + abs(COMS["DATA"].DAT(II))
             if NSUM >= 10:
