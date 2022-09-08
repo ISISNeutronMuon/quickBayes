@@ -553,7 +553,7 @@ def bin_and_filter_sample_data(COMS, store, lptfile):
             f' DATIN1; Data error-bars multiplied by: {COMS["Params"].RSCL}')
         store.close(unit=53)
     COMS["Params"].RSCL = pow(COMS["Params"].RSCL, 2)
-    N = 0a  # here N is a counter and not the total number
+    N = 0  # here N is a counter and not the total number
     # lopp over original bins
     for II in get_range(
             COMS["Params"].IMIN,
