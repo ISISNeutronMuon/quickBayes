@@ -73,11 +73,11 @@ def normalize_x_range(COMS):
     X1 = COMS["DATA"].XDAT(1)
     X_range = COMS["DATA"].XDAT(COMS["DATA"].NDAT) - X1
     norm_for_x_range = 1.0 / (X_range)
-    for I in get_range(1, COMS["DATA"].NDAT):
-        normalized_x = (COMS["DATA"].XDAT(I) - X1) * \
+    for II in get_range(1, COMS["DATA"].NDAT):
+        normalized_x = (COMS["DATA"].XDAT(II) - X1) * \
             norm_for_x_range  # fraction of x range
-        COMS["GRD"].DDDPAR.set(I, 1, 1.0 - normalized_x)
-        COMS["GRD"].DDDPAR.set(I, 2, normalized_x)
+        COMS["GRD"].DDDPAR.set(II, 1, 1.0 - normalized_x)
+        COMS["GRD"].DDDPAR.set(II, 2, normalized_x)
 
 
 @deprecated
@@ -86,10 +86,10 @@ def GDINIT(COMS):
     X1 = COMS["DATA"].XDAT(1)
     XN = COMS["DATA"].XDAT(COMS["DATA"].NDAT)
     GNORM = 1.0 / (XN - X1)
-    for I in get_range(1, COMS["DATA"].NDAT):
-        XGNORM = (COMS["DATA"].XDAT(I) - X1) * GNORM  # fraction of x range
-        COMS["GRD"].DDDPAR.set(I, 1, 1.0 - XGNORM)
-        COMS["GRD"].DDDPAR.set(I, 2, XGNORM)
+    for II in get_range(1, COMS["DATA"].NDAT):
+        XGNORM = (COMS["DATA"].XDAT(II) - X1) * GNORM  # fraction of x range
+        COMS["GRD"].DDDPAR.set(II, 1, 1.0 - XGNORM)
+        COMS["GRD"].DDDPAR.set(II, 2, XGNORM)
 
 
 def complex_shift(RK, DX, TWOPIK):
@@ -150,16 +150,13 @@ def construct_gradients(RESID, NDAT, NP, SCLVEC, COMS, col=1):
     GRAD = []
     # construct the gradient by product of residulas, parameter and function
     # evaluation
-    for I in get_range(1, NP):
+    for II in get_range(1, NP):
         SM = np.sum(
-            RESID.output_range(
-                end=NDAT) *
+            RESID.output_range(end=NDAT) *
             COMS["GRD"].DDDPAR.output_range(
-                1,
-                I,
-                end=NDAT +
-                1))  # ,NDAT,SM)
-        GRAD.append(SCLVEC(I, col) * SM)
+                1, II, end=NDAT + 1))
+
+        GRAD.append(SCLVEC(II, col) * SM)
     return np.asarray(GRAD)
 
 # weights the SCLVEC
@@ -205,34 +202,31 @@ def make_hessian(
         HESS = matrix_2(N_params, N_params)
 
     for J in get_range(1, N_params):
-        for I in get_range(J, N_params):
+        for II in get_range(J, N_params):
 
             # sum weights*evaluation for individual function_I * evaluation for
             # individual function_J
             SM = np.sum(
                 COMS["DATA"].SIG.output_range(
                     end=COMS["DATA"].NDAT) *
+
                 COMS["GRD"].DDDPAR.output_range(
-                    1,
-                    I,
-                    COMS["DATA"].NDAT +
-                    1) *
+                    1, II, COMS["DATA"].NDAT + 1) *
+
                 COMS["GRD"].DDDPAR.output_range(
-                    1,
-                    J,
-                    COMS["DATA"].NDAT +
-                    1))
+                    1, J, COMS["DATA"].NDAT + 1))
+
             SM = round_sig(SM)
-            element = round_sig(round_sig(HESS(I, J)) + round_sig(SM))
+            element = round_sig(round_sig(HESS(II, J)) + round_sig(SM))
             scale_factor = round_sig(round_sig(
-                scale_vector[I - 1]) * round_sig(scale_vector[J - 1]))
+                scale_vector[II - 1]) * round_sig(scale_vector[J - 1]))
             # this uses the previous value to give some influence to the
             # history of the hessian
-            HESS.set(I, J, round_sig(element * scale_factor))
-            HESS.set(J, I, HESS(I, J))  # symmetric hessian
+            HESS.set(II, J, round_sig(element * scale_factor))
+            HESS.set(J, II, HESS(II, J))  # symmetric hessian
     BEEFUP = 2.0 / (step * step)
-    for I in get_range(1, N_params):
-        HESS.set(I, I, HESS(I, I) + BEEFUP)
+    for II in get_range(1, N_params):
+        HESS.set(II, II, HESS(II, II) + BEEFUP)
 
     if prog == 'l' or prog == 's':
         if N_QE > 0:  # option for elastic peak
@@ -273,16 +267,16 @@ def INVERT(NP, INDX, covar_default, HESS=None, COVAR=None):
     DETLOG = 0.0
     COVAR.fill(0.0, NP * NP)
     # set diagonal for covariance matrix
-    for I in get_range(1, NP):
-        COVAR.set(I, I, covar_default)
+    for II in get_range(1, NP):
+        COVAR.set(II, II, covar_default)
 
     INDX, D, HESS = LUDCMP(HESS, NP, NP)
-    for I in get_range(1, NP):
-        DETLOG = DETLOG + log10(abs(HESS(I, I)) + SMALL)
+    for II in get_range(1, NP):
+        DETLOG = DETLOG + log10(abs(HESS(II, II)) + SMALL)
 
-    for I in get_range(1, NP):
-        tmp = LUBKSB(HESS, NP, NP, INDX, COVAR.output_col(I))
-        COVAR.copy(tmp, 1, I)
+    for II in get_range(1, NP):
+        tmp = LUBKSB(HESS, NP, NP, INDX, COVAR.output_col(II))
+        COVAR.copy(tmp, 1, II)
 
     return HESS, COVAR, DETLOG
 
@@ -333,17 +327,17 @@ def update_fit_params(
     d_params = matrix_times_vector(GRAD, COVAR, N_params)
     # total number of parameters check
     if N_params == 4 + mp * N_EP:
-        for I in get_range(1, N_params):
+        for II in get_range(1, N_params):
             # adjust the fit parameters based on the grads and covar
-            fit_params.set(I, fit_params(I) - d_params(I))
+            fit_params.set(II, fit_params(II) - d_params(II))
 
     elif N_params == 3 + N_EP:
-        for I in get_range(1, 3):  # these are the BG and elastic parameters
-            fit_params.set(I, fit_params(I) - d_params(I))
+        for II in get_range(1, 3):  # these are the BG and elastic parameters
+            fit_params.set(II, fit_params(II) - d_params(II))
 
-        for I in get_range(1, N_EP):  # elastic peak
-            J = I + 3
-            fit_params.set(J + I, fit_params(J + I) - d_params(J))
+        for II in get_range(1, N_EP):  # elastic peak
+            J = II + 3
+            fit_params.set(J + II, fit_params(J + II) - d_params(J))
 
     else:
         store.open(53, lptfile)
@@ -414,16 +408,16 @@ def refine_param_values(
 
     # for each inelastic peak, convolve them with the resolution and transform
     # back to original sampling and domain
-    for I in get_range(1, COMS["FIT"].NFEW):
+    for II in get_range(1, COMS["FIT"].NFEW):
         # resolution * inelastic peak
-        convolution = (COMS["FIT"].EXPF.output_range(1, I, end=NFT2 + 1)
+        convolution = (COMS["FIT"].EXPF.output_range(1, II, end=NFT2 + 1)
                        * compress(COMS["GRD"].FR2PIK.output_range(1, 1,
                                   end=2 * (NFT2 + 1))))
         peak_in_original_domain = flatten(
             FOUR2_IFT(convolution, COMS["FFT"].NFFT, 1, -1))
         peak_in_original_domain = bin_shift(peak_in_original_domain, COMS)
         # store the individual peaks convolved with resolution func
-        COMS["GRD"].DDDPAR.copy(peak_in_original_domain, 1, 3 + I)
+        COMS["GRD"].DDDPAR.copy(peak_in_original_domain, 1, 3 + II)
 
     GRAD.copy(
         construct_gradients(
@@ -555,13 +549,13 @@ def bin_and_filter_sample_data(COMS, store, lptfile):
     if abs(COMS["Params"].RSCL - 1.0) > 0.01:
         store.open(53, lptfile)
         store.write(
-            53, f' DATIN1; Data error-bars multiplied by:'
-            ' {COMS["Params"].RSCL}')
+            53,
+            f' DATIN1; Data error-bars multiplied by: {COMS["Params"].RSCL}')
         store.close(unit=53)
     COMS["Params"].RSCL = pow(COMS["Params"].RSCL, 2)
-    N = 0
+    N = 0a  # here N is a counter and not the total number
     # lopp over original bins
-    for I in get_range(
+    for II in get_range(
             COMS["Params"].IMIN,
             COMS["Params"].IMAX,
             COMS["Params"].NBIN):
@@ -572,11 +566,11 @@ def bin_and_filter_sample_data(COMS, store, lptfile):
         K = 0
         # get values from rebinned data
         for J in get_range(0, COMS["Params"].NBIN - 1):
-            bin_width += COMS["DATA"].XDAT(I + J)
-            if COMS["DATA"].SIG(I + J) > SMALL:
+            bin_width += COMS["DATA"].XDAT(II + J)
+            if COMS["DATA"].SIG(II + J) > SMALL:
                 K = K + 1
-                y_data_in_bin += COMS["DATA"].DAT(I + J)
-                sigma_data_in_bin += COMS["DATA"].SIG(I + J)
+                y_data_in_bin += COMS["DATA"].DAT(II + J)
+                sigma_data_in_bin += COMS["DATA"].SIG(II + J)
 
         if K > 0:
             # if large sigma(s) exist in bin assume it dominates -> throw away
@@ -584,13 +578,9 @@ def bin_and_filter_sample_data(COMS, store, lptfile):
             y_data_in_bin = COMS["Params"].BNORM * y_data_in_bin
             sigma_data_in_bin = round_sig(
                 round_sig(
-                    2.0 *
-                    float(
-                        K *
-                        K)) /
-                round_sig(
-                    sigma_data_in_bin *
-                    COMS["Params"].RSCL))
+                          2.0 * float(K * K)) /
+                round_sig(sigma_data_in_bin *
+                          COMS["Params"].RSCL))
         else:
             y_data_in_bin = 0.0
             sigma_data_in_bin = 0.0
@@ -610,13 +600,13 @@ def DATIN1(COMS, store, lptfile):
     if abs(COMS["Params"].RSCL - 1.0) > 0.01:
         store.open(53, lptfile)
         store.write(
-            53, f' DATIN1; Data error-bars multiplied by:'
-            ' {COMS["Params"].RSCL}')
+            53,
+            f' DATIN1; Data error-bars multiplied by: {COMS["Params"].RSCL}')
         store.close(unit=53)
     COMS["Params"].RSCL = pow(COMS["Params"].RSCL, 2)
     N = 0
     # lopp over original bins
-    for I in get_range(
+    for II in get_range(
             COMS["Params"].IMIN,
             COMS["Params"].IMAX,
             COMS["Params"].NBIN):
@@ -627,11 +617,11 @@ def DATIN1(COMS, store, lptfile):
         K = 0
         # get values from rebinned data
         for J in get_range(0, COMS["Params"].NBIN - 1):
-            XXD = XXD + COMS["DATA"].XDAT(I + J)
-            if COMS["DATA"].SIG(I + J) > SMALL:
+            XXD = XXD + COMS["DATA"].XDAT(II + J)
+            if COMS["DATA"].SIG(II + J) > SMALL:
                 K = K + 1
-                DD = DD + COMS["DATA"].DAT(I + J)
-                EE = EE + COMS["DATA"].SIG(I + J)
+                DD = DD + COMS["DATA"].DAT(II + J)
+                EE = EE + COMS["DATA"].SIG(II + J)
         # store the scaled value for the new bin
         COMS["DATA"].XDAT.set(N, COMS["Params"].BNORM * XXD)
         if K > 0:
@@ -677,15 +667,15 @@ def calculate_sample_bins(IREAD, DTNORM, efix, ntc, COMS, store, lptfile):
     tmp = COMS["DATA"].yin.output_range(end=COMS["sample_data"].N) * DTNRM
     COMS["DATA"].DAT.copy(tmp)
 
-    for I in get_range(1, COMS["DATA"].NDAT):
-        sigma = COMS["sample_data"].e_data(I) * DTNRM
+    for II in get_range(1, COMS["DATA"].NDAT):
+        sigma = COMS["sample_data"].e_data(II) * DTNRM
         # only record values if errors are above a tol
         if sigma > SMALL:
             sigma = pow(sigma, 2)
-            DSUM += COMS["sample_data"].y_data(I)
+            DSUM += COMS["sample_data"].y_data(II)
         else:
             sigma = 0.0
-        COMS["DATA"].SIG.set(I, sigma)
+        COMS["DATA"].SIG.set(II, sigma)
 
     # if no peak data
     if DSUM < SMALL:
@@ -727,14 +717,14 @@ def DATIN(IREAD, DTNORM, efix, ntc, COMS, store, lptfile):
     tmp = COMS["DATA"].yin.output_range(end=COMS["sample_data"].N) * DTNRM
     COMS["DATA"].DAT.copy(tmp)
     # these are already in sample data COM
-    for I in get_range(1, COMS["DATA"].NDAT):
-        COMS["DATA"].SIG.set(I, COMS["DATA"].ein(I) * DTNRM)
+    for II in get_range(1, COMS["DATA"].NDAT):
+        COMS["DATA"].SIG.set(II, COMS["DATA"].ein(II) * DTNRM)
         # only record values if errors are above a tol
         if COMS["DATA"].SIG(I) > SMALL:
-            COMS["DATA"].SIG.set(I, pow(COMS["DATA"].SIG(I), 2))
-            DSUM = DSUM + COMS["DATA"].DAT(I)
+            COMS["DATA"].SIG.set(II, pow(COMS["DATA"].SIG(II), 2))
+            DSUM = DSUM + COMS["DATA"].DAT(II)
         else:
-            COMS["DATA"].SIG.set(I, 0.0)
+            COMS["DATA"].SIG.set(II, 0.0)
     # if no peak data
     if DSUM < SMALL:
         IDUF = 1
@@ -781,10 +771,10 @@ def set_sacle_factors(N_QE_peaks, scale, COMS, store, prog, lptfile, o_bgd):
         y_sum = 0.0
         N_sum = 0
         # get upto 10 "large" values in SIG from first 20 values
-        for I in get_range(1, 20):
-            if COMS["DATA"].SIG(I) >= SMALL:
+        for II in get_range(1, 20):
+            if COMS["DATA"].SIG(II) >= SMALL:
                 N_sum += 1
-                y_sum += abs(COMS["DATA"].DAT(I))
+                y_sum += abs(COMS["DATA"].DAT(II))
             if N_sum >= 10:
                 break
         # assume large values dominate and normalise
@@ -793,10 +783,10 @@ def set_sacle_factors(N_QE_peaks, scale, COMS, store, prog, lptfile, o_bgd):
         y_sum = 0.0
         N_sum = 0
         # get upto 10 "large" values in SIG from last 20 values
-        for I in get_range(1, 20):
-            if COMS["DATA"].SIG(COMS["DATA"].NDAT - I + 1) >= SMALL:
+        for II in get_range(1, 20):
+            if COMS["DATA"].SIG(COMS["DATA"].NDAT - II + 1) >= SMALL:
                 N_sum += 1
-                y_sum += abs(COMS["DATA"].DAT(COMS["DATA"].NDAT - I + 1))
+                y_sum += abs(COMS["DATA"].DAT(COMS["DATA"].NDAT - II + 1))
 
             if N_sum >= 10:
                 break
@@ -824,16 +814,18 @@ def set_sacle_factors(N_QE_peaks, scale, COMS, store, prog, lptfile, o_bgd):
         N = 0
         integral_y_data = 0.0
         sum_sigma = 0.0  # no idea
-        for I in get_range(1, COMS["DATA"].NDAT - 1):
+        for II in get_range(1, COMS["DATA"].NDAT - 1):
             # if not BG
-            if COMS["DATA"].SIG(I) >= SMALL:
+            if COMS["DATA"].SIG(II) >= SMALL:
                 N += 1
                 # remove BG and scale by bin width
                 # area of histogram (minus BG)
-                integral_y_data += (COMS["DATA"].DAT(I) - COMS["SCL"].BSCL) * (
-                    COMS["DATA"].XDAT(I + 1) - COMS["DATA"].XDAT(I))
-                # sigma += sqrt{\frac{2}{sigma(I)} }
-                sum_sigma += np.sqrt((2.0 / COMS["DATA"].SIG(I)))
+                integral_y_data += ((COMS["DATA"].DAT(II) -
+                                    COMS["SCL"].BSCL) *
+                                    (COMS["DATA"].XDAT(II + 1) -
+                                     COMS["DATA"].XDAT(II)))
+                # sigma += sqrt{\frac{2}{sigma(II)} }
+                sum_sigma += np.sqrt((2.0 / COMS["DATA"].SIG(II)))
 
         # scale the peak amplitude
         # integral of the average y value in each bin (when ignoring 0's in the
@@ -867,9 +859,9 @@ def set_sacle_factors(N_QE_peaks, scale, COMS, store, prog, lptfile, o_bgd):
         COMS["FIT"].FITP.set(2, 1.0)  # BG max
         COMS["FIT"].FITP.set(3, 0.5)  # elastic peak amplitude
         # seems to be storing the max values and BG for latter
-        for I in get_range(1, 2):
-            COMS["SCL"].SCLVEC.set(I, 1, COMS["SCL"].BSCL)
-            COMS["SCL"].SCLVEC.set(I, 2, COMS["SCL"].BSCL)
+        for II in get_range(1, 2):
+            COMS["SCL"].SCLVEC.set(II, 1, COMS["SCL"].BSCL)
+            COMS["SCL"].SCLVEC.set(II, 2, COMS["SCL"].BSCL)
         # store the amplitude
         COMS["SCL"].SCLVEC.set(3, 1, COMS["SCL"].ASCL)  # elastic peak
         COMS["SCL"].SCLVEC.set(3, 2, COMS["SCL"].ASCL)
@@ -882,11 +874,11 @@ def set_sacle_factors(N_QE_peaks, scale, COMS, store, prog, lptfile, o_bgd):
         COMS["SCL"].SCLVEC.set(7, 2, COMS["SCL"].WSCL / COMS["SCL"].GSCL)
     else:
         # fit params for inealstic peaks
-        for I in get_range(1, N_QE_peaks):
-            COMS["SCL"].SCLVEC.set(3 + I, 1, COMS["SCL"].ASCL)
-            COMS["SCL"].SCLVEC.set(3 + I + I, 2, COMS["SCL"].ASCL)
+        for II in get_range(1, N_QE_peaks):
+            COMS["SCL"].SCLVEC.set(3 + II, 1, COMS["SCL"].ASCL)
+            COMS["SCL"].SCLVEC.set(3 + II + II, 2, COMS["SCL"].ASCL)
             COMS["SCL"].SCLVEC.set(
-                4 + I + I, 2, COMS["SCL"].WSCL / COMS["SCL"].GSCL)
+                4 + II + II, 2, COMS["SCL"].WSCL / COMS["SCL"].GSCL)
     COMS["FIT"].NFEW = 0
 
 
@@ -903,10 +895,10 @@ def PRINIT(NQMAX, IXSCAL, COMS, store, prog, lptfile, o_bgd):
         SM = 0.0
         NSUM = 0
         # get upto 10 "large" values in SIG from first 20 values
-        for I in get_range(1, 20):
+        for II in get_range(1, 20):
             if COMS["DATA"].SIG(I) >= SMALL:
                 NSUM = NSUM + 1
-                SM = SM + abs(COMS["DATA"].DAT(I))
+                SM = SM + abs(COMS["DATA"].DAT(II))
             if NSUM >= 10:
                 break
         # assume large values dominate and normalise
@@ -915,10 +907,10 @@ def PRINIT(NQMAX, IXSCAL, COMS, store, prog, lptfile, o_bgd):
         SM = 0.0
         NSUM = 0
         # get upto 10 "large" values in SIG from last 20 values
-        for I in get_range(1, 20):
-            if COMS["DATA"].SIG(COMS["DATA"].NDAT - I + 1) >= SMALL:
+        for II in get_range(1, 20):
+            if COMS["DATA"].SIG(COMS["DATA"].NDAT - II + 1) >= SMALL:
                 NSUM = NSUM + 1
-                SM = SM + abs(COMS["DATA"].DAT(COMS["DATA"].NDAT - I + 1))
+                SM = SM + abs(COMS["DATA"].DAT(COMS["DATA"].NDAT - II + 1))
 
             if NSUM >= 10:
                 break
@@ -943,15 +935,15 @@ def PRINIT(NQMAX, IXSCAL, COMS, store, prog, lptfile, o_bgd):
         MK = 0
         SM = 0.0
         SUMSIG = 0.0
-        for I in get_range(1, COMS["DATA"].NDAT - 1):
+        for II in get_range(1, COMS["DATA"].NDAT - 1):
             # if not BG
-            if COMS["DATA"].SIG(I) >= SMALL:
+            if COMS["DATA"].SIG(II) >= SMALL:
                 MK = MK + 1
                 # remove BG and scale by bin width
-                SM = SM + (COMS["DATA"].DAT(I) - COMS["SCL"].BSCL) * \
-                    (COMS["DATA"].XDAT(I + 1) - COMS["DATA"].XDAT(I))
-                # s = sigma sqrt{\frac{2}{sigma(I)} }
-                SUMSIG = SUMSIG + np.sqrt((2.0 / COMS["DATA"].SIG(I)))
+                SM = SM + (COMS["DATA"].DAT(II) - COMS["SCL"].BSCL) * \
+                    (COMS["DATA"].XDAT(II + 1) - COMS["DATA"].XDAT(II))
+                # s = sigma sqrt{\frac{2}{sigma(II)} }
+                SUMSIG = SUMSIG + np.sqrt((2.0 / COMS["DATA"].SIG(II)))
 
         # scale the peak amplitude
         COMS["SCL"].ASCL = SM * float(COMS["DATA"].NDAT) / float(MK)
@@ -976,9 +968,9 @@ def PRINIT(NQMAX, IXSCAL, COMS, store, prog, lptfile, o_bgd):
         COMS["FIT"].FITP.set(2, 1.0)  # BG max
         COMS["FIT"].FITP.set(3, 0.5)  # elastic peak amplitude
         # seems to be storing the max values and BG for latter
-        for I in get_range(1, 2):
-            COMS["SCL"].SCLVEC.set(I, 1, COMS["SCL"].BSCL)
-            COMS["SCL"].SCLVEC.set(I, 2, COMS["SCL"].BSCL)
+        for II in get_range(1, 2):
+            COMS["SCL"].SCLVEC.set(II, 1, COMS["SCL"].BSCL)
+            COMS["SCL"].SCLVEC.set(II, 2, COMS["SCL"].BSCL)
         COMS["SCL"].SCLVEC.set(3, 1, COMS["SCL"].ASCL)
         COMS["SCL"].SCLVEC.set(3, 2, COMS["SCL"].ASCL)
     COMS["SCL"].SCLVEC.set(4, 2, 1.0)
@@ -988,11 +980,11 @@ def PRINIT(NQMAX, IXSCAL, COMS, store, prog, lptfile, o_bgd):
         COMS["SCL"].SCLVEC.set(6, 2, COMS["SCL"].WSCL / COMS["SCL"].GSCL)
         COMS["SCL"].SCLVEC.set(7, 2, COMS["SCL"].WSCL / COMS["SCL"].GSCL)
     else:
-        for I in get_range(1, NQMAX):
-            COMS["SCL"].SCLVEC.set(3 + I, 1, COMS["SCL"].ASCL)
-            COMS["SCL"].SCLVEC.set(3 + I + I, 2, COMS["SCL"].ASCL)
+        for II in get_range(1, NQMAX):
+            COMS["SCL"].SCLVEC.set(3 + II, 1, COMS["SCL"].ASCL)
+            COMS["SCL"].SCLVEC.set(3 + II + II, 2, COMS["SCL"].ASCL)
             COMS["SCL"].SCLVEC.set(
-                4 + I + I, 2, COMS["SCL"].WSCL / COMS["SCL"].GSCL)
+                4 + II + II, 2, COMS["SCL"].WSCL / COMS["SCL"].GSCL)
     COMS["FIT"].NFEW = 0
 
 
@@ -1000,8 +992,8 @@ def parameter_error_bars(COVAR, NP):
     # gets the error bars from the diag of the covarience matrix
     SMALL = 1.e-20
     parameter_error = vec(NP)
-    for I in get_range(1, NP):
-        parameter_error.set(I, sqrt(2.0 * abs(COVAR(I, I)) + SMALL))
+    for II in get_range(1, NP):
+        parameter_error.set(II, sqrt(2.0 * abs(COVAR(II, II)) + SMALL))
     return parameter_error
 
 
@@ -1010,8 +1002,8 @@ def ERRBAR(COVAR, NP):
     # gets the error bars from the diag of the covarience matrix
     SMALL = 1.0E-20
     SIGPAR = vec(NP)
-    for I in get_range(1, NP):
-        SIGPAR.set(I, sqrt(2.0 * abs(COVAR(I, I)) + SMALL))
+    for II in get_range(1, NP):
+        SIGPAR.set(II, sqrt(2.0 * abs(COVAR(II, II)) + SMALL))
     return SIGPAR
 
 
@@ -1119,12 +1111,12 @@ def PRBOUT(P, NP, NQ):
     POUT = matrix_2(4, m_sp)
     J = NQ
     SM = 0.0
-    for I in get_range(1, NP):
-        SM = SM + pow(10.0, P(I, J) - P(NP, J))
+    for II in get_range(1, NP):
+        SM = SM + pow(10.0, P(II, J) - P(NP, J))
     PLMAX = max([P(3, J), P(4, J)])
-    for I in get_range(1, NP):
-        P.set(I, J, P(I, J) - PLMAX)
+    for II in get_range(1, NP):
+        P.set(II, J, P(II, J) - PLMAX)
 
-    for I in get_range(1, NP):
-        POUT.set(I, J, P(I, J))
+    for II in get_range(1, NP):
+        POUT.set(II, J, P(II, J))
     return P, POUT
