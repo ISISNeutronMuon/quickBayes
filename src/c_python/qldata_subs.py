@@ -285,7 +285,7 @@ def rebin(x_in, y_in, e_in, N_new_bins, N_merged_bins):
             XB.set(N, BNORM * x_value)
             YB.set(N, 0.0)
             if K > 0:
-                YB.set(I, BNORM * y_value)  # normalise data
+                YB.set(II, BNORM * y_value)  # normalise data
     return XB, YB
 
 
@@ -387,11 +387,11 @@ def bin_resolution(N_bin, IREAD, IDUF, COMS, store, lptfile):
             data.set(II + 1, SPLINT(XX, func))
         if -XX > XBMIN:
 
-            data.set(COMS["FFT"].NFFT + 1 - I, SPLINT(-XX, func))
+            data.set(COMS["FFT"].NFFT + 1 - II, SPLINT(-XX, func))
         # set phases
-        COMS["FFT"].TWOPIK.set(I, TWOPIN * float(I - 1)
+        COMS["FFT"].TWOPIK.set(II, TWOPIN * float(II - 1)
                                )  # looks to be the phase
-        COMS["res_data"].phases.set(I, TWOPIN * float(I - 1))
+        COMS["res_data"].phases.set(II, TWOPIN * float(II - 1))
     COMS["FFT"].TWOPIK.set(int(COMS["FFT"].NFFT / 2) + 1,
                            TWOPIN * float(COMS["FFT"].NFFT / 2))
     COMS["res_data"].phases.set(
