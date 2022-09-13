@@ -71,7 +71,7 @@ def rm_BG(x_bin, y_bin, N_bin, YMAX, LST, COMS, store, lptfile):
     # greater than some ref value
     # that is also in the x range
 
-    def check_data_from_below(XB, YB, Y0, XDMIN, I):
+    def check_data_from_below(XB, YB, Y0, XDMIN, II):
         return YB(II) >= Y0 and XB(II) > XDMIN
 
     II = find_index((x_bin, y_bin, Y0, XDMIN), 1, N_bin, check_data_from_below)
@@ -81,7 +81,7 @@ def rm_BG(x_bin, y_bin, N_bin, YMAX, LST, COMS, store, lptfile):
         return YB(II) >= Y0 and XB(II) < XDMAX
 
     II = find_index((x_bin, y_bin, Y0, XDMAX), N_bin,
-                     1, check_data_from_above, step=-1)
+                    1, check_data_from_above, step=-1)
     XMAX = x_bin(II)
 
     # get x range of interesting values
@@ -139,17 +139,18 @@ def rm_BG(x_bin, y_bin, N_bin, YMAX, LST, COMS, store, lptfile):
     II = find_index((x_bin, XMIN), 1, N_bin, check_data_x_min)
     IMIN = II
 
-    def check_data_x_max(XB, XMAX, I):
-        return XB(I) <= XMAX
+    def check_data_x_max(XB, XMAX, II):
+        return XB(II) <= XMAX
+
     II = find_index((x_bin, XMAX), N_bin, 1, check_data_x_max, step=-1)
     IMAX = II
 
     BG1 = 0.0
     BG2 = 0.0
     # get mean value for 5 bins (that are in range) closest to min/max
-    for I in get_range(1, 5):
-        BG1 = BG1 + y_bin(IMIN + I - 1)
-        BG2 = BG2 + y_bin(IMAX - I + 1)
+    for II in get_range(1, 5):
+        BG1 = BG1 + y_bin(IMIN + II - 1)
+        BG2 = BG2 + y_bin(IMAX - II + 1)
     BG1 = BG1 / 5.0
     BG2 = BG2 / 5.0
 
@@ -158,8 +159,8 @@ def rm_BG(x_bin, y_bin, N_bin, YMAX, LST, COMS, store, lptfile):
     DB = (BG2 - BG1) / float(max(IMAX - IMIN - 4, 1))
     BG = BG1
     # Remove BG value from data
-    for I in get_range(IMIN, IMAX):
-        y_bin.set(I, y_bin(I) - BG)
+    for II in get_range(IMIN, IMAX):
+        y_bin.set(II, y_bin(II) - BG)
         BG = BG + DB
 
     return XMIN, XMAX, y_bin
@@ -267,13 +268,13 @@ def rebin(x_in, y_in, e_in, N_new_bins, N_merged_bins):
     SMALL = 1.0E-20
     BNORM = 1.0 / float(N_merged_bins)
     N = 0
-    for I in get_range(1, N_new_bins, N_merged_bins):  # new binning
+    for II in get_range(1, N_new_bins, N_merged_bins):  # new binning
         N += 1
         x_value = 0.0
         y_value = 0.0
         K = 0
         for J in get_range(0, N_merged_bins - 1):  # loop over bins in new bin
-            IJ = I + J
+            IJ = II + J
             if IJ <= N_new_bins:
 
                 x_value += x_in(IJ)
@@ -301,13 +302,13 @@ def BINBLR(WX, WY, WE, NB, NBIN):
     SMALL = 1.0E-20
     BNORM = 1.0 / float(NBIN)
 
-    for I in get_range(1, NB, NBIN):  # new binning
+    for II in get_range(1, NB, NBIN):  # new binning
         N = N + 1
         XXD = 0.0
         DD = 0.0
         K = 0
         for J in get_range(0, NBIN - 1):  # loop over bins in new bin
-            IJ = I + J
+            IJ = II + J
             if IJ <= NB:
 
                 XXD = XXD + WX(IJ)
@@ -380,10 +381,10 @@ def bin_resolution(N_bin, IREAD, IDUF, COMS, store, lptfile):
     data.set(1, SPLINT(XX, func))
 
     # use symmetry to have the range we need to loop
-    for I in get_range(1, int(COMS["FFT"].NFFT / 2)):
+    for II in get_range(1, int(COMS["FFT"].NFFT / 2)):
         XX += bin_width
         if XX < XBMAX:
-            data.set(I + 1, SPLINT(XX, func))
+            data.set(II + 1, SPLINT(XX, func))
         if -XX > XBMIN:
 
             data.set(COMS["FFT"].NFFT + 1 - I, SPLINT(-XX, func))
@@ -405,9 +406,9 @@ def bin_resolution(N_bin, IREAD, IDUF, COMS, store, lptfile):
     COMS["res_data"].FTY.copy(out)
 
     # some rotations?
-    for I in get_range(3, COMS["FFT"].NFFT, 4):
-        COMS["FFT"].FRES.set(I, -COMS["FFT"].FRES(I))
-        COMS["FFT"].FRES.set(I + 1, -COMS["FFT"].FRES(I + 1))
+    for II in get_range(3, COMS["FFT"].NFFT, 4):
+        COMS["FFT"].FRES.set(II, -COMS["FFT"].FRES(II))
+        COMS["FFT"].FRES.set(II + 1, -COMS["FFT"].FRES(II + 1))
 
     for k in get_range(2, COMS["res_data"].N_FT, 2):
         COMS["res_data"].FTY.set(k, -COMS["res_data"].FTY(k))
@@ -738,11 +739,11 @@ def refine_matrices(COMS, GRAD, HESS, NP,
     HESS.set(3, 4, tmp)
     HESS.set(4, 3, tmp)
 
-    for I in get_range(1, COMS["FIT"].NFEW):
-        J = 3 + I + I
+    for II in get_range(1, COMS["FIT"].NFEW):
+        J = 3 + II + II
         AJ = COMS["FIT"].FITP(J) * COMS["SCL"].ASCL
 
-        tmp = VMLTRC(COMS["FIT"].EXPF.output_range(1, I, end=NFT2 + 2),
+        tmp = VMLTRC(COMS["FIT"].EXPF.output_range(1, II, end=NFT2 + 2),
                      compress(COMS["GRD"].FR2PIK.output_range(1, 1,
                                                               2 * (2 + NFT2))))
 
@@ -912,11 +913,11 @@ def REFINE_0(COMS, GRAD, HESS, NP,
             1, 1, end=COMS["DATA"].NDAT + 1), COMS["DATA"].NDAT - 1)
     HESS.set(3, 4, tmp)
     HESS.set(4, 3, tmp)
-    for I in get_range(1, COMS["FIT"].NFEW):
-        J = 3 + I + I
+    for II in get_range(1, COMS["FIT"].NFEW):
+        J = 3 + II + II
         AJ = COMS["FIT"].FITP(J) * COMS["SCL"].ASCL
 
-        tmp = VMLTRC(COMS["FIT"].EXPF.output_range(1, I, end=NFT2 + 2),
+        tmp = VMLTRC(COMS["FIT"].EXPF.output_range(1, II, end=NFT2 + 2),
                      compress(COMS["GRD"].FR2PIK.output_range(1, 1,
                                                               2 *
                                                               (2 + NFT2))))
@@ -1051,9 +1052,9 @@ def record_fit_results(COMS, SIGPAR, Chi2, store, lptfile):
         53,
         f'Amplitude  =   {parameters[-1]:13.4e}  +- {parameter_errors[-1]:11.3e} ')  # noqa E501
 
-    for I in get_range(1, COMS["FIT"].NFEW):
-        J = 4 + I + I
-        store.write(53, f' Quasi-elastic line {I}')
+    for II in get_range(1, COMS["FIT"].NFEW):
+        J = 4 + II + II
+        store.write(53, f' Quasi-elastic line {II}')
 
         parameters.append(2.0 * COMS["FIT"].FITP(J) * COMS["SCL"].WSCL)
         parameter_errors.append(
@@ -1102,9 +1103,9 @@ def SEEFIT(COMS, SIGPAR, CNORM, store, lptfile):
         f'Amplitude  =   {COMS["FIT"].FITP(3)*COMS["SCL"].ASCL:13.4e}  +- {SIGPAR(3)*COMS["SCL"].ASCL*ERRSCL:11.3e} ')  # noqa E501
     PRMSV.append(COMS["FIT"].FITP(3) * COMS["SCL"].ASCL)
     SIGSV.append(SIGPAR(3) * COMS["SCL"].ASCL * ERRSCL)
-    for I in get_range(1, COMS["FIT"].NFEW):
-        J = 4 + I + I
-        store.write(53, f' Quasi-elastic line {I}')
+    for II in get_range(1, COMS["FIT"].NFEW):
+        J = 4 + II + II
+        store.write(53, f' Quasi-elastic line {II}')
         store.write(
             53,
             f' FWHM        =   {2000*COMS["FIT"].FITP(J)*COMS["SCL"].WSCL:13.2f}  +- {2000*SIGPAR(J)*COMS["SCL"].WSCL*ERRSCL:11.2f} ueV')  # noqa E501
@@ -1131,13 +1132,13 @@ def OUTPRM(P, C, NP, NFEW, CNORM, store, files):
         NFEW,
         f'{P(3):13.4e}   {P(1):13.4e}   {P(2):13.4e}   {P(4):13.4e}')
 
-    for I in get_range(5, NP, 2):
-        store.write(NFEW, f'{P(I):13.4e}   {P(I+1):13.4e}')
+    for II in get_range(5, NP, 2):
+        store.write(NFEW, f'{P(II):13.4e}   {P(II+1):13.4e}')
 
     CSCALE = 2.0 * CNORM
     for J in get_range(1, NP):
-        for I in get_range(1, NP):
-            C.set(I, J, CSCALE * C(I, J))
+        for II in get_range(1, NP):
+            C.set(II, J, CSCALE * C(II, J))
     store.write(NFEW, f'{C(3,3):13.4e}')
     store.write(NFEW, f'{C(3,5):13.4e}   {C(5,5):13.4e}')
     store.write(NFEW, f'{C(3,6):13.4e}   {C(5,6):13.4e}    {C(6,6):13.4e}')
@@ -1222,7 +1223,7 @@ def find_latest_peak(
     tmp_width = COMS["FIT"].FITP(J)
 
     # "minimize" to find the latest peak (and update the previous peaks)
-    for I in get_range(1, N_iterations):
+    for II in get_range(1, N_iterations):
         HESS, COVAR, d_params, DETLOG = refine_param_values(
             GRAD, HESS, 3 + COMS["FIT"].NFEW, DETLOG, INDX, COVAR, COMS,
             fit_and_chi_func, prog, o_bgd, o_w1, o_el, store, lptfile)
@@ -1296,7 +1297,7 @@ def SEARCH(
     COMS["FIT"].FITP.set(J - 1, 0.1)
     COMS["FIT"].FITP.set(J, 1.0)
     SIGJ = COMS["FIT"].FITP(J)
-    for I in get_range(1, NSRCH):
+    for II in get_range(1, NSRCH):
         HESS, COVAR, DPAR, DETLOG = REFINA(
             GRAD, HESS, 3 + COMS["FIT"].NFEW, DETLOG, INDX,
             COVAR, COMS, Chi_func, prog, o_bgd, o_w1,
