@@ -4,6 +4,7 @@ from quasielasticbayes.data import DatCom
 from quasielasticbayes.util import LUDCMP  # noqa: F401
 from quasielasticbayes.bayes_C import bin_shift_vecs  # noqa: F401
 from quasielasticbayes.bayes import bin_offsets  # noqa: F401
+from quasielasticbayes.qldata_subs import rm_BG  # noqa: F401
 
 
 class StuffTest(unittest.TestCase):
