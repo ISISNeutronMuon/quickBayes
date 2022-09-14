@@ -757,7 +757,7 @@ def FileInit(Nu, ISP, COMS, store, files):
         store.close(unit=n)
 
 
-def set_sacle_factors(N_QE_peaks, scale, COMS, store, prog, lptfile, o_bgd):
+def set_scale_factors(N_QE_peaks, scale, COMS, store, prog, lptfile, o_bgd):
     """
     This seems to assume that a large error -> its BG measurment
     If its a peak the data should dominate the measurment
@@ -889,7 +889,7 @@ def PRINIT(NQMAX, IXSCAL, COMS, store, prog, lptfile, o_bgd):
     If its a peak the data should dominate the measurment and
     the error is small
     """
-    # set_sacle_factors
+    # set_scale_factors
     if IXSCAL <= 1:
         SMALL = 1.0E-10
         SM = 0.0

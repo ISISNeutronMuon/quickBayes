@@ -49,7 +49,9 @@ def get_cython_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.bayes':
             ['bayes.py'],
         f'{PACKAGE_NAME}.qldata_subs':
-            ['qldata_subs.py']
+            ['qldata_subs.py'],
+        f'{PACKAGE_NAME}.qldata_main':
+            ['qldata_main.py']
         }
     return cythonize([create_extension(name,
                       source_paths(str(join('src', 'c_python')), sources)) for
