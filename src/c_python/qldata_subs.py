@@ -15,15 +15,14 @@ from quasielasticbayes.four_python import (
 
 from quasielasticbayes.bayes import (
     REFINA,
-    GRADPR,
-    DEGRID,
+    construct_gradients,
     complex_shift,
     VMLTRC,
     VMLTIC,
     bin_shift,
     VRDOTR,
     HESS0,
-    HESS1,
+    make_hessian,
     INVERT,
     refine_param_values)
 
@@ -685,7 +684,7 @@ def refine_matrices(COMS, GRAD, HESS, NP,
     NFT2 = int(COMS["FFT"].NFFT / 2) + 1
     NDAT = COMS["DATA"].NDAT
     NFFT = COMS["FFT"].NFFT
-    _ = CCHI(COMS["FIT"].FITP, COMS, o_bgd, o_w1)
+    _ = construct_fit_and_chi(COMS["FIT"].FITP, COMS, o_bgd, o_w1)
     HESS = Matrix_2D(NP, NP)
 
     # update freq copy
@@ -830,12 +829,12 @@ def refine_matrices(COMS, GRAD, HESS, NP,
         HESS.set(J + 1, J + 1, -AJ * SM)
 
     GRAD.copy(
-              GRADPR(COMS["FIT"].RESID, NDAT, NP,
-                     COMS["SCL"].SCLVEC, COMS, col=2))
+              construct_gradients(COMS["FIT"].RESID, NDAT, NP,
+                                  COMS["SCL"].SCLVEC, COMS, col=2))
 
-    HESS = HESS1(NP, COMS["SCL"].SCLVEC.output_col(2),
-                 STEPSZ, COMS["FIT"].NFEW, prog, COMS, o_el,
-                 HESS=HESS)
+    HESS = make_hessian(NP, COMS["SCL"].SCLVEC.output_col(2),
+                        STEPSZ, COMS["FIT"].NFEW, prog, COMS,
+                        o_el, HESS)
 
     if o_w1 == 1 and NP > 6:
         DIF = COMS["SCL"].WSCL * \
@@ -862,169 +861,6 @@ def REFINE(COMS, GRAD, HESS,
                            prog)
 
 
-def REFINE_0(COMS, GRAD, HESS, NP,
-             DETLOG, INDX, COVAR, STEPSZ,
-             o_bgd, o_w1, o_el, prog):
-
-    NFT2 = int(COMS["FFT"].NFFT / 2) + 1
-    _ = CCHI(COMS["FIT"].FITP, COMS, o_bgd, o_w1)
-    HESS = Matrix_2D(NP, NP)
-    tmp = VMLTRC(
-                 COMS["WORK"].WORK.output_range(1, 1, end=NFT2 + 1),
-                 compress(COMS["GRD"].FR2PIK.output_range(1, 2,
-                                                          end=2 * NFT2 + 2)))
-
-    COMS["FFT"].FWRK.copy(flatten(tmp))
-    tmp = VMLTRC(COMS["FFT"].TWOPIK.output_range(end=NFT2 + 1),
-                 compress(COMS["FFT"].FWRK.output_range(end=2 * (NFT2 + 2))))
-    COMS["WORK"].WORK.copy(flatten(tmp))
-
-    tmp = compress(COMS["WORK"].WORK.output_range(1, 1, 2 * (NFT2 + 1)))
-    COMS["WORK"].WORK.copy(flatten(VMLTIC(tmp)))
-    tmp = FOUR2(COMS["FFT"].FWRK, COMS["FFT"].NFFT, 1, -1, -1)
-    COMS["FFT"].FWRK.copy(flatten(tmp))
-    COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK, COMS), 1, 4)
-    tmp = FOUR2(COMS["WORK"].WORK, COMS["FFT"].NFFT, 1, -1, -1)
-    COMS["WORK"].WORK.copy(flatten(tmp))
-
-    COMS["FFT"].FWRK.copy(DEGRID(COMS["WORK"].WORK.output_as_vec(), COMS))
-
-    HESS.set(
-        4, 4, VRDOTR(
-            COMS["FIT"].RESID.output_range(
-                end=COMS["DATA"].NDAT), COMS["FFT"].FWRK.output_range(
-                end=COMS["DATA"].NDAT), COMS["DATA"].NDAT - 1))
-    COMS["FFT"].FWRK.copy(
-        COMS["GRD"].FR2PIK.output_range(
-            1, 1, end=COMS["FFT"].NFFT + 2))
-    tmp = FOUR2(COMS["FFT"].FWRK, COMS["FFT"].NFFT, 1, -1, -1)
-    COMS["FFT"].FWRK.copy(flatten(tmp))
-    COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK, COMS), 1, 3)
-
-    COMS["FFT"].FWRK.copy(
-        COMS["GRD"].FR2PIK.output_range(
-            1, 2, end=COMS["FFT"].NFFT + 2))
-    tmp = FOUR2(COMS["FFT"].FWRK, COMS["FFT"].NFFT, 1, -1, -1)
-    COMS["FFT"].FWRK.copy(flatten(tmp))
-    COMS["WORK"].WORK.copy(DEGRID(COMS["FFT"].FWRK, COMS), 1, 1)
-    tmp = VRDOTR(
-        COMS["FIT"].RESID.output_range(
-            end=COMS["DATA"].NDAT), COMS["WORK"].WORK.output_range(
-            1, 1, end=COMS["DATA"].NDAT + 1), COMS["DATA"].NDAT - 1)
-    HESS.set(3, 4, tmp)
-    HESS.set(4, 3, tmp)
-    for II in get_range(1, COMS["FIT"].NFEW):
-        J = 3 + II + II
-        AJ = COMS["FIT"].FITP(J) * COMS["SCL"].ASCL
-
-        tmp = VMLTRC(COMS["FIT"].EXPF.output_range(1, II, end=NFT2 + 2),
-                     compress(COMS["GRD"].FR2PIK.output_range(1, 1,
-                                                              2 *
-                                                              (2 + NFT2))))
-
-        COMS["WORK"].WORK.copy(flatten(tmp))
-        COMS["FFT"].FWRK.copy(
-            COMS["WORK"].WORK.output_range(
-                1, 1, COMS["FFT"].NFFT + 2))
-        tmp = FOUR2(COMS["FFT"].FWRK, COMS["FFT"].NFFT, 1, -1, -1)
-        COMS["FFT"].FWRK.copy(flatten(tmp))
-        COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK, COMS), 1, J)
-        tmp = VMLTRC(COMS["FFT"].TWOPIK.output_range(end=NFT2), compress(
-            COMS["WORK"].WORK.output_range(1, 1, 2 * (NFT2 + 1))))
-        COMS["FFT"].FWRK.copy(flatten(tmp))
-        COMS["WORK"].WORK.copy(
-            COMS["FFT"].FWRK.output_range(
-                end=COMS["FFT"].NFFT + 2))
-        tmp = FOUR2(COMS["FFT"].FWRK, COMS["FFT"].NFFT, 1, -1, -1)
-        COMS["FFT"].FWRK.copy(flatten(tmp))
-        # -> this changes the result (corrct if the above is commented out)
-        COMS["GRD"].DDDPAR.copy(DEGRID(COMS["FFT"].FWRK, COMS), 1, J + 1)
-
-        tmp, HESS = HESS0(HESS,
-                          COMS["FIT"].RESID.output_range(
-                              end=COMS["DATA"].NDAT),
-                          COMS["GRD"].DDDPAR.output_range(1, J + 1,
-                                                          COMS["DATA"].NDAT
-                                                          + 1),
-                          AJ, J, COMS['DATA'].NDAT)
-
-        COMS["GRD"].DDDPAR.copy(tmp, 1, J + 1)
-
-        tmp = compress(COMS["WORK"].WORK.output_range(1, 1, 2 * (NFT2 + 1)))
-        COMS["WORK"].WORK.copy(flatten(VMLTIC(tmp)))
-        COMS["FFT"].FWRK.copy(
-            COMS["WORK"].WORK.output_range(
-                1, 1, end=COMS["FFT"].NFFT + 3))
-        tmp = FOUR2(COMS["FFT"].FWRK, COMS["FFT"].NFFT, 1, -1, -1)
-        COMS["FFT"].FWRK.copy(flatten(tmp))
-        COMS["WORK"].WORK.copy(DEGRID(COMS["FFT"].FWRK, COMS), 1, 2)
-        tmp = VRDOTR(
-            COMS["FIT"].RESID.output_range(
-                end=COMS["DATA"].NDAT + 1),
-            COMS["WORK"].WORK.output_range(
-                1,
-                2,
-                end=COMS["DATA"].NDAT + 2),
-            COMS["DATA"].NDAT - 1)
-        HESS.set(4, J, tmp)
-        HESS.set(J, 4, tmp)
-
-        tmp = VMLTRC(COMS["FFT"].TWOPIK.output_range(end=NFT2), compress(
-            COMS["WORK"].WORK.output_range(1, 1, 2 * (NFT2 + 1))))
-        COMS["FFT"].FWRK.copy(flatten(tmp))
-        COMS["WORK"].WORK.copy(
-            COMS["FFT"].FWRK.output_range(
-                1, end=COMS["FFT"].NFFT + 2))
-        tmp = FOUR2(COMS["FFT"].FWRK, COMS["FFT"].NFFT, 1, -1, -1)
-        COMS["FFT"].FWRK.copy(flatten(tmp))
-        COMS["WORK"].WORK.copy(DEGRID(COMS["FFT"].FWRK, COMS), 1, 2)
-        SM = VRDOTR(
-            COMS["FIT"].RESID.output_range(
-                end=COMS["DATA"].NDAT + 1),
-            COMS["WORK"].WORK.output_range(
-                1,
-                2,
-                end=COMS["DATA"].NDAT + 2),
-            COMS["DATA"].NDAT - 1)
-        HESS.set(4, J + 1, -AJ * SM)
-        HESS.set(J + 1, 4, -AJ * SM)
-
-        tmp = compress(COMS["WORK"].WORK.output_range(1, 1, 2 * (NFT2)))
-        COMS["WORK"].WORK.copy(flatten(VMLTIC(tmp)))
-        tmp = FOUR2(COMS["WORK"].WORK, COMS["FFT"].NFFT, 1, -1, -1)
-        COMS["WORK"].WORK.copy(flatten(tmp))
-        COMS["FFT"].FWRK.copy(DEGRID(COMS["WORK"].WORK, COMS), 1)
-        SM = VRDOTR(
-            COMS["FIT"].RESID.output_range(
-                end=COMS["DATA"].NDAT), COMS["FFT"].FWRK.output_range(
-                1, end=COMS["DATA"].NDAT), COMS["DATA"].NDAT)  # RSID is wrong!
-        HESS.set(J + 1, J + 1, -AJ * SM)
-
-    GRAD.copy(
-        GRADPR(
-            COMS["FIT"].RESID, COMS["DATA"].NDAT,
-            NP, COMS["SCL"].SCLVEC,
-            COMS, col=2))
-
-    HESS = HESS1(NP,
-                 COMS["SCL"].SCLVEC.output_col(2),
-                 STEPSZ, COMS["FIT"].NFEW,
-                 prog, COMS, o_el, HESS=HESS)
-
-    if o_w1 == 1 and NP > 6:
-        DIF = COMS["SCL"].WSCL * \
-            COMS["FIT"].FITP(6) - COMS["QW1"].QW1(COMS["QW1"].ISPEC)
-        SIG2 = 2.0 / pow(COMS["QW"].SIGQW1(COMS["QW"].ISPEC), 2)
-        GRAD.set(6, GRAD(6) + SIG2 * DIF * COMS["SCL"].WSCL)
-        HESS.set(6, 6, HESS(6, 6) + SIG2 * pow(COMS["SCL"].WSCL, 2))
-    covar_default = 1.
-    # if prog == 's':
-    #    cov = 2.0
-    HESS, COVAR, DETLOG = INVERT(NP, INDX, covar_default, HESS)
-    return HESS, COVAR, DETLOG
-
-
-# ***<see the fit>*******************************************************
 def record_fit_results(COMS, SIGPAR, Chi2, store, lptfile):
     store.open(53, lptfile)
     scale_error = sqrt(Chi2)

@@ -118,6 +118,8 @@ class QLdataTest(unittest.TestCase):
                     self.assertAlmostEqual(ref, yprob[k])
                 else:
                     self.assertAlmostEqual(1.0, yprob[k]/ref, places=1)
+            # this is here for checking I have got all of the deprications
+            # self.assertEqual(1,3)
 
 
 if __name__ == '__main__':
