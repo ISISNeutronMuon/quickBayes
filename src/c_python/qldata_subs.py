@@ -695,7 +695,7 @@ def find_latest_peak(COMS, GRAD, HESS, d_params, INDX, COVAR, o_w1,
     J = 4 + 2 * COMS["FIT"].NFEW
     weight = 0.85
     N_iterations = NINT(np.log(5.0 * COMS["SCL"].GSCL /
-                                COMS["SCL"].WSCL) /
+                               COMS["SCL"].WSCL) /
                         np.log(weight))  # int(5*log(offset/width)/log(0.85))
     CMIN = 1.0E20
     COMS["FIT"].FITP.set(J - 1, 0.1)
