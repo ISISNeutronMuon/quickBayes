@@ -263,7 +263,7 @@ def _QLdata(
         IAGAIN = 0
         delta_chi_threshold = 0.003
         # optimization steps
-        for I in get_range(1, 200):
+        for II in get_range(1, 200):
 
             HESS, COVAR, DETLOG = REFINE(
                 COMS, GRAD, HESS, NPARMS, DETLOG, INDX, COVAR,
@@ -337,8 +337,8 @@ def _QLdata(
             eout.set(n, 0.0)
 
     PRBSV, POUT = PRBOUT(PRBSV, 4, ISP)
-    for l in get_range(1, 4):
-        yprob.set(l, POUT(l, ISP))
+    for k in get_range(1, 4):
+        yprob.set(k, POUT(k, ISP))
 
     store.dump(overwrite)
     return (nd_out, xout.output(), yout.output(),
