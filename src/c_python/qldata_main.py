@@ -8,7 +8,7 @@ from quasielasticbayes.data import (
     DatCom,
     Dintrp,
     FitCom,
-    data_object,
+    Data_Object,
     SCLCom,
     GRDCom,
     QW1Com,
@@ -61,8 +61,8 @@ def _QLdata(
     COMS["DATA"] = DatCom(m_d, m_sp)
     COMS["Dintrp"] = Dintrp(m_d)
     COMS["FIT"] = FitCom(m_d, m_p, m_d1)
-    COMS["res_data"] = data_object(m_d, m_d1, m_d2)
-    COMS["sample_data"] = data_object(m_d, m_d1, m_d2)
+    COMS["res_data"] = Data_Object(m_d, m_d1, m_d2)
+    COMS["sample_data"] = Data_Object(m_d, m_d1, m_d2)
     COMS["SCL"] = SCLCom(m_p)
     COMS["GRD"] = GRDCom(m_d2, m_d, m_p)
     COMS["QW1"] = QW1Com(m_sp)

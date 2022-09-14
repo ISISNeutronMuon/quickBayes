@@ -1,8 +1,19 @@
 from quasielasticbayes.fortran_python import Vec, Matrix_2D, C_Vec, C_Matrix_2D
 
 
-class DatCom(object):
+"""
+These are all classes to replicate the
+globals in fortran. It allows the easy
+passing of multiple parameters. The names
+are chosen to be the same as fortran's.
+"""
 
+
+class DatCom(object):
+    """
+    DatCom contains the data
+    that is read in.
+    """
     def __init__(self, m_d, m_sp):
         self.XDAT = C_Vec(m_d)
         self.DAT = C_Vec(m_d)
@@ -16,12 +27,19 @@ class DatCom(object):
 
 
 class Dintrp(object):
+    """
+    Dintrp is related to rebinning
+    """
     def __init__(self, m_d):
         self.IPDAT = C_Vec(m_d)  # indicies for mapping to original bins
         self.XPDAT = C_Vec(m_d)  # fractional bin offsets
 
 
 class ModParams(object):
+    """
+    ModParams sets some variables
+    for the data range and norm
+    """
     def __init__(self):
         self.NBIN = 0
         self.IMIN = 0  # min energy
@@ -31,6 +49,9 @@ class ModParams(object):
 
 
 class FFTCom(object):
+    """
+    FFTCom is for the FFT data
+    """
     def __init__(self, m_d, m_d1, m_d2):
         self.FRES = C_Vec(m_d2)
         self.FWRK = C_Vec(m_d2)
@@ -39,7 +60,13 @@ class FFTCom(object):
         self.NFFT = 0
 
 
-class data_object(object):
+class Data_Object(object):
+    """
+    Data_Object is a first pass at replacing
+    some of the other classes in this file.
+    It is intended to give clearer
+    member names for a given data set.
+    """
     def __init__(self, m_d, m_d1, m_d2):
         self.x_data = C_Vec(m_d)
         self.y_data = C_Vec(m_d)
@@ -56,6 +83,10 @@ class data_object(object):
 
 
 class FitCom(object):
+    """
+    FitCom is to store the fitting
+    information.
+    """
     def __init__(self, m_d, m_p, m_d1):
         self.FIT = C_Vec(m_d)
         self.RESID = C_Vec(m_d)  # residuals
@@ -65,6 +96,10 @@ class FitCom(object):
 
 
 class GRDCom(object):
+    """
+    GRDCom, I assume GRD is gradient.
+    Not sure how the members are related.
+    """
     def __init__(self, m_d2, m_d, m_p):
         # components of fit convolved with resolution
         self.DDDPAR = C_Matrix_2D(m_d, m_p)
@@ -73,6 +108,9 @@ class GRDCom(object):
 
 
 class ModResidual(object):
+    """
+    ModResiduals has the residual values
+    """
     def __init__(self, m_d):
         self.ntr = 0
         self.xres = C_Vec(m_d)
@@ -84,6 +122,10 @@ class ModResidual(object):
 
 
 class QW1Com(object):
+    """
+    QW1Com contains the Q information
+    for the calculation
+    """
     def __init__(self, m_sp):
         self.QW1 = C_Vec(m_sp)
         self.SIGQW1 = C_Vec(m_sp)
@@ -91,7 +133,12 @@ class QW1Com(object):
 
 
 class SCLCom(object):
-    # These are all scale factors
+    """
+    SCLCom are the scale factors.
+    These exist to make the fit easier
+    as the scaled data will always have
+    similar values (e.g. amplitude of 1).
+    """
     def __init__(self, m_p):
         self.BSCL = 0  # background
         self.ASCL = 0  # amplitude
@@ -101,10 +148,17 @@ class SCLCom(object):
 
 
 class STEXP(object):
+    """
+    this might not be needed
+    """
     def __init__(self):
         self.BETEXP = 1
 
 
 class WRKCom(object):
+    """
+    WRKCom just seems to be a matrix for
+    storing some values.
+    """
     def __init__(self, m_d2):
         self.WORK = Matrix_2D(m_d2, 2)
