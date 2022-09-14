@@ -220,14 +220,14 @@ def _QLdata(
             store.close(unit=n)
     IDUF = 0
     # rebin + FFT of splined data -> make bins even spaced
-    XBLR, YBLR = bin_resolution(NB, 0, IDUF, COMS, store, lptfile)
+    XBLR, YBLR, IDUF = bin_resolution(NB, 0, IDUF, COMS, store, lptfile)
 
     bin_offsets(COMS)
     normalize_x_range(COMS)  # record fractional original x bins
     # read in sample data and rebin it to even bins
     IDUF = calculate_sample_bins(ISP, DTNORM, efix, ntc, COMS, store, lptfile)
     # get inverse FFT for resolution data (if IDUF !=0)
-    XBLR, YBLR = bin_resolution(NB, ISP, IDUF, COMS, store, lptfile)
+    XBLR, YBLR, IDUF = bin_resolution(NB, ISP, IDUF, COMS, store, lptfile)
 
     if IDUF != 0:
         LGOOD.set(ISP, False)

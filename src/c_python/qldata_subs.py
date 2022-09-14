@@ -14,7 +14,6 @@ from quasielasticbayes.four_python import (
     flatten, compress, FOUR2, FOUR3, FOUR2_raw)
 
 from quasielasticbayes.bayes import (
-    REFINA,
     construct_gradients,
     complex_shift,
     VMLTRC,
@@ -29,22 +28,6 @@ from quasielasticbayes.bayes import (
 from math import sqrt
 import numpy as np
 from scipy.interpolate import interp1d
-
-
-# import cython
-# "cimport" is used to import special compile-time information
-# about the numpy module (this is stored in a file numpy.pxd which is
-# currently part of the Cython distribution).
-# cimport numpy as np
-# It's necessary to call "import_array" if you use any part of the
-# numpy PyArray_* API. From Cython 3, accessing attributes like
-# ".shape" on a typed Numpy array use this API. Therefore we recommend
-# always calling "import_array" whenever you "cimport numpy"
-# np.import_array()
-
-"""
-<numerical recipes routines>****************************************
-"""
 
 
 def SPLINE(X, Y, N, YP1, YPN, Y2):
@@ -62,7 +45,6 @@ def SPLINT(X, func):
 
 
 def rm_BG(x_bin, y_bin, N_bin, YMAX, LST, COMS, store, lptfile):
-    # DATA XDAT NDAT, FFT XJ, N
     XDMIN = COMS["DATA"].XDAT(1)
     XDMAX = COMS["DATA"].XDAT(COMS["DATA"].NDAT)
     Y0 = YMAX / 10.0
@@ -168,90 +150,6 @@ def rm_BG(x_bin, y_bin, N_bin, YMAX, LST, COMS, store, lptfile):
 @deprecated
 def XGINIT(XB, YB, NB, YMAX, LST, COMS, store, lptfile):
     return rm_BG(XB, YB, NB, YMAX, LST, COMS, store, lptfile)
-    # XDMIN=COMS["DATA"].XDAT(1)
-    # XDMAX=COMS["DATA"].XDAT(COMS["DATA"].NDAT)
-    # Y0=YMAX/10.0
-    # these two check seem to be finiding the first y value greater
-    # than some ref value
-    # that is also before the x range
-    # def check_data_from_below(XB, YB, Y0, XDMIN, I):
-    #     return YB(I)>=Y0 and XB(I)>XDMIN
-    # I = find_index((XB, YB, Y0, XDMIN),1, NB, check_data_from_below)
-
-    # XMIN=XB(I)
-    # def check_data_from_above(XB, YB, Y0, XDMAX, I):
-    #    return YB(I)>=Y0 and XB(I)<XDMAX
-    # I = find_index((XB, YB, Y0, XDMAX),NB,1, check_data_from_above, step=-1)
-    # XMAX=XB(I)
-
-    # this section seems to get values for FFT
-    # BWIDTH=XMAX-XMIN
-    # DXJ=BWIDTH/20.0
-
-    # AXMAX=abs(COMS["DATA"].XDAT(1))
-    # if abs(COMS["DATA"].XDAT(COMS["DATA"].NDAT))>AXMAX:
-    #   AXMAX=abs(COMS["DATA"].XDAT(COMS["DATA"].NDAT))
-    # XNDMAX=500.0
-    # if COMS["DATA"].NDAT > int(XNDMAX):
-    #   XNDMAX=float(COMS["DATA"].NDAT)
-
-    # DXDAT=2.0*AXMAX/XNDMAX
-    # if DXDAT>DXJ:
-    #   DXJ=DXDAT
-
-    # XNGD=(2.0*AXMAX)/DXJ
-    # NGD=NINT(np.log(XNGD-1.0)/np.log(2.0))+1
-    # NGD=pow(2,NGD)
-
-    # if NGD>m_d:
-    # store.open(53,lptfile)
-    # store.write(53,' ERROR in XGINIT : too many points')
-    # store.close(unit=53)
-    # return
-    # COMS["FFT"].NFFT=NGD
-
-    # set FFT XJ values
-    # COMS["FFT"].XJ.set(1, -DXJ*float(COMS["FFT"].NFFT/2))
-    # for j in get_range(2,COMS["FFT"].NFFT):
-    #    COMS["FFT"].XJ.set(j,COMS["FFT"].XJ(j-1)+DXJ)
-    # get the energy range
-    # XMIN=XMIN-5.0*BWIDTH
-    # XMAX=XMAX+5.0*BWIDTH
-    # if XMIN<XB(1):
-    #   XMIN=XB(1)
-    # if XMAX>XB(NB):
-    #   XMAX=XB(NB)
-    # if XMIN<XDMIN:
-    #   XMIN=XDMIN
-    # if XMAX>XDMAX:
-    #   XMAX=XDMAX
-    # if LST:
-    # store.open(53,lptfile)
-
-    # store.write(53,f' Resolution Range: {XMIN} to {XMAX} ueV')
-    # store.close(unit=53)
-
-    # get x range -> via indices
-    # def check_data_x_min(XB, XMIN, I):
-    #    return  XB(I)>=XMIN
-    # I = find_index((XB, XMIN),1,NB, check_data_x_min)
-    # IMIN=I
-    #
-    # B1=0.0
-    # B2=0.0
-    # get mean value for 5 bins (that are in range) closest to min/max
-    # for I in get_range(1,5):
-    #  B1=B1+YB(IMIN+I-1)
-    #  B2=B2+YB(IMAX-I+1)
-    # B1=B1/5.0
-    # B2=B2/5.0
-    # DB=(B2-B1)/float(max(IMAX-IMIN-4,1)) # no idea where the 4 comes from
-    # B=B1
-    # set uniform increase in YB
-    # for I in get_range(IMIN,IMAX):
-    #  YB.set(I, YB(I)-B)
-    #  B=B+DB
-    # return XMIN, XMAX, YB
 
 
 """
@@ -260,8 +158,6 @@ def XGINIT(XB, YB, NB, YMAX, LST, COMS, store, lptfile):
 
 
 def rebin(x_in, y_in, e_in, N_new_bins, N_merged_bins):
-    """
-    """
     XB = Vec(N_new_bins)
     YB = Vec(N_new_bins)
     SMALL = 1.0E-20
@@ -290,36 +186,7 @@ def rebin(x_in, y_in, e_in, N_new_bins, N_merged_bins):
 
 @deprecated
 def BINBLR(WX, WY, WE, NB, NBIN):
-    """
-    Original dat is W* and the output is *B
-    It seems to just be a rebin alg
-    """
-    # return rebin(WX,WY,WE,NB,NBIN)
-    XB = Vec(NB)
-    YB = Vec(NB)
-    N = 0
-    SMALL = 1.0E-20
-    BNORM = 1.0 / float(NBIN)
-
-    for II in get_range(1, NB, NBIN):  # new binning
-        N = N + 1
-        XXD = 0.0
-        DD = 0.0
-        K = 0
-        for J in get_range(0, NBIN - 1):  # loop over bins in new bin
-            IJ = II + J
-            if IJ <= NB:
-
-                XXD = XXD + WX(IJ)
-                if WE(IJ) > SMALL:  # only include non-zero errors
-                    K = K + 1
-                    DD = DD + WY(IJ)
-
-            XB.set(N, BNORM * XXD)
-            YB.set(N, 0.0)
-            if K > 0:
-                YB.set(N, BNORM * DD)  # normalise data
-    NB = N
+    rebin(WX, WY, WE, NB, NBIN)
 
 
 def bin_resolution(N_bin, IREAD, IDUF, COMS, store, lptfile):
@@ -354,9 +221,9 @@ def bin_resolution(N_bin, IREAD, IDUF, COMS, store, lptfile):
     if YSUM < SMALL:
         store.open(53, lptfile)
         store.write(53, ' Ysum is too small')
-        # IDUF = 1 check this............
+        IDUF = 1
         store.close(unit=53)
-        return
+        return x_bin, y_bin, IDUF
 
     XBMIN, XBMAX, y_bin = rm_BG(
         x_bin, y_bin, N_bin, YMAX, LSTART, COMS, store, lptfile)
@@ -423,107 +290,16 @@ def bin_resolution(N_bin, IREAD, IDUF, COMS, store, lptfile):
             COMS["res_data"].FTY.output_range(
                 end=COMS["res_data"].N_FT))
         # ##### check this ######
-        # out2 = FOUR3(COMS["res_data"].IFTY, COMS["res_data"].N_FT, 1, -1, -1)
-        _ = FOUR3(COMS["res_data"].IFTY, COMS["res_data"].N_FT, 1, -1, -1)
-        COMS["res_data"].IFTY.copy(out[0:m_d2])
+        out2 = FOUR3(COMS["res_data"].IFTY, COMS["res_data"].N_FT, 1, -1, -1)
+        COMS["res_data"].IFTY.copy(out2[0:m_d2])
 
     LSTART = True
-    return x_bin, y_bin
+    return x_bin, y_bin, IDUF
 
 
 @deprecated
 def BLRINT(NB, IREAD, IDUF, COMS, store, lptfile):
     return bin_resolution(NB, IREAD, IDUF, COMS, store, lptfile)
-    # DER2 = vec(m_d)
-    # LSTART = True
-    # if IREAD==0:
-    #   LSTART=False
-
-    # SMALL=1.0E-20
-    # COMS["FFT"].NFFT=m_d
-    # COMS["res_data"].N_FT = m_d//2
-    # xr = vec(m_d)
-    # yr = vec(m_d)
-    # er = vec(m_d)
-    # copy resolution data
-    # xr.copy(COMS["Res"].xres.output_range(1,NB))
-    # yr.copy(COMS["Res"].yres.output_range(1,NB))
-    # er.copy(COMS["Res"].eres.output_range(1,NB))
-
-    # rebin the resolution data as it is not on an evenly spaced grid
-    # XB, YB = rebin(xr,yr,er,NB,COMS["Res"].nrbin)
-
-    # XDMIN=COMS["DATA"].XDAT(1)
-    # XDMAX=COMS["DATA"].XDAT(COMS["DATA"].NDAT)
-    # YMAX=0.0
-    # YSUM=0.0
-    # get indicies for valid x range
-    # first_index = np.argmax(XB.output() >=XDMIN)+1
-    # last_index = np.argmin(XB.output()<=XDMAX)+1
-
-    # get total and max Y binned values within valid x range
-    # YSUM = np.sum(YB.output_range(first_index, last_index))
-    # YMAX = np.max(YB.output_range(first_index, last_index))
-
-    # if YSUM<SMALL:
-    # store.open(53,lptfile)
-    # store.write(53,' Ysum is too small')
-    # IDUF=1
-    # store.close(unit=53)
-    # return
-
-    # XBMIN, XBMAX, YB = rm_BG(XB,YB,NB,YMAX,LSTART, COMS,store, lptfile) # subtracts BG off YB  # noqa 501
-    # populate FRES with spline of evenly spaced binned data -> data to FFT later  # noqa 501
-    # func=SPLINE(XB,YB,NB,0.0,0.0,DER2)
-    # TWOPIN=2.0*np.pi/float(COMS["FFT"].NFFT)
-    # COMS["FFT"].FRES.fill(0.0, COMS["FFT"].NFFT)
-    # XX=0.0
-    # DXJ=COMS["FFT"].XJ(2)-COMS["FFT"].XJ(1) # bin width
-    # COMS["FFT"].FRES.set(1,SPLINT(XX,func))
-    # SUM=COMS["FFT"].FRES(1)
-    # for I in get_range(1,int(COMS["FFT"].NFFT/2)):#use symmetry to have the range we need to loop  # noqa 501
-    #  XX=XX+DXJ
-    #  if XX < XBMAX:
-    #     COMS["FFT"].FRES.set(I+1,SPLINT(XX,func))
-    #  if -XX > XBMIN:
-    #     COMS["FFT"].FRES.set(COMS["FFT"].NFFT+1-I,SPLINT(-XX,func))
-    #  SUM+=COMS["FFT"].FRES(I+1)+COMS["FFT"].FRES(COMS["FFT"].NFFT+1-I)
-    #  # set phases
-    #  COMS["FFT"].TWOPIK.set(I,TWOPIN*float(I-1)) # looks to be the phase
-    #  COMS["res_data"].phases.set(I,TWOPIN*float(I-1))
-    # COMS["FFT"].TWOPIK.set(int(COMS["FFT"].NFFT/2)+1,TWOPIN*float(COMS["FFT"].NFFT/2))
-    # COMS["res_data"].phases.set(int(COMS["res_data"].N_FT)+1,TWOPIN*float(COMS["res_data"].N_FT))
-
-    # average y value in each bin -> integral of all data is 1
-    # BNORM=1./(SUM*float(COMS["FFT"].NFFT))
-    # tmp = COMS["FFT"].FRES.output_range(1,COMS["FFT"].NFFT)
-    # tmp = tmp*BNORM # scale the splined data
-    # COMS["FFT"].FRES.copy(tmp)
-    # out = FOUR2(COMS["FFT"].FRES, COMS["FFT"].NFFT,1,1,0)
-    # COMS["FFT"].FRES.copy(flatten(out))
-    # COMS["res_data"].FTY.copy(out)
-
-    # some rotations?
-    # for I in get_range(3,COMS["FFT"].NFFT,4):
-    #  COMS["FFT"].FRES.set(I,-COMS["FFT"].FRES(I))
-    #  COMS["FFT"].FRES.set(I+1, -COMS["FFT"].FRES(I+1))
-
-    # for k in get_range(2, COMS["res_data"].N_FT, 2):
-    #    COMS["res_data"].FTY.set(k, -COMS["res_data"].FTY(k))
-
-    # IFT of resolution
-    # if not LSTART:
-    #  tmp = COMS["FFT"].FRES.output_range(end=COMS["FFT"].NFFT+2)
-    #  COMS["FFT"].FWRK.copy(tmp)
-    #  out = FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
-    #  COMS["FFT"].FWRK.copy(flatten(out[0:m_d2]))
-
-    #  COMS["res_data"].IFTY.copy(COMS["res_data"].FTY.output_range(end=COMS["res_data"].N_FT))
-    #  out2 = FOUR2(COMS["res_data"].IFTY, COMS["res_data"].N_FT, 1, -1,-1)
-    #  COMS["res_data"].IFTY.copy(out[0:m_d2])
-
-    # LSTART= True
-    # return XB, YB
 
 
 def construct_fit_and_chi(fit_params, COMS, o_bgd, o_w1):
@@ -594,14 +370,13 @@ def construct_fit_and_chi(fit_params, COMS, o_bgd, o_w1):
     fit_in_original_domain += min_BG + BG_grad * (xdat - X1)  # add BG back in
 
     diff = fit_in_original_domain - data
-    resid = diff * weights  # residuals, sig is a weighting
+    resid = diff * weights  # residuals
     CHI = 0.0
 
     for K in range(COMS["DATA"].NDAT):
         resid[K] = round_sig(round_sig(diff[K]) * round_sig(weights[K]))
         CHI += diff[K] * resid[K]
 
-    # does not match at later indicies -> probably fine
     COMS["FIT"].FIT.copy(fit_in_original_domain)
     COMS["FIT"].RESID.copy(resid)
 
@@ -615,66 +390,6 @@ def construct_fit_and_chi(fit_params, COMS, o_bgd, o_w1):
 @deprecated
 def CCHI(V, COMS, o_bgd, o_w1):
     return construct_fit_and_chi(V, COMS, o_bgd, o_w1)
-    """
-      CHI=0.0
-      B1=COMS["SCL"].BSCL*V(1) # BG 1
-      B2=COMS["SCL"].BSCL*V(2) # BG 2
-      A0=COMS["SCL"].ASCL*V(3) # elastic peak amplitude
-      DELTAX=V(4) # zero offset
-      NFT2=int(COMS["FFT"].NFFT/2+1)
-
-      # get resolution values
-      fres = COMS["res_data"].FTY.output_range(end=NFT2)
-      twopik = COMS["res_data"].phases.output_range(end=NFT2)
-
-      RKEXP, RKEXP2 = CXSHFT(fres, DELTAX, twopik)
-
-      COMS["GRD"].FR2PIK.copy(flatten(RKEXP))
-      COMS["GRD"].FR2PIK.copy(flatten(RKEXP2), 1,2)
-      COMS["WORK"].WORK.fill(A0, NFT2+1)
-      XNSCL=-np.log(1.0E-7)/(COMS["FFT"].TWOPIK(2)-COMS["FFT"].TWOPIK(1))
-      for J in get_range(1,COMS["FIT"].NFEW):
-        AJ=COMS["SCL"].ASCL*V(3+J+J)
-        SIGJ=COMS["SCL"].WSCL*V(4+J+J)/COMS["SCL"].GSCL
-        COMS["FIT"].EXPF.fill(0.0, NFT2, 1,J)# this might need a plus 1 to N later  # noqa E501
-        NXFT2=1+NINT(XNSCL/(np.abs(SIGJ)+1.0E-10))
-        if NXFT2 > NFT2:
-           NXFT2=NFT2
-        for I in get_range(1,NXFT2):
-          EXPIJ=np.exp(-COMS["FFT"].TWOPIK(I)*SIGJ)
-          COMS["FIT"].EXPF.set(I,J, EXPIJ)
-          #if I == NXFT2:
-          #print("hi", EXPIJ, COMS["FIT"].EXPF(I,J), COMS["FFT"].TWOPIK(I), SIGJ, I)  # noqa E501
-
-          COMS["WORK"].WORK.set(I,1, COMS["WORK"].WORK(I,1)+AJ*EXPIJ)
-
-      tmp = VMLTRC(COMS["WORK"].WORK.output_range(1,1,end=NFT2+1),RKEXP)#,NFT2,FWRK)  # noqa E501
-      COMS["FFT"].FWRK.copy(flatten(tmp))
-      tmp=FOUR2(COMS["FFT"].FWRK,COMS["FFT"].NFFT,1,-1,-1)
-      COMS["FFT"].FWRK.copy(flatten(tmp))
-      COMS["FIT"].FIT.copy(DEGRID(COMS["FFT"].FWRK,COMS))
-      X1=COMS["DATA"].XDAT(1)
-      BNRM = 0.0
-      if o_bgd==2:
-         BNRM=(B2-B1)/(COMS["DATA"].XDAT(COMS["DATA"].NDAT)-X1)
-      #avoid conflict BNORM with ModPars
-      fit = COMS["FIT"].FIT.output_range(end=COMS["DATA"].NDAT)
-      xdat = COMS["DATA"].XDAT.output_range(end=COMS["DATA"].NDAT)
-      dat = COMS["DATA"].DAT.output_range(end=COMS["DATA"].NDAT) # binned sample data  # noqa E501
-      sig = COMS["DATA"].SIG.output_range(end=COMS["DATA"].NDAT)
-      fit += B1+BNRM*(xdat-X1)
-      diff = fit - dat
-      resid = diff*sig
-      CHI = np.sum(diff*resid)
-
-      COMS["FIT"].FIT.copy(fit) # does not match at later indicies -> probably fine  # noqa E501
-      COMS["FIT"].RESID.copy(resid)
-
-      if o_w1 == 1 and COMS["FIT"].NFEW>=1:
-         RESW1D=(COMS["SCL"].WSCL*V(6)-COMS["QW1"].QW1(COMS["QW1"].ISPEC))/COMS["QW1"].SIGQW1(COMS["QW1"].ISPEC)
-         CHI=CHI+2.0*pow(RESW1D,2)
-      return CHI/(2.0*float(COMS["DATA"].NDAT))
-      """
 
 
 def refine_matrices(COMS, GRAD, HESS, NP,
@@ -843,8 +558,6 @@ def refine_matrices(COMS, GRAD, HESS, NP,
         GRAD.set(6, GRAD(6) + SIG2 * DIF * COMS["SCL"].WSCL)
         HESS.set(6, 6, HESS(6, 6) + SIG2 * pow(COMS["SCL"].WSCL, 2))
     covar_default = 1.
-    # if prog == 's':
-    #    cov = 2.0
     HESS, COVAR, DETLOG = INVERT(NP, INDX, covar_default, HESS)
     return HESS, COVAR, DETLOG
 
@@ -915,51 +628,10 @@ def record_fit_results(COMS, SIGPAR, Chi2, store, lptfile):
 
 @deprecated
 def SEEFIT(COMS, SIGPAR, CNORM, store, lptfile):
-    store.open(53, lptfile)
-    ERRSCL = sqrt(CNORM)
-    PRMSV = []
-    SIGSV = []
-
-    store.write(
-        53,
-        f' Best-fit assuming no. of quasi-elastic lines = { COMS["FIT"].NFEW}')
-    store.write(53, f' >>> Normalised Chi-squared = {CNORM:11.4f}')
-    store.write(
-        53,
-        f' Background(Xmin) = {COMS["FIT"].FITP(1)*COMS["SCL"].BSCL:12.3e} +- {SIGPAR(1)*COMS["SCL"].BSCL*ERRSCL:12.3e}')  # noqa E501
-    store.write(
-        53,
-        f' Background(Xmax) = {COMS["FIT"].FITP(2)*COMS["SCL"].BSCL:12.3e}  +- {SIGPAR(2)*COMS["SCL"].BSCL*ERRSCL:12.3e}')  # noqa E501
-    store.write(
-        53,
-        f' Zero offset       = {COMS["FIT"].FITP(4)*COMS["SCL"].GSCL*1000.:12.2f}  +- {SIGPAR(4)*COMS["SCL"].GSCL*ERRSCL*1000.:10.2f}  ueV')  # noqa E501
-    store.write(53, ' Elastic line')
-    store.write(
-        53,
-        f'Amplitude  =   {COMS["FIT"].FITP(3)*COMS["SCL"].ASCL:13.4e}  +- {SIGPAR(3)*COMS["SCL"].ASCL*ERRSCL:11.3e} ')  # noqa E501
-    PRMSV.append(COMS["FIT"].FITP(3) * COMS["SCL"].ASCL)
-    SIGSV.append(SIGPAR(3) * COMS["SCL"].ASCL * ERRSCL)
-    for II in get_range(1, COMS["FIT"].NFEW):
-        J = 4 + II + II
-        store.write(53, f' Quasi-elastic line {II}')
-        store.write(
-            53,
-            f' FWHM        =   {2000*COMS["FIT"].FITP(J)*COMS["SCL"].WSCL:13.2f}  +- {2000*SIGPAR(J)*COMS["SCL"].WSCL*ERRSCL:11.2f} ueV')  # noqa E501
-        store.write(
-            53,
-            f' Amplitude  =   {COMS["FIT"].FITP(J-1)*COMS["SCL"].ASCL:13.4e}  +-  {SIGPAR(J-1)*COMS["SCL"].ASCL*ERRSCL:11.3e}')  # noqa E501
-        PRMSV.append(COMS["FIT"].FITP(J - 1) * COMS["SCL"].ASCL)
-        SIGSV.append(SIGPAR(J - 1) * COMS["SCL"].ASCL * ERRSCL)
-        PRMSV.append(2.0 * COMS["FIT"].FITP(J) * COMS["SCL"].WSCL)
-        SIGSV.append(2.0 * SIGPAR(J) * COMS["SCL"].WSCL * ERRSCL)
-
-    store.close(53)
-    return np.asarray(PRMSV), np.asarray(SIGSV)
+    return record_fit_results(COMS, SIGPAR, CNORM, store, lptfile)
 
 
 def OUTPRM(P, C, NP, NFEW, CNORM, store, files):
-    # p = param, C = covar
-    # print("outfsda", NFEW) # still needs testing
     if NFEW < 1 or NFEW > len(files):
         return
     for k in range(len(files)):
@@ -1001,25 +673,12 @@ def OUTPRM(P, C, NP, NFEW, CNORM, store, files):
 
 
 # **<search for one more & refine amplitudes>****************************
-def find_latest_peak(
-        COMS,
-        GRAD,
-        HESS,
-        d_params,
-        INDX,
-        COVAR,
-        o_w1,
-        prog,
-        o_bgd,
-        o_el,
-        store,
-        lptfile,
-        DETLOG,
-        fit_and_chi_func):
+def find_latest_peak(COMS, GRAD, HESS, d_params, INDX, COVAR, o_w1,
+                     prog, o_bgd, o_el, store, lptfile, DETLOG,
+                     fit_and_chi_func):
     # assume that the previous loops have found good estimates for the other
     # quasi elastic peaks-> only need to focus on getting the latest one
     if o_w1 == 1 and COMS["FIT"].NFEW >= 1:
-        print("hiiiii")
         COMS["FIT"].FITP.set(5, 0.1)
         COMS["FIT"].FITP.set(
             6,
@@ -1027,31 +686,17 @@ def find_latest_peak(
                 COMS["QW1"].ISPEC) /
             COMS["SCL"].WSCL)  # est width of elastic peak
         if COMS["FIT"].NFEW == 1:
-            return refine_param_values(
-                GRAD,
-                HESS,
-                3 + COMS["FIT"].NFEW,
-                DETLOG,
-                INDX,
-                COVAR,
-                COMS,
-                fit_and_chi_func,
-                prog,
-                o_bgd,
-                o_w1,
-                o_el,
-                store,
-                lptfile)
+            return refine_param_values(GRAD, HESS, 3 + COMS["FIT"].NFEW,
+                                       DETLOG, INDX, COVAR, COMS,
+                                       fit_and_chi_func, prog, o_bgd,
+                                       o_w1, o_el, store, lptfile)
 
     # 4 default params (BG and elastic line) plus 2 per quasi elastic peak
     J = 4 + 2 * COMS["FIT"].NFEW
     weight = 0.85
-    N_iterations = NINT(
-        np.log(
-            5.0 *
-            COMS["SCL"].GSCL /
-            COMS["SCL"].WSCL) /
-        np.log(weight))  # int(5*log(offset/width)/log(0.85))
+    N_iterations = NINT(np.log(5.0 * COMS["SCL"].GSCL /
+                                COMS["SCL"].WSCL) /
+                        np.log(weight))  # int(5*log(offset/width)/log(0.85))
     CMIN = 1.0E20
     COMS["FIT"].FITP.set(J - 1, 0.1)
     # set the params for the last peak being considered
@@ -1074,91 +719,16 @@ def find_latest_peak(
 
     # make sure we use the "best value"
     COMS["FIT"].FITP.set(J, tmp_width)
-    return refine_param_values(
-        GRAD,
-        HESS,
-        3 + COMS["FIT"].NFEW,
-        DETLOG,
-        INDX,
-        COVAR,
-        COMS,
-        fit_and_chi_func,
-        prog,
-        o_bgd,
-        o_w1,
-        o_el,
-        store,
-        lptfile)
+    return refine_param_values(GRAD, HESS, 3 + COMS["FIT"].NFEW,
+                               DETLOG, INDX, COVAR, COMS,
+                               fit_and_chi_func, prog, o_bgd,
+                               o_w1, o_el, store, lptfile)
 
 
-def SEARCH(
-        COMS,
-        GRAD,
-        HESS,
-        DPAR,
-        INDX,
-        COVAR,
-        o_w1,
-        prog,
-        o_bgd,
-        o_el,
-        store,
-        lptfile,
-        DETLOG,
-        Chi_func):
-    # FIt FITP, HESS, COVAR, DPAR,  FFT FWRK, GRD DDDPAR
-    if o_w1 == 1 and COMS["FIT"].NFEW >= 1:
-        COMS["FIT"].FITP.set(5, 0.1)
-        COMS["FIT"].FITP.set(
-            6,
-            COMS["QW1"].QW1(
-                COMS["QW1"].ISPEC) /
-            COMS["SCL"].WSCL)
-        if COMS["FIT"].NFEW == 1:
-            HESS, COVAR, DPAR = REFINA(
-                GRAD, 3 + COMS["FIT"].NFEW, DETLOG, INDX, COVAR,
-                COMS, Chi_func, prog, o_bgd, o_w1, o_el,
-                store, lptfile)
-
-            return HESS, COVAR, DPAR
-    J = 4 + 2 * COMS["FIT"].NFEW
-    DXLOG = 0.85
-    NSRCH = NINT(
-        np.log(
-            5.0 *
-            COMS["SCL"].GSCL /
-            COMS["SCL"].WSCL) /
-        np.log(DXLOG))
-    CMIN = 1.0E20
-    COMS["FIT"].FITP.set(J - 1, 0.1)
-    COMS["FIT"].FITP.set(J, 1.0)
-    SIGJ = COMS["FIT"].FITP(J)
-    for II in get_range(1, NSRCH):
-        HESS, COVAR, DPAR, DETLOG = REFINA(
-            GRAD, HESS, 3 + COMS["FIT"].NFEW, DETLOG, INDX,
-            COVAR, COMS, Chi_func, prog, o_bgd, o_w1,
-            o_el, store, lptfile)
-
-        CNORM = Chi_func(COMS["FIT"].FITP, COMS, o_bgd, o_w1)
-        if CNORM < CMIN:
-            CMIN = CNORM
-            SIGJ = COMS["FIT"].FITP(J)
-
-        COMS["FIT"].FITP.set(J, COMS["FIT"].FITP(J) * DXLOG)
-    COMS["FIT"].FITP.set(J, SIGJ)
-    return REFINA(
-        GRAD,
-        HESS,
-        3 +
-        COMS["FIT"].NFEW,
-        DETLOG,
-        INDX,
-        COVAR,
-        COMS,
-        Chi_func,
-        prog,
-        o_bgd,
-        o_w1,
-        o_el,
-        store,
-        lptfile)
+@deprecated
+def SEARCH(COMS, GRAD, HESS, DPAR, INDX, COVAR, o_w1,
+           prog, o_bgd, o_el, store, lptfile, DETLOG,
+           Chi_func):
+    return find_latest_peak(COMS, GRAD, HESS, DPAR, INDX,
+                            COVAR, o_w1, prog, o_bgd, o_el,
+                            store, lptfile, DETLOG, Chi_func)
