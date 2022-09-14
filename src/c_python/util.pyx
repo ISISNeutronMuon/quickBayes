@@ -1,4 +1,4 @@
-from quasielasticbayes.fortran_python import vec, get_range, round_sig
+from quasielasticbayes.fortran_python import Vec, get_range, round_sig
 import math
 
 """
@@ -14,10 +14,10 @@ def LUDCMP(A, N, NP):
     we need to round the values to a lower level of precision.
     Otherwise the errors become huge.
     """
-    INDX = vec(N)
+    INDX = Vec(N)
     NMAX = 100
     TINY = 1.0E-20
-    VV = vec(N)
+    VV = Vec(N)
     DUM = 0
     IMAX = 0
     D = 1.0

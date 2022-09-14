@@ -1,5 +1,5 @@
 from quasielasticbayes.fortran_python import (
-    get_range, vec, matrix_2, matrix_3, storage, BoolVec)
+    get_range, Vec, Matrix_2D, Matrix_3D, Storage, BoolVec)
 
 
 from quasielasticbayes.constants import m_d, m_d1, m_d2, m_sp, m_p
@@ -83,22 +83,22 @@ def _QLdata(
     Wy_in = np.array(Wy_in)
 
     # STExp = STEXP()
-    store = storage()
+    store = Storage()
     print("PYTHON>>>>>")
     nd_out = 0  # number of output points
-    xout, yout, eout = vec(m_d), vec(m_d), vec(m_d)  # !data values
-    yfit = vec(4 * m_d)  # fit values
-    yprob = vec(4)  # probability values
+    xout, yout, eout = Vec(m_d), Vec(m_d), Vec(m_d)  # !data values
+    yfit = Vec(4 * m_d)  # fit values
+    yprob = Vec(4)  # probability values
 
-    XBLR, YBLR = vec(m_d), vec(m_d)
-    GRAD = vec(m_p)
-    COVAR = matrix_2(m_p, m_p)
-    DTNORM, XSCALE = vec(m_sp), vec(m_sp)
-    FITPSV = vec(m_p)
-    PRBSV, POUT = matrix_2(4, m_sp), matrix_2(4, m_sp)
-    HESS = matrix_2(m_p, m_p)
-    PRMSV, SIGSV = matrix_3(7, 4, m_sp), matrix_3(7, 4, m_sp)
-    INDX = vec(m_p)
+    XBLR, YBLR = Vec(m_d), Vec(m_d)
+    GRAD = Vec(m_p)
+    COVAR = Matrix_2D(m_p, m_p)
+    DTNORM, XSCALE = Vec(m_sp), Vec(m_sp)
+    FITPSV = Vec(m_p)
+    PRBSV, POUT = Matrix_2D(4, m_sp), Matrix_2D(4, m_sp)
+    HESS = Matrix_2D(m_p, m_p)
+    PRMSV, SIGSV = Matrix_3D(7, 4, m_sp), Matrix_3D(7, 4, m_sp)
+    INDX = Vec(m_p)
     LGOOD = BoolVec(m_sp)
     prog = 'l'
 

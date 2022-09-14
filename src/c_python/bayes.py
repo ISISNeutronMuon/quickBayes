@@ -1,5 +1,5 @@
-from fortran_python import (find_index, round_sig, get_range, vec,
-                            matrix_2, deprecated)
+from fortran_python import (find_index, round_sig, get_range, Vec,
+                            Matrix_2D, deprecated)
 from quasielasticbayes.constants import m_d2, m_sp
 from quasielasticbayes.four_python import flatten, compress, FOUR2_IFT
 from quasielasticbayes.bayes_C import bin_shift_vecs, HESS0_calc
@@ -199,7 +199,7 @@ def make_hessian(
     if HESS:
         HESS.resize(N_params, N_params)
     else:
-        HESS = matrix_2(N_params, N_params)
+        HESS = Matrix_2D(N_params, N_params)
 
     for J in get_range(1, N_params):
         for II in get_range(J, N_params):
@@ -260,9 +260,9 @@ def HESS1(NP, SCLvec, STEPSZ, NFEW, prog, COMS, o_el, HESS=None):
 
 def INVERT(NP, INDX, covar_default, HESS=None, COVAR=None):
     if HESS is None:
-        HESS = matrix_2(NP, NP)
+        HESS = Matrix_2D(NP, NP)
     if COVAR is None:
-        COVAR = matrix_2(NP, NP)
+        COVAR = Matrix_2D(NP, NP)
     SMALL = 1.E-20
     DETLOG = 0.0
     COVAR.fill(0.0, NP * NP)
@@ -282,7 +282,7 @@ def INVERT(NP, INDX, covar_default, HESS=None, COVAR=None):
 
 
 def matrix_times_vector(grad, covar, N_params):
-    result = vec(N_params * N_params)
+    result = Vec(N_params * N_params)
     for K in get_range(1, N_params):
         element = np.sum(
             covar.output_range(
@@ -394,7 +394,7 @@ def refine_param_values(
     # HESS, COVAR, DPAR, FFT FWRK, GRD DDDPAR, FIT FITP
     NFT2 = 1 + COMS["FFT"].NFFT // 2
     _ = make_fit_and_chi_func(COMS["FIT"].FITP, COMS, o_bgd, o_w1)
-    HESS = matrix_2(NP, NP)
+    HESS = Matrix_2D(NP, NP)
     resolution_FT = COMS["GRD"].FR2PIK.output_range(1, 1, COMS["FFT"].NFFT + 2)
     resolution_FT = np.pad(
         resolution_FT, pad_width=(
@@ -991,7 +991,7 @@ def PRINIT(NQMAX, IXSCAL, COMS, store, prog, lptfile, o_bgd):
 def parameter_error_bars(COVAR, NP):
     # gets the error bars from the diag of the covarience matrix
     SMALL = 1.e-20
-    parameter_error = vec(NP)
+    parameter_error = Vec(NP)
     for II in get_range(1, NP):
         parameter_error.set(II, sqrt(2.0 * abs(COVAR(II, II)) + SMALL))
     return parameter_error
@@ -1001,7 +1001,7 @@ def parameter_error_bars(COVAR, NP):
 def ERRBAR(COVAR, NP):
     # gets the error bars from the diag of the covarience matrix
     SMALL = 1.0E-20
-    SIGPAR = vec(NP)
+    SIGPAR = Vec(NP)
     for II in get_range(1, NP):
         SIGPAR.set(II, sqrt(2.0 * abs(COVAR(II, II)) + SMALL))
     return SIGPAR
@@ -1108,7 +1108,7 @@ def PROBN(COMS, CNORM, NDAT, DETLOG, NFEW, NMAX, prog, store, lptfile):
 
 def PRBOUT(P, NP, NQ):
     # REAL  P(4,m_sp),POUT(4,m_sp)
-    POUT = matrix_2(4, m_sp)
+    POUT = Matrix_2D(4, m_sp)
     J = NQ
     SM = 0.0
     for II in get_range(1, NP):

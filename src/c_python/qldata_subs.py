@@ -3,8 +3,8 @@ from quasielasticbayes.fortran_python import (
     round_sig,
     get_range,
     NINT,
-    vec,
-    matrix_2,
+    Vec,
+    Matrix_2D,
     find_index,
     deprecated)
 
@@ -263,8 +263,8 @@ def XGINIT(XB, YB, NB, YMAX, LST, COMS, store, lptfile):
 def rebin(x_in, y_in, e_in, N_new_bins, N_merged_bins):
     """
     """
-    XB = vec(N_new_bins)
-    YB = vec(N_new_bins)
+    XB = Vec(N_new_bins)
+    YB = Vec(N_new_bins)
     SMALL = 1.0E-20
     BNORM = 1.0 / float(N_merged_bins)
     N = 0
@@ -296,8 +296,8 @@ def BINBLR(WX, WY, WE, NB, NBIN):
     It seems to just be a rebin alg
     """
     # return rebin(WX,WY,WE,NB,NBIN)
-    XB = vec(NB)
-    YB = vec(NB)
+    XB = Vec(NB)
+    YB = Vec(NB)
     N = 0
     SMALL = 1.0E-20
     BNORM = 1.0 / float(NBIN)
@@ -332,9 +332,9 @@ def bin_resolution(N_bin, IREAD, IDUF, COMS, store, lptfile):
     COMS["FFT"].NFFT = m_d
     COMS["res_data"].N_FT = m_d // 2
     # copy resolution data
-    xr = vec(m_d)
-    yr = vec(m_d)
-    er = vec(m_d)
+    xr = Vec(m_d)
+    yr = Vec(m_d)
+    er = Vec(m_d)
     xr.copy(COMS["Res"].xres.output_range(1, N_bin))
     yr.copy(COMS["Res"].yres.output_range(1, N_bin))
     er.copy(COMS["Res"].eres.output_range(1, N_bin))
@@ -364,8 +364,8 @@ def bin_resolution(N_bin, IREAD, IDUF, COMS, store, lptfile):
 
     # populate FRES with spline of evenly spaced binned data -> data to FFT
     # later
-    DER2 = vec(m_d)
-    data = vec(COMS["FFT"].NFFT)
+    DER2 = Vec(m_d)
+    data = Vec(COMS["FFT"].NFFT)
     func = SPLINE(x_bin, y_bin, N_bin, 0.0, 0.0, DER2)
     # factor of 1/2 "hidden" in N_FT compared to NFFT
     TWOPIN = np.pi / float(COMS["res_data"].N_FT)
@@ -377,7 +377,7 @@ def bin_resolution(N_bin, IREAD, IDUF, COMS, store, lptfile):
     # spline the data ontop the sample data bins
     XX = 0.0
     bin_width = COMS["FFT"].XJ(2) - COMS["FFT"].XJ(1)
-    data = vec(COMS["FFT"].NFFT)
+    data = Vec(COMS["FFT"].NFFT)
     data.set(1, SPLINT(XX, func))
 
     # use symmetry to have the range we need to loop
@@ -686,7 +686,7 @@ def refine_matrices(COMS, GRAD, HESS, NP,
     NDAT = COMS["DATA"].NDAT
     NFFT = COMS["FFT"].NFFT
     _ = CCHI(COMS["FIT"].FITP, COMS, o_bgd, o_w1)
-    HESS = matrix_2(NP, NP)
+    HESS = Matrix_2D(NP, NP)
 
     # update freq copy
     freq_copy = COMS["FFT"].FWRK.output()
@@ -868,7 +868,7 @@ def REFINE_0(COMS, GRAD, HESS, NP,
 
     NFT2 = int(COMS["FFT"].NFFT / 2) + 1
     _ = CCHI(COMS["FIT"].FITP, COMS, o_bgd, o_w1)
-    HESS = matrix_2(NP, NP)
+    HESS = Matrix_2D(NP, NP)
     tmp = VMLTRC(
                  COMS["WORK"].WORK.output_range(1, 1, end=NFT2 + 1),
                  compress(COMS["GRD"].FR2PIK.output_range(1, 2,

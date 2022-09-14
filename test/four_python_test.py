@@ -4,7 +4,7 @@ import numpy as np
 import os
 from quasielasticbayes.Four import four
 from quasielasticbayes.four_python import FOUR2, compress, flatten
-from quasielasticbayes.fortran_python import vec
+from quasielasticbayes.fortran_python import Vec
 
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
@@ -21,7 +21,7 @@ class FourPythonTest(unittest.TestCase):
         y = np.loadtxt(os.path.join(DATA_DIR, "FFT_test.tx"))
         y = compress(y)
         y = np.pad(y, [0, 4098-len(y)], mode="constant")
-        yy = vec(4098, True)
+        yy = Vec(4098, True)
         yy.copy(y)
         N = 1024
 

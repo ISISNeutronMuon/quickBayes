@@ -58,7 +58,12 @@ cdef zeros(n, complex=False):
         return np.zeros(n)
 
 
-class vec(object):
+class Vec(object):
+    """
+    Vec is a simple method for making a
+    numpy array look like a fortran array
+    - e.g. start at 1 instead of 0
+    """
     def __init__(self, n,complex=False):
         self._vec = zeros(n, complex)
         self._complex = complex
@@ -68,9 +73,6 @@ class vec(object):
 
     def _print(self):
         print(self._vec)
-
-    def testing(self,j):
-        print("testing",j)
 
     def set(self, j, value):
         self._vec[j-1] = value
@@ -94,12 +96,23 @@ class vec(object):
         return 1
 
 
-class BoolVec(vec):
+class BoolVec(Vec):
+    """
+    A boolean vector that looks like fortran
+    """
     def __init__(self, n,complex=False):
         self._vec = [True for _ in range(n)]
 
 
-class matrix_2(vec):
+class Matrix_2D(Vec):
+    """
+    Matrix_2D is a class for a 2D matrix.
+    Under the hood this is a vector to
+    replicate the behaviour of fortran,
+    which allows for a silent conversion
+    between a matrix and a vector. It
+    also allows for fortran like indexing.
+    """
     def __init__(self, m,n,complex=False):
         super().__init__(n*m, complex)
         self._m = m
@@ -146,7 +159,7 @@ class matrix_2(vec):
        self._vec[k:k+len(vec)] = vec
 
     def output_as_vec(self):
-        tmp = vec(self._m*self._n)
+        tmp = Vec(self._m*self._n)
         tmp.copy(self.output())
         return tmp
 
@@ -173,7 +186,11 @@ class matrix_2(vec):
         return 2
 
 
-cdef class c_vec(object):
+cdef class C_Vec(object):
+    """
+    C_Vec is a Cython version of Vec
+    for speed.
+    """
     cdef double[:] _vec
 
     def __cinit__(self,int n):
@@ -211,7 +228,11 @@ cdef class c_vec(object):
         return 1
 
 
-cdef class c_matrix_2(object):
+cdef class C_Matrix_2D(object):
+    """
+    C_Matrix_2D is a Cython version
+    of Matrix_2D for speed
+    """
     cdef int _m, _n
     cdef double[:] _vec
 
@@ -263,7 +284,7 @@ cdef class c_matrix_2(object):
             self._vec[k+mm]=vec[mm]
 
     cpdef output_as_vec(self):
-        cdef c_vec tmp = c_vec(self._m*self._n)
+        cdef C_Vec tmp = C_Vec(self._m*self._n)
         tmp.copy(self.output())
         return np.array(tmp)
 
@@ -291,7 +312,12 @@ cdef class c_matrix_2(object):
         return 2
 
 
-class matrix_3(vec):
+class Matrix_3D(Vec):
+    """
+    Matrix_3D is a 3 dimensional matrix.
+    Under the hood this is also a vector,
+    but can take 3 indicies like fortran.
+    """
     def __init__(self, m,n,p, complex=False):
         super().__init__(n*m*p, complex)
         self._m = m
@@ -335,11 +361,11 @@ class matrix_3(vec):
         return 3
 
 
-"""
-Fortran often used files to dump data to read back in later.
-This is a class to "emulate that behaviour"
-"""
-class storage(object):
+class Storage(object):
+    """
+    Fortran often used files to dump data to read back in later.
+    Storage is a class to "emulate that behaviour"
+    """
     def __init__(self):
         self.store = {}
         self._files = []
@@ -409,7 +435,7 @@ def debug_dump(file_name, val, store):
 
 def deprecated(func):
     def wrapper(*arg):
-        #print("WARNING deprecated function: "+func.__name__)
+        print("WARNING deprecated function: "+func.__name__)
         result = func(*arg)
         return result
     return wrapper
