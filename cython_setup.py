@@ -32,7 +32,6 @@ def source_paths(dirname: str, filenames: Sequence[str]) -> Sequence[str]:
 
 
 def get_cython_extensions(PACKAGE_NAME):
-    # generate cython extensions
     module_source_map = {
         f'{PACKAGE_NAME}.fortran_python':
             ['fortran_python.pyx'],
@@ -42,14 +41,6 @@ def get_cython_extensions(PACKAGE_NAME):
             ['four.pyx'],
         f'{PACKAGE_NAME}.bayes_C':
             ['bayes_C.pyx'],
-        }
-    path = join('src', PACKAGE_NAME)
-
-    ext = cythonize([create_extension(name,
-                     source_paths(str(join(path, 'c_python')), sources)) for
-                     name, sources in module_source_map.items()])
-    # generate pure python extensions
-    module_source_map = {
         f'{PACKAGE_NAME}.constants':
             ['constants.py'],
         f'{PACKAGE_NAME}.data':
@@ -61,7 +52,8 @@ def get_cython_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.qldata_main':
             ['qldata_main.py']
         }
+    path = join('src', PACKAGE_NAME)
 
-    return [create_extension(name,
-            source_paths(str(join(path, 'c_python')), sources)) for
-            name, sources in module_source_map.items()] + ext
+    return cythonize([create_extension(name,
+                     source_paths(str(join(path, 'c_python')), sources)) for
+                     name, sources in module_source_map.items()])
