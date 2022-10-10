@@ -24,8 +24,7 @@ def bin_shift_vecs(np.ndarray[np.float_t] y_grid,int N, np.ndarray[np.float_t] i
 
 def HESS0_calc(np.ndarray[np.float_t] RESID, np.ndarray[np.float_t] DDDPAR, int N):
       cdef float SM = 0.0
-      cdef int magic = 6
       cdef int kk
       for kk in range(N):
-          SM = round_sig(SM,magic) + round_sig(round_sig(RESID[kk],magic)*round_sig(DDDPAR[kk],magic),magic)
+          SM = round_sig(SM) + round_sig(round_sig(RESID[kk])*round_sig(DDDPAR[kk]))
       return SM
