@@ -18,7 +18,7 @@ class FourPythonTest(unittest.TestCase):
 
     def test_FFT_big(self):
         # reference inputs
-        y = np.loadtxt(os.path.join(DATA_DIR, "FFT_test.tx"))
+        y = np.loadtxt(os.path.join(DATA_DIR, "FFT_test.txt"))
         y = compress(y)
         y = np.pad(y, [0, 4098-len(y)], mode="constant")
         yy = Vec(4098, True)
