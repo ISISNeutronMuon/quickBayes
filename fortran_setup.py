@@ -128,6 +128,7 @@ def get_fortran_extensions(PACKAGE_NAME):
             ['Four_main.f90',
              'Four.f90']
     }
+    path = join('src', PACKAGE_NAME)
     return [create_fortran_extension(name,
-            source_paths(str(join('src', PACKAGE_NAME)), sources)) for
+            source_paths(str(join(path, 'legacy_fortran')), sources)) for
             name, sources in module_source_map.items()]

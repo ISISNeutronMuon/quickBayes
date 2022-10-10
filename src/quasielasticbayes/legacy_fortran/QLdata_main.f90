@@ -86,7 +86,7 @@ c     numb = [ngrp, nsp, ntc, Ndat, nbin, Imin, Imax, NB, nrbin]
 c     reals = [efix, theta[isp], rscl, bnorm]
       efix=reals(1)
       theta(ISP)=reals(2)
-      RSCL=reals(3)                                      
+      RSCL=reals(3)
       BNORM=reals(4)
       do n=1,m_d
        xin(n)=x_in(n)
@@ -130,7 +130,7 @@ c     reals = [efix, theta[isp], rscl, bnorm]
        end do
       endif
 
-      if(ISP.eq.1)then                              !print info	
+      if(ISP.eq.1)then                              !print info
        call open_f(53,lptfile)
        WRITE(53,1107)sfile
 1107   format(' Sample run: ',a140)
@@ -230,7 +230,7 @@ c
       noff=NDAT*NFEW
       do n=1,NDAT
        yfit(noff+n)=FIT(n)
-      end do 
+      end do
       NFEW=NFEW+1
       if (o_el.eq.0) then                     !no peak
        FITP(3)=0.0

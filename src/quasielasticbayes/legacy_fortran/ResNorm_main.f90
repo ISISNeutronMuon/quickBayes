@@ -1,8 +1,8 @@
 C  PROGRAM RESNORM
 C-----------------------------------------------------------------------
 C  This is a simple resolution normalisation program, which was modified
-C  from QUASI_LINES_2D.FOR . It reads in a 2-D resolution file, which 
-C  should be of the same intermediate GENIE binary format as that of the 
+C  from QUASI_LINES_2D.FOR . It reads in a 2-D resolution file, which
+C  should be of the same intermediate GENIE binary format as that of the
 C  2-D quasi-elastic data to be subsequently analysed. The output is in
 C  file FOR007.DAT .
 C-----------------------------------------------------------------------
@@ -13,7 +13,7 @@ C  Stretch-factor range increased to +/- 10%.         (DSS: 27-MAY-1992)
 C  WBF array-size increased in subroutine INBUFF.     (DSS: 28-MAY-1992)
 C  Also put in READONLY for the resolution file.      (DSS: 28-MAY-1992)
 C  Fixed bug in CLRBUF; problem for lots of detectors.(DSS: 29-MAY-1992)
-C  Hard-wired meV input & ueV output, increased search 
+C  Hard-wired meV input & ueV output, increased search
 C  to +/- 15% and added silent-running option.        (DSS:  2-OCT-1992)
 C  Took out small and negative number safety-valve.   (DSS: 17-DEC-1992)
 C  Fixed bug in DATIN1 (no more large error-bars!).   (DSS: 27-SEP-1993)
@@ -120,7 +120,7 @@ c     reals = [efix, theta[isp], rscl, bnorm]
 	    lptfile = ''
       l_lpt=l_fn+11
       lptfile(1:l_lpt)=vfile(1:l_fn)//'_resnrm.lpt'
-      if(ISP.eq.1)then                  !print info	
+      if(ISP.eq.1)then                  !print info
        call open_f(53,lptfile)
        write(53,1107)vfile
 1107   format(' Vanadium file : ',a140)
@@ -137,7 +137,7 @@ c     reals = [efix, theta[isp], rscl, bnorm]
 c spectrum starts
       NDAT=ntc
       CALL DATIN(ISP,DTNORM,IDUF)
-      if(ISP.eq.1)then                  !print info	
+      if(ISP.eq.1)then                  !print info
        OPEN(UNIT=53,FILE=lptfile,STATUS='old',FORM='formatted',
      1 access='append')
        write(53,1110)xin(1),xin(ntc)
