@@ -1,11 +1,4 @@
-# Mantid Repository : https://github.com/mantidproject/mantid
-#
-# Copyright &copy; 2022 ISIS Rutherford Appleton Laboratory UKRI,
-#   NScD Oak Ridge National Laboratory, European Spallation Source,
-#   Institut Laue - Langevin & CSNS, Institute of High Energy Physics, CAS
-# SPDX - License - Identifier: GPL - 3.0 +
 from fortran_python import get_range, complex_zeros
-#from math import pi
 import numpy as np
 import scipy.fft as sc
 
@@ -83,17 +76,17 @@ def compress(np.ndarray[np.float_t] x):
 def FOUR2_NEG_IFORM(np.ndarray[np.float_t] DATA, int N, int NDIM, int ISIGN, int IFORM):
     # NDIM is always 1
     cdef int N_tot = 1
-    N_tot = N_tot * N  # N
-    N_tot = (N_tot / N) * (N / 2 + 1)  # N/2+1
+    N_tot = N_tot * N
+    N_tot = (N_tot / N) * (N / 2 + 1)
     cdef int NREM = 1
     cdef int JDIM = 1
     cdef int IDIM = 1
     cdef int NCURR = N
-    NCURR = int(N / 2)     # N/2
+    NCURR = int(N / 2)
     cdef int nn = N
     DATA = FOXRL(DATA, nn, NREM, ISIGN, IFORM)
-    N_tot = N_tot / (N / 2 + 1) * N  # N
-    cdef int NPREV = N_tot / (N * NREM)  # 1/NREM =1
+    N_tot = N_tot / (N / 2 + 1) * N
+    cdef int NPREV = N_tot / (N * NREM)
     DATA = flatten(BOTRV(compress(DATA), NPREV, NCURR, NREM))
     cdef np.ndarray[np.complex_t] result = COOL2(compress(DATA), NPREV, NCURR, NREM, ISIGN)
     return result
@@ -103,7 +96,7 @@ def FOXRL(np.ndarray[np.float_t] DATA, int N, int NREM, int ISIGN, int IFORM):
     cdef float TWOPI = 2 * pi * float(ISIGN)
     cdef int IP0 = 2
     cdef int IP1 = IP0 * int(float(N) / 2.)
-    cdef int IP2 = IP1 * NREM  # NREM =1
+    cdef int IP2 = IP1 * NREM
     cdef float TEMPR, THETA, SINTH, ZSTPR, ZSTPI, ZR, ZI, DIFR, DIFI, TEMPI
     cdef int I1MIN, I1MAX, I1, I2, I2CNJ
     cdef int J1 = IP1 + 1
@@ -127,7 +120,7 @@ def FOXRL(np.ndarray[np.float_t] DATA, int N, int NREM, int ISIGN, int IFORM):
 
         for I2 in get_range(I1, IP2, IP1):
 
-            I2CNJ = int(IP0 * (N / 2 + 1) - 2 * I1 + I2)  # 5*(5)-2*1+1
+            I2CNJ = int(IP0 * (N / 2 + 1) - 2 * I1 + I2)
             if I2 - I2CNJ >= 0:
                 if ISIGN * (2 * IFORM + 1) < 0:
                     DATA[I2] = -DATA[I2]
@@ -149,7 +142,6 @@ def FOXRL(np.ndarray[np.float_t] DATA, int N, int NREM, int ISIGN, int IFORM):
         ZR = ZSTPR * TEMPR - ZSTPI * ZI + ZR
         ZI = ZSTPR * ZI + ZSTPI * TEMPR + ZI
 
-    # assume N =1
     return DATA
 
 
@@ -184,18 +176,18 @@ def BOTRV(np.ndarray[np.complex_t] DATA, int NPREV, int N, int NREM):
         I4REV = I4REV + IP2
     return DATA
 
-# can't do the complex_t's in this function as it causes arithmatic errors
 
 
 def COOL2(np.ndarray[double complex] DATA, int NPREV, int N, int NREM, int ISIGN):
 
+    # can't do the complex_t's in this function as it causes arithmatic errors
     cdef float TWOPI = 2 * pi * float(ISIGN)
     cdef int IP0 = 1
     cdef int IP1 = IP0 * NPREV
     cdef int IP4 = IP1 * N
     cdef int IP5 = IP4 * NREM
     cdef int IP2 = IP1
-    cdef int NPART = N  # N/2, assume N >> 2 -> line 20
+    cdef int NPART = N
     cdef int IP3 = 0
     flag = True
     cdef int I1, I1Max, I3A, I3B, I3C, I3D, I5, I2
@@ -216,7 +208,6 @@ def COOL2(np.ndarray[double complex] DATA, int NPREV, int N, int NREM, int ISIGN
                 DATA[I3B - 1] = DATA[I3A - 1] - TMP
                 DATA[I3A - 1] = DATA[I3A - 1] + TMP
                 flag = True
-        # check the IP2= IP3 and if statement!
         IP2 = IP3
         if IP2 - IP4 >= 0:
             return DATA
@@ -269,11 +260,13 @@ def call_scipy(data):
 def do_transform(np.ndarray[np.float_t] tmp, int N, int NDIM, int ISIGN, int IFORM):
     cdef np.ndarray[np.complex_t] result
     if IFORM == -1:
-        # N < len(DATA) since we dont actually use all of the data
-        # This seems to take data of the form exp(-t*gamma)*cos(omega*t) and
-        # pick out the omega freq -> the oscialltion freq is related to the
-        # mean of the gaussian. The envelope is related to the width of the
-        # gaussianss
+        """
+        N < len(DATA) since we dont actually use all of the data
+        This seems to take data of the form exp(-t*gamma)*cos(omega*t) and
+        pick out the omega freq -> the oscialltion freq is related to the
+        mean of the gaussian. The envelope is related to the width of the
+        gaussianss
+        """
         result = FOUR2_NEG_IFORM(tmp, N, NDIM, ISIGN, IFORM)
     elif ISIGN == 1 and IFORM == 1:  # assume real data
         result = np.conj(call_scipy(tmp))

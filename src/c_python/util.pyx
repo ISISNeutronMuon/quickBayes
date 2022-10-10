@@ -80,54 +80,6 @@ def LUDCMP(A, N, NP):
     return INDX, D, A
 
 
-def test(a, n, np, indx, d):
-    d = 1
-    # looking for the largest a in each row and store it in vv as inverse
-    # We need a new list same size as indx, for this we use .copy()
-    vv = indx.copy()
-    for i in range(0, n):
-        big = 0.0
-        for j in range(0, n):
-            temp = math.fabs(a[i][j])
-            if (temp > big):
-                big = temp
-        vv[i] = 1.0 / big
-    #
-    # run Crout's algorithm
-    for j in range(0, n):
-        # top half & bottom part are combined
-        # but the upper limit l for k sum is different
-        big = 0.0
-        for i in range(0, n):
-            if (i < j):
-                l = i
-            else:
-                l = j
-            sum = a[i][j]
-            for k in range(0, l):
-                sum -= a[i][k] * a[k][j]
-            a[i][j] = sum
-            # for bottom half, we keep track which row is larger
-            if (i >= j):
-                dum = vv[i] * math.fabs(sum)
-                if (dum >= big):
-                    big = dum
-                    imax = i
-        # pivoting part, swap row j with row imax, a[j] is a whole row
-        if (j != imax):
-            dum = a[imax]
-            a[imax] = a[j]
-            a[j] = dum
-            d = - d
-            vv[imax] = vv[j]
-        # divide by the beta diagonal value
-        indx[j] = int(imax)
-        dum = 1.0 / a[j][j]
-        for i in range(j + 1, n):
-            a[i][j] *= dum
-    return a, indx, d
-
-
 def LUBKSB(A, N, NP, INDX, B):
     # B is a numpy array
     II = 0
