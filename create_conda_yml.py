@@ -42,7 +42,7 @@ try:
     args = parser.parse_args()
 
     if args.OS not in supported:
-        raise ValueError("This OS is not supported. Please use a supported OS")
+        raise ValueError(f"{args.OS} is not a supported OS.")
     print(args.OS)
     default_yml = create_default()
     if args.OS == 'w' or args.OS == "windows-latest":
