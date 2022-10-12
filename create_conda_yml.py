@@ -23,7 +23,7 @@ def create_default():
 
 
 def for_windows(yml_dict):
-    yml_dict['dependencies']['python'] = '=3.16.*'
+    yml_dict['dependencies']['python'] = '=3.6.*'
     return yml_dict
 
 
