@@ -92,7 +92,7 @@ def for_mac(yml_dict):
 
 if __name__ == "__main__":
     try:
-        OS = get_os()
+        OS = get_OS()
         yml_dict, file_name = get_OS_info(OS)
 
         with open(file_name, "w") as outfile:
