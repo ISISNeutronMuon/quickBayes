@@ -32,7 +32,7 @@ jobs:
       - name: create_yml_file
         shell: bash -l {0}
         run:  |
-             python create_conda_yml.py ${{ matrix.os }}
+             python tools/create_conda_yml.py ${{ matrix.os }}
 
 
       - name: Setup Mambaforge windows

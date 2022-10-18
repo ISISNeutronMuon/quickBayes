@@ -3,8 +3,8 @@ import sys
 from conda_dict_to_yml import write_conda_yml_from_dict
 
 
-supported = ["w", "u", "windows-latest", "ubuntu-latest"]
-exp = ["m", "macOS-latest"]
+supported = ["windows", "ubuntu", "windows-latest", "ubuntu-latest"]
+exp = ["mac", "macOS-latest"]
 
 
 def get_OS():
@@ -14,7 +14,7 @@ def get_OS():
     parser = argparse.ArgumentParser()
     parser.add_argument("OS",
                         help="the OS for the yml file"
-                        " (w=windows-latest, u=ubuntu-latest",
+                        " (windows, windows-latest, ubuntu, ubuntu-latest",
                         type=str)
     args = parser.parse_args()
 
@@ -26,13 +26,15 @@ def get_OS():
 
 def get_OS_info(OS):
     """
-    Return the correct yml dict for the OS and file name
+    Gets the yml_dict and file name from the OS
+    :param OS: the OS the file is for
+    :Return a dict of contents for the yml file and file name
     """
     default_yml = create_default()
-    if OS == 'w' or OS == "windows-latest":
+    if OS == 'windows' or OS == "windows-latest":
         yml_dict = for_windows(default_yml)
         file_name = f'{yml_dict["name"]}-win.yml'
-    elif OS == 'u' or OS == 'ubuntu-latest':
+    elif OS == 'ubuntu' or OS == 'ubuntu-latest':
         yml_dict = for_linux(default_yml)
         file_name = f'{yml_dict["name"]}-linux.yml'
     elif OS in exp:
@@ -72,18 +74,32 @@ def create_default():
 
 
 def for_windows(yml_dict):
+    """
+    Edits the yml_dict to have Windows options
+    :param yml_dict: the input yml_dict to edit
+    :return the updated yml_dict
+    """
     # won't compile Fortran with a newer version
     yml_dict['dependencies']['python'] = '=3.6.*'
     return yml_dict
 
 
 def for_linux(yml_dict):
-    # need to compile fortran
+    """
+    Edits the yml_dict to have ubuntu options
+    :param yml_dict: the input yml_dict to edit
+    :return the updated yml_dict
+    """   # need to compile fortran
     yml_dict['dependencies']['gfortran'] = '>=2.2'
     return yml_dict
 
 
 def for_mac(yml_dict):
+    """
+    Edits the yml_dict to have mac options
+    :param yml_dict: the input yml_dict to edit
+    :return the updated yml_dict
+    """
     yml_dict['dependencies']['gfortran_osx-64'] = ''
     yml_dict['dependencies']['clang'] = ''
     yml_dict['dependencies']['aws-sdk-cpp'] = ''
@@ -94,7 +110,6 @@ if __name__ == "__main__":
     try:
         OS = get_OS()
         yml_dict, file_name = get_OS_info(OS)
-
         with open(file_name, "w") as outfile:
             write_conda_yml_from_dict(yml_dict, outfile)
 
