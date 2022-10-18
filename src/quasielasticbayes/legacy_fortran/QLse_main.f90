@@ -3,11 +3,11 @@ C      PROGRAM QUASI_STEXP_2D
 C     -----------------------
 C
 C-----------------------------------------------------------------------
-C  This program tries to estimate the parameters of an elstic peak and 
+C  This program tries to estimate the parameters of an elstic peak and
 C  a single "stretched exponential" pertaining to some relevant data.
-C  It was modified from QUASI_LINES_2D, a 2-D Bayesian Quasi-elastic 
-C  line-fitting program. The resolution function is given on a constant 
-C  X-binning grid, and is assumed to be invariant. The background is 
+C  It was modified from QUASI_LINES_2D, a 2-D Bayesian Quasi-elastic
+C  line-fitting program. The resolution function is given on a constant
+C  X-binning grid, and is assumed to be invariant. The background is
 C  assumed to be linear and the data should be of an intermediate Genie
 C  binary format, such as that output by batch-mode ICON.
 C-----------------------------------------------------------------------
@@ -113,7 +113,7 @@ c     numb = [ngrp, nsp, ntc, Ndat, nbin, Imin, Imax, Nb, nrbin]
 c     reals = [efix, theta[isp], rscl, bnorm]
       efix=reals(1)
       theta(ISP)=reals(2)
-      RSCL=reals(3)                                      
+      RSCL=reals(3)
       BNORM=reals(4)
       do n=1,m_d
        xin(n)=x_in(n)
@@ -143,7 +143,7 @@ c     reals = [efix, theta[isp], rscl, bnorm]
       title='<unknown>'
       l_user=9
       user='<unknown>'
-      if(ISP.eq.1)then                          !print info	
+      if(ISP.eq.1)then                          !print info
         call open_f(53,lptfile)
         WRITE(53,1107)sfile
 1107    format(' Sample file: ',a140)
@@ -257,7 +257,7 @@ c
       noff=NDAT*NFEW
       do n=1,NDAT
        yfit(noff+n)=FIT(n)
-      end do 
+      end do
       NFEW=NFEW+1
       if (o_el.eq.0) then               !no peak
        FITP(3)=0.0

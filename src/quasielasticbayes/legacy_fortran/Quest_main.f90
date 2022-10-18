@@ -2,11 +2,11 @@ c      PROGRAM QUASI_STEXP_2DPLOT0
 C     ---------------------------
 C
 C-----------------------------------------------------------------------
-C  This program tries to estimate the parameters of an elstic peak and 
+C  This program tries to estimate the parameters of an elstic peak and
 C  a single "stretched exponential" pertaining to some relevant data.
-C  It was modified from QUASI_LINES_2D, a 2-D Bayesian Quasi-elastic 
-C  line-fitting program. The resolution function is given on a constant 
-C  X-binning grid, and is assumed to be invariant. The background is 
+C  It was modified from QUASI_LINES_2D, a 2-D Bayesian Quasi-elastic
+C  line-fitting program. The resolution function is given on a constant
+C  X-binning grid, and is assumed to be invariant. The background is
 C  assumed to be linear and the data should be of an intermediate Genie
 C  binary format, such as that output by batch-mode ICON.
 C-----------------------------------------------------------------------
@@ -92,7 +92,7 @@ c     numb = [ngrp, nsp, ntc, Ndat, nbin, Imin, Imax, Nb, nrbin, Nbet,Nsig]
 c     reals = [efix, theta[isp], rscl, bnorm]
       efix=reals(1)
       theta(ISP)=reals(2)
-      RSCL=reals(3)                                      
+      RSCL=reals(3)
       BNORM=reals(4)
       do n=1,m_d
        xin(n)=x_in(n)
@@ -125,7 +125,7 @@ c     reals = [efix, theta[isp], rscl, bnorm]
       user='<unknown>'
       o_w1=0
 c
-      if(ISP.eq.1)then                      !print info	
+      if(ISP.eq.1)then                      !print info
        call open_f(53,lptfile)
        write(53,1107)sfile
 1107   format(' Sample file : ',a140)

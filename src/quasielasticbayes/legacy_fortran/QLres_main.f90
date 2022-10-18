@@ -1,11 +1,11 @@
 C  PROGRAM QUASI_LINES_2D
 C-----------------------------------------------------------------------
-C  This is a 2-D version of QUASI_LINES, a 1-D Bayesian Quasi-elastic 
-C  line-fitting program. The resolution function is given on a constant 
-C  X-binning grid, and is assumed to be invariant. The background is 
-C  assumed to be linear and the spectrum a sum of Laurentzians, centered 
-C  at the "origin". The maximum number of lines allowed to be fit is 3. 
-C  The data are assumed to be of intermediate Genie binary format, such 
+C  This is a 2-D version of QUASI_LINES, a 1-D Bayesian Quasi-elastic
+C  line-fitting program. The resolution function is given on a constant
+C  X-binning grid, and is assumed to be invariant. The background is
+C  assumed to be linear and the spectrum a sum of Laurentzians, centered
+C  at the "origin". The maximum number of lines allowed to be fit is 3.
+C  The data are assumed to be of intermediate Genie binary format, such
 C  as that output by batch-mode ICON.
 C-----------------------------------------------------------------------
 C  Written by: D.S. Sivia, Rutherford Appleton Lab., Oxfordshire, England.
@@ -22,9 +22,9 @@ C  Put in STEPSZ safety-valve in case Chisq stuck!    (DSS: 27-OCT-1992)
 C  Took out small and negative number safety-valve.   (DSS: 17-DEC-1992)
 C  Fixed bug in DATIN1 (no more large error-bars!).   (DSS: 27-SEP-1993)
 C-----------------------------------------------------------------------
-C  Option : elastic peak , o_el=0 (no), =1 (yes) 
-C     : background , o_bgd=2 (sloping), =1 (flat), =0 (zero) 
-C     : width1 , o_w1=1 (fix), =0 (free) 
+C  Option : elastic peak , o_el=0 (no), =1 (yes)
+C     : background , o_bgd=2 (sloping), =1 (flat), =0 (zero)
+C     : width1 , o_w1=1 (fix), =0 (free)
 C-----------------------------------------------------------------------
 C
       SUBROUTINE QLres(numb,x_in,y_in,e_in,reals,opft,
@@ -48,7 +48,7 @@ cf2py intent(in) :: x_in, y_in, e_in                    !sample data
 cf2py intent(in) :: reals                               !real parameters
       real XD_in(m_d), XB_in(m_d), YB_in(m_d)
 cf2py intent(in) :: XD_in, XB_in, YB_in                 !sample xrange, res data (blur)
-      real Wy_in(m_sp), We_in(m_sp), dtn(m_sp), xsc(m_sp) 
+      real Wy_in(m_sp), We_in(m_sp), dtn(m_sp), xsc(m_sp)
 cf2py intent(in) :: Wy_in, We_in, dtn, xsc               !fixed width data & res scaling
       integer numb(9)
 cf2py intent(in) :: numb                                !integer parameters
@@ -110,7 +110,7 @@ c     numb = [ngrp, nsp, ntc, Ndat, nbin, Imin, Imax, Nb, nrbin]
 c     reals = [efix, theta[isp], rscl, bnorm]
       efix=reals(1)
       theta(ISP)=reals(2)
-      RSCL=reals(3)                                      
+      RSCL=reals(3)
       BNORM=reals(4)
       do n=1,m_d
        xin(n)=x_in(n)
@@ -150,7 +150,7 @@ c     reals = [efix, theta[isp], rscl, bnorm]
         SIGQW1(I)=0.5*(ABS(SIGQW1(I))+0.00001)
        end do
       endif
-      if(ISP.eq.1)then                  !print info	
+      if(ISP.eq.1)then                  !print info
        call open_f(53,lptfile)
        write(53,1107)sfile
 1107   format(' Sample file : ',a140)
@@ -188,7 +188,7 @@ c     reals = [efix, theta[isp], rscl, bnorm]
         write(n,1123)NSPEC,NDAT,xin(imin),xin(imax)
 1123    FORMAT(2X,2I10,2x,2f10.3)
         write(n,*)' -------------------------------------------------'
-        write(n,1108)rfile 
+        write(n,1108)rfile
         write(n,1124)n
 1124    FORMAT(i3)
         write(n,*)' -------------------------------------------------'
@@ -256,7 +256,7 @@ c     reals = [efix, theta[isp], rscl, bnorm]
       noff=NDAT*NFEW
       do n=1,NDAT
        yfit(noff+n)=FIT(n)
-      end do 
+      end do
       NFEW=NFEW+1
       if (o_el.eq.0) then            !no elastic peak
        FITP(3)=0.0

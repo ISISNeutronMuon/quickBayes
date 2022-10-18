@@ -125,7 +125,7 @@ C
         SPNORM=WSCL*V(4+J+J)/(GSCL*PI2)
         EXPF(1,J)=1.0
         EXPF(1,J3)=0.0
-        WORK(1,1)=WORK(1,1)+AJ        
+        WORK(1,1)=WORK(1,1)+AJ
         do I=2,NFT2
           SIGIJ=SPNORM*TWOPIK(I)
           EXPIJ=EXP(-PI2*SIGIJ**BETEXP)

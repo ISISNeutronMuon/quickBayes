@@ -1,8 +1,8 @@
       SUBROUTINE SIMOPT(X,DX,COVAR,N)
 C
 C Purpose
-C     A SIMPLEX-based routine which optimises the values of the N 
-C parameters pertaining to the components of the vector X; it also 
+C     A SIMPLEX-based routine which optimises the values of the N
+C parameters pertaining to the components of the vector X; it also
 C estimates the related covariance matrix.
 C
 C Parameters
@@ -14,7 +14,7 @@ C    DX       R*4    I       N      Initial step-lengths for X.
 C    COVAR    R*4    O     N x N    The covariance matrix.
 C
 C Other Requirements
-C     The user must provide a FUNCTION CCHI(X) which evalutes 
+C     The user must provide a FUNCTION CCHI(X) which evalutes
 C Chi-squared (un-normalised) given the vector X.
 C
 C History
@@ -92,7 +92,7 @@ C
       CS=C(IR(2))
       IF (C0.LT.CL) THEN
         CALL EXPAND(CL,EX,EX(1,2),EX(1,3),N,C0,GAMA)
-      ELSEIF (C0.GT.CS) THEN 
+      ELSEIF (C0.GT.CS) THEN
         CALL CONTRACT(CH,C0,C00,EX,EX(1,2),EX(1,3),V(1,IR(1)),BETA,N)
         IF (C00.LT.CH.AND.C00.LT.C0) THEN
            CALL VCOPY(EX(1,2),EX,N)

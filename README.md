@@ -36,7 +36,7 @@ In your terminal (Gitbash on Windows) you will now be able to run pre-commit che
 Create a minimal conda environment named `quasielasticbayes-dev` (you can use another name if you prefer):
 
 ```sh
-> mamba env create -f quasielasticbayes-dev-win.yml
+> mamba env create -f quasielasticbayes-dev-linux.yml
 > conda activate quasielasticbayes-dev
 > which python  # should produce something in $HOME/mambaforge
 ```
