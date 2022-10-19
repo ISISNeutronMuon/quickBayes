@@ -79,8 +79,6 @@ def for_windows(yml_dict):
     :param yml_dict: the input yml_dict to edit
     :return the updated yml_dict
     """
-    # won't compile Fortran with a newer version
-    yml_dict['dependencies']['python'] = '=3.6.*'
     return yml_dict
 
 
