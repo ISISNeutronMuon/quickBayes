@@ -76,7 +76,7 @@ jobs:
 
           # # Install test dependencies and run tests
           CIBW_TEST_REQUIRES: numpy
-          CIBW_TEST_COMMAND: python {project}/test/
+          CIBW_TEST_COMMAND: python {project}/test/*test.py
 
       - uses: actions/upload-artifact@v3
         with:
