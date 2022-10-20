@@ -20,11 +20,6 @@ jobs:
 
     steps:
 
-     - name: create_yml_file
-        shell: bash -l {0}
-        run:  |
-             python tools/create_conda_yml.py ${{ matrix.os }}
-
      - name: Setup Mambaforge windows
         if: matrix.os == 'windows-latest'
         uses: conda-incubator/setup-miniconda@v2.1.1
