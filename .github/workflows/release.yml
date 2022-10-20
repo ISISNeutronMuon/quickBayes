@@ -15,40 +15,14 @@ jobs:
         # Note: builds on these are backward compatible
         # (Linux builds use manylinux Docker containers)
         # (macOS builds target old versions by default)
-        os: [ubuntu-latest, windows-latest]
+        # os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
 
     steps:
 
       - uses: actions/checkout@v3
         with:
           fetch-depth: "0"
-
-      - name: Create yml files
-        shell: bash -l {0}
-        run:  |
-             python tools/create_conda_yml.py ${{ matrix.os }}
-
-      - name: Setup Mambaforge windows
-        if: matrix.os == 'windows-latest'
-        uses: conda-incubator/setup-miniconda@v2.1.1
-        with:
-          miniforge-version: latest
-          miniforge-variant: Mambaforge
-          activate-environment: quasielasticbayes-dev
-          environment-file: quasielasticbayes-dev-win.yml
-          auto-activate-base: false
-          use-mamba: true
-
-      - name: Setup Mambaforge linux
-        if: matrix.os == 'ubuntu-latest'
-        uses: conda-incubator/setup-miniconda@v2.1.1
-        with:
-          miniforge-version: latest
-          miniforge-variant: Mambaforge
-          activate-environment: quasielasticbayes-dev
-          environment-file: quasielasticbayes-dev-linux.yml
-          auto-activate-base: false
-          use-mamba: true
 
       - name: extract
         if: matrix.os == 'windows-latest'
@@ -73,8 +47,15 @@ jobs:
           CIBW_BUILD: cp38-manylinux_x86_64 cp38-win_amd64
           #CIBW_BUILD: cp38-macosx_x86_64 cp38-macosx_arm64
 
+          CIBW_BEFORE_BULD: >
+            pip install numpy==1.16.*
+            pip install scipy
+            pip install pytest
+            pip install cython>=0.29.32
+            pip install gfortran>02.2
+
           # Install Eigen and pybind11 on manylinux images (no brew, need Eigen >= 3.4)
-          # CIBW_BEFORE_ALL_LINUX: >
+          #   CIBW_BEFORE_ALL_LINUX: >
           #   yum install -y wget &&
           #   wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz &&
           #   tar xzf eigen-3.4.0.tar.gz &&
@@ -97,7 +78,7 @@ jobs:
           # CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
 
           # # Install test dependencies and run tests
-          # CIBW_TEST_REQUIRES: numpy
+          CIBW_TEST_REQUIRES: numpy
           CIBW_TEST_COMMAND: python {project}/test/qldata_test.py
 
       - uses: actions/upload-artifact@v3
