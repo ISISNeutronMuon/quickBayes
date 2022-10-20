@@ -47,7 +47,7 @@ jobs:
           CIBW_BUILD: cp38-manylinux_x86_64 cp38-win_amd64
           #CIBW_BUILD: cp38-macosx_x86_64 cp38-macosx_arm64
 
-          CIBW_BEFORE_BULD: >
+          CIBW_BEFORE_BUILD: >
             pip install numpy==1.16.*
             pip install scipy
             pip install pytest
