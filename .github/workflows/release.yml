@@ -1,11 +1,10 @@
 name: Build and upload to PyPI
 
 on:
-  push:
   pull_request:
-  release:
-    types:
-      - published
+    #release:
+    #types:
+    #  - published
 
 jobs:
   build_wheels:
@@ -19,6 +18,10 @@ jobs:
         os: [ubuntu-latest, windows-latest]
 
     steps:
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
 
       - name: Create yml files
         shell: bash -l {0}
@@ -59,7 +62,6 @@ jobs:
                  ls *
                  echo "MinGW64/bin" >> $GITHUB_PATH
              fi
-      - uses: actions/checkout@v3
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.8.0
