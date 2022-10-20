@@ -72,7 +72,8 @@ jobs:
           #CIBW_BUILD: cp38-macosx_x86_64 cp38-macosx_arm64
 
           # Install Eigen and pybind11 on manylinux images (no brew, need Eigen >= 3.4)
-          # CIBW_BEFORE_ALL_LINUX: >
+          CIBW_BEFORE_ALL_LINUX: >
+             pip install numpy
           #   yum install -y wget &&
           #   wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz &&
           #   tar xzf eigen-3.4.0.tar.gz &&
