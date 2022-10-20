@@ -51,7 +51,7 @@ class build_py(_build_py):
 
 setup(
     name=PACKAGE_NAME,
-    install_requires=['numpy>=1.12, scipy'],
+    install_requires=['numpy>=1.12', 'scipy'],
     packages=[PACKAGE_NAME],
     description='A Bayesian fitting package used for '
                 'fitting quasi-elastic neutron scattering data.',
