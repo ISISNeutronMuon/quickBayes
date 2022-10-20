@@ -74,6 +74,9 @@ jobs:
           # Install Eigen and pybind11 on manylinux images (no brew, need Eigen >= 3.4)
           CIBW_BEFORE_ALL_LINUX: >
              pip install numpy==1.16.*
+             pip install cython>=0.29.32
+             pip install scipy
+             pip install gfortran>=2.2
           #   yum install -y wget &&
           #   wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz &&
           #   tar xzf eigen-3.4.0.tar.gz &&
