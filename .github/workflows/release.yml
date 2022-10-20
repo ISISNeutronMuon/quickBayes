@@ -76,7 +76,7 @@ jobs:
              pip install numpy==1.16.*
              pip install cython>=0.29.32
              pip install scipy
-             sudo apt-get install gfortran>=2.2
+             sudo apt-get install gfortran
           #   yum install -y wget &&
           #   wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz &&
           #   tar xzf eigen-3.4.0.tar.gz &&
