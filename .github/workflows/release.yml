@@ -47,7 +47,7 @@ jobs:
           #CIBW_BUILD: cp38-macosx_x86_64 cp38-macosx_arm64
 
           # Install Eigen and pybind11 on manylinux images (no brew, need Eigen >= 3.4)
-          CIBW_BEFORE_ALL: >
+          CIBW_BEFORE_ALL_LINUX: >
              pip install numpy==1.16.*
              pip install cython>=0.29.32
              pip install scipy
@@ -67,8 +67,11 @@ jobs:
           # CIBW_BEFORE_ALL_MACOS: brew install eigen pybind11
 
           # # Install Eigen and pybind11 on Windows
-          # CIBW_BEFORE_ALL_WINDOWS: choco install eigen
-          # CIBW_BEFORE_BUILD_WINDOWS: pip install pybind11[global] delvewheel
+
+          CIBW_BEFORE_BUILD_WINDOWS: >
+            pip install numpy==1.16.*
+            pip install cython>=0.29.32
+            pip install scipy
 
           # # cibuildwheel doesn't yet ship a default repair command for Windows
           # CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
