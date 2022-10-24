@@ -47,11 +47,7 @@ jobs:
           #CIBW_BUILD: cp38-macosx_x86_64 cp38-macosx_arm64
 
           # Install Eigen and pybind11 on manylinux images (no brew, need Eigen >= 3.4)
-          CIBW_BEFORE_ALL_LINUX: >
-             pip install numpy==1.16.*
-             pip install cython>=0.29.32
-             pip install scipy
-          CIBW_BEFORE_ALL_WINDOWS: >
+          CIBW_BEFORE_ALL: >
              pip install numpy==1.16.*
              pip install cython>=0.29.32
              pip install scipy
