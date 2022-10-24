@@ -75,7 +75,7 @@ jobs:
             pip install scipy
 
           # # cibuildwheel doesn't yet ship a default repair command for Windows
-          # CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
+          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
 
           # # Install test dependencies and run tests
           CIBW_TEST_REQUIRES: numpy
