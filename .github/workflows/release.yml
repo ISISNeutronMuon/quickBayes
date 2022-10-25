@@ -23,19 +23,19 @@ jobs:
         with:
           fetch-depth: "0"
 
-          #- name: extract
-          # if: matrix.os == 'windows-latest'
-          #run: 7z x tools/vendored/mingw/MinGW64-4-6-1.7z
+      - name: extract
+        if: matrix.os == 'windows-latest'
+        run: 7z x tools/vendored/mingw/MinGW64-4-6-1.7z
 
-          #- name: install fortran
-          #if: matrix.os == 'windows-latest'
-          #shell: bash -l {0}
-          #run:  |
-          #if [[ ${{ matrix.os }} == "windows-latest" ]]; then
-          #       setx path "%path%;C;\MinGW64\bin;"
-          #       #ls *
-          #       #echo "MinGW64/bin" >> $GITHUB_PATH
-          #   fi
+      - name: install fortran
+        if: matrix.os == 'windows-latest'
+        shell: bash -l {0}
+        run:  |
+             if [[ ${{ matrix.os }} == "windows-latest" ]]; then
+                 #setx path "%path%;C;\MinGW64\bin;"
+                 #ls *
+                 echo "MinGW64/bin" >> $GITHUB_PATH
+             fi
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.8.0
@@ -73,7 +73,6 @@ jobs:
             pip install numpy==1.16.*
             pip install cython>=0.29.32
             pip install scipy
-            choco install MinGW-w64==8.1.0
 
           # # cibuildwheel doesn't yet ship a default repair command for Windows
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
