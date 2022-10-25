@@ -38,9 +38,9 @@ jobs:
                  #ls -a
                  #cd libs
                  gendef python38.dll > tmp.def
-                 ls -a
-                 mv tmp.def C:\\Users\\runneradmin\\AppData\\Local\\Temp\\cibw-run-k94t__w6\\cp38-win_amd64\\build\\venv\\libs\\python38.def
-                 #dlltool -A --dllname python38.dll --def tmp.def --output-lib libpython38.a
+                 #ls -a
+                 echo tmp.def
+                 dlltool -A --dllname python38.dll --def tmp.def --output-lib libpython38.a
                  #
                  #
                  # gendef python38.dll > tmp.def
