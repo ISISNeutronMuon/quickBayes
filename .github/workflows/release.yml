@@ -39,7 +39,8 @@ jobs:
                  #cd libs
                  gendef python38.dll > tmp.def
                  ls -a
-                 dlltool -A --dllname python38.dll --def tmp.def --output-lib libpython38.a
+                 echo "tmp.def" >> $GITHUB_PATH
+                 #dlltool -A --dllname python38.dll --def tmp.def --output-lib libpython38.a
                  #
                  #
                  # gendef python38.dll > tmp.def
