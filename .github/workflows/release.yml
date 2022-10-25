@@ -39,7 +39,7 @@ jobs:
                  #cd libs
                  gendef python38.dll > tmp.def
                  #ls -a
-                 echo tmp.def
+                 cat tmp.def
                  dlltool -A --dllname python38.dll --def tmp.def --output-lib libpython38.a
                  #
                  #
