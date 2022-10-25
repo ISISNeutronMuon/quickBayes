@@ -35,6 +35,7 @@ jobs:
                  #setx path "%path%;C;\MinGW64\bin;"
                  #ls *
                  echo "MinGW64/bin" >> $GITHUB_PATH
+                 ls -a
                  cd libs
                  gendef ..\python38.dll
                  dlltool --dllname python38.dll --def python38.def --output-lib libpython38.a
