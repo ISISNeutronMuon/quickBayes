@@ -39,7 +39,7 @@ jobs:
                  #cd libs
                  gendef python38.dll > tmp.def
 
-                 C:\ProgramData\Chocolatey\lib\mingw\tools\install\mingw64\x86_64-w64-mingw32\bin\dlltool.exe --dllname python38.dll --def tmp.def --output-lib libpython38.a
+                 C:/ProgramData/Chocolatey/lib/mingw/tools/install/mingw64/x86_64-w64-mingw32/bin/dlltool.exe --dllname python38.dll --def tmp.def --output-lib libpython38.a
                  #
                  #
                  # gendef python38.dll > tmp.def
