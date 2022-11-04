@@ -5,12 +5,13 @@ from typing import Dict, List
 
 
 class Delta(BaseFitFunction):
-    """
-    Strictly this is not a true delta function.
-    Instead it is a top hat function, which
-    in the limit of binwidth-> 0 is a delta
-    """
     def __init__(self, prefix: str = ''):
+        """
+        Strictly this is not a true delta function.
+        Instead it is a top hat function, which
+        in the limit of binwidth-> 0 is a delta
+        :param prefix: prefix for the parameters
+        """
         super().__init__(2, prefix)
 
     def __call__(self, x: ndarray, amplitude: float, x0: float) -> ndarray:
@@ -18,6 +19,10 @@ class Delta(BaseFitFunction):
         Implement the delta/top hat.
         Need to follow the expected
         form for scipy
+        :param x: x values for function evaluation
+        :param amplitude: height of the top hat function
+        :param x0: the position of the top hat
+        :return y values for the function evaluation
         """
         data = np.zeros(len(x))
         index = np.searchsorted(x, x0)-1
@@ -36,7 +41,11 @@ class Delta(BaseFitFunction):
     def report(self, report_dict: Dict[str, List[float]],
                amplitude: float, x0: float) -> Dict[str, List[float]]:
         """
-        returns the fit parameters as a dict
+        report the results
+        :param report_dict: dict of results
+        :param amplitude: height of the top hat function
+        :param x0: the position of the top hat
+        :return updated results dict
         """
         report_dict = self._add_to_report(f"{self._prefix}Amplitude",
                                           amplitude, report_dict)

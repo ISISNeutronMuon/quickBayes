@@ -5,6 +5,9 @@ from typing import Dict, List
 
 class LinearBG(BaseFitFunction):
     def __init__(self, prefix=''):
+        """
+        :param prefix: prefix for function parameters in report
+        """
         super().__init__(2, prefix)
 
     def __call__(self, x: ndarray, m: float, c: float) -> ndarray:
@@ -12,13 +15,21 @@ class LinearBG(BaseFitFunction):
         Implement the Linear BG.
         Need to follow the expected
         form for scipy
+        :param x: x values
+        :param m: gradient
+        :param c: constant
+        :return linear background y values
         """
         return m*x + c
 
     def report(self, report_dict: Dict[str, List[float]],
                m: float, c: float) -> Dict[str, List[float]]:
         """
-        returns the fit parameters as a dict
+        reporting method
+        :param report_dict: dict of parameters
+        :param m: gradient
+        :param c: constant
+        :return dict of parameters, including BG
         """
         report_dict = self._add_to_report(f"{self._prefix}BG gradient",
                                           m, report_dict)

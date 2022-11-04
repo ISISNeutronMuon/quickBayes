@@ -9,6 +9,15 @@ from typing import Dict, List
 class QlDataFunction(BaseFitFunction):
     def __init__(self, bg_function: BaseFitFunction, elastic_peak: bool,
                  r_x: ndarray, r_y: ndarray, start_x: float, end_x: float):
+        """
+        Create a quasi elastic fitting function using lorentzians
+        :param bg_function: background fitting function
+        :param elastic_peak: if to include an elastic peak (True/False)
+        :param res_x: x values for resolution function
+        :param res_y: y values for resolution function
+        :param start_x: the start of the fitting range
+        :param end_x: the end of the fitting range
+        """
         self.BG = bg_function
         self.BG.add_to_prefix('f1')
         self.conv = ConvolutionWithResolution(r_x, r_y, start_x, end_x, 'f2')
@@ -21,9 +30,15 @@ class QlDataFunction(BaseFitFunction):
 
     @property
     def N_params(self):
+        """
+        :return the number of parameters in the function
+        """
         return self.BG.N_params + self.conv.N_params
 
     def add_single_lorentzian(self):
+        """
+        Add a single Lorentzian function to the qldata function
+        """
         lor = Lorentzian(self._prefix)
         self.conv.add_function(lor)
 
@@ -32,6 +47,9 @@ class QlDataFunction(BaseFitFunction):
         Implement the function evaluation.
         Need to follow the expected
         form for scipy
+        :param x: x values for function evaluation
+        :param args: args for functions
+        :return y values for the function evaluation
         """
         result = self.BG(x, *args[:self.BG.N_params])
         result += self.conv(x, *args[self.BG.N_params:])
@@ -40,7 +58,10 @@ class QlDataFunction(BaseFitFunction):
     def report(self, report_dict: Dict[str, List[float]],
                *args: float) -> Dict[str, List[float]]:
         """
-        returns the fit parameters as a dict
+        Reports the results
+        :param report_dict: dict of results
+        :param args: args for functions
+        :returns updated results dict
         """
         if len(args) != self.N_params:
             raise ValueError(f"Expected {self.N_params} args, got {len(args)}")

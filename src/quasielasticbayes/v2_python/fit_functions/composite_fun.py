@@ -6,11 +6,18 @@ from typing import Dict, List
 
 class CompositeFunction(BaseFitFunction):
     def __init__(self, prefix: str = ''):
+        """
+        Defines a function to wrap a sum of functions
+        :param prefix: the prefix for parameters
+        """
         super().__init__(0, prefix)
         self._funcs = []
 
     def add_function(self, func: BaseFitFunction):
-        # the params for the last added function are first
+        """
+        Adds a function to the sum
+        :param func: the function to add
+        """
         func.add_to_prefix(f'f{len(self._funcs)+1}')
         self._funcs.append(func)
         self._N_params += func.N_params
@@ -18,7 +25,9 @@ class CompositeFunction(BaseFitFunction):
     def split_args(self, args: List[float]) -> List[List[float]]:
         """
         Split the single args list into a list of lists
-        for use with functions
+        for use with individual functions
+        :param args: list of all the parameters
+        :return list of the parameters for each individual function
         """
         j = 0
         split = []
@@ -33,6 +42,9 @@ class CompositeFunction(BaseFitFunction):
         Implement a sum of functions.
         Need to follow the expected
         form for scipy
+        :param x: x values for function evaluation
+        :param args: parameters for functions
+        :return y values for evaluated function
         """
         if len(self._funcs) == 0:
             return np.zeros(len(x))
@@ -48,7 +60,10 @@ class CompositeFunction(BaseFitFunction):
     def report(self, report_dict: Dict[str, List[float]],
                *args: float) -> Dict[str, List[float]]:
         """
-        returns the fit parameters as a dict
+        report the results
+        :param report_dic: dict of results
+        :param args: parameters for functions
+        :return updated dict of results
         """
         if len(args) != self.N_params:
             raise ValueError(f"Expected {self.N_params} args, got {len(args)}")
