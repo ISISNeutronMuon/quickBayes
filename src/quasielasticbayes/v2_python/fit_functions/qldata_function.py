@@ -1,7 +1,8 @@
-from quasielasticbayes.v2.convolution import ConvolutionWithResolution
-from quasielasticbayes.v2.base import BaseFitFunction
-from quasielasticbayes.v2.delta import Delta
-from quasielasticbayes.v2.lorentz import Lorentzian
+from quasielasticbayes.v2.functions.convolution import (
+        ConvolutionWithResolution)
+from quasielasticbayes.v2.functions.base import BaseFitFunction
+from quasielasticbayes.v2.functions.delta import Delta
+from quasielasticbayes.v2.functions.lorentz import Lorentzian
 from numpy import ndarray
 from typing import Dict, List
 

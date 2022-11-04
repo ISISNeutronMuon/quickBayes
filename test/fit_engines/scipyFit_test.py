@@ -1,8 +1,8 @@
 import unittest
 from numpy import ndarray
 import numpy as np
-from quasielasticbayes.v2.scipy_fit import scipy_curve_fit
-from quasielasticbayes.v2.gaussian import Gaussian
+from quasielasticbayes.v2.fitting.scipy_fit import scipy_curve_fit
+from quasielasticbayes.v2.functions.gaussian import Gaussian
 
 
 def mock_data(x: ndarray, a: float, mu: float,

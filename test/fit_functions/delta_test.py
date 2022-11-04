@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.delta import Delta
+from quasielasticbayes.v2.functions.delta import Delta
 
 
 class DeltaTest(unittest.TestCase):

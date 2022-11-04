@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.lorentz import Lorentzian
-from quasielasticbayes.v2.BG import LinearBG
-from quasielasticbayes.v2.composite import CompositeFunction
+from quasielasticbayes.v2.functions.lorentz import Lorentzian
+from quasielasticbayes.v2.functions.BG import LinearBG
+from quasielasticbayes.v2.functions.composite import CompositeFunction
 
 
 class CompositeFunctionTest(unittest.TestCase):

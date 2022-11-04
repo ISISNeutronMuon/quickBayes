@@ -1,7 +1,7 @@
 import unittest
 from numpy import ndarray
 import numpy as np
-from quasielasticbayes.v2.spline import spline
+from quasielasticbayes.v2.utils.spline import spline
 
 
 def mock_data(x: ndarray) -> ndarray:

@@ -1,4 +1,4 @@
-from quasielasticbayes.v2.base import BaseFitFunction
+from quasielasticbayes.v2.functions.base import BaseFitFunction
 from scipy.optimize import curve_fit
 from numpy import ndarray
 import numpy as np

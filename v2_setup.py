@@ -28,29 +28,29 @@ def source_paths(dirname: str, filenames: Sequence[str]) -> Sequence[str]:
 
 def get_v2_extensions(PACKAGE_NAME):
     module_source_map = {
-        f'{PACKAGE_NAME}.v2.base':
+        f'{PACKAGE_NAME}.v2.functions.base':
             [join('fit_functions', 'base.py')],
-        f'{PACKAGE_NAME}.v2.BG':
+        f'{PACKAGE_NAME}.v2.functions.BG':
             [join('fit_functions', 'BG.py')],
-        f'{PACKAGE_NAME}.v2.delta':
+        f'{PACKAGE_NAME}.v2.functions.delta':
             [join('fit_functions', 'delta_function.py')],
-        f'{PACKAGE_NAME}.v2.lorentz':
+        f'{PACKAGE_NAME}.v2.functions.lorentz':
             [join('fit_functions', 'lorentz.py')],
-        f'{PACKAGE_NAME}.v2.gaussian':
+        f'{PACKAGE_NAME}.v2.functions.gaussian':
             [join('fit_functions', 'gaussian.py')],
-        f'{PACKAGE_NAME}.v2.composite':
+        f'{PACKAGE_NAME}.v2.functions.composite':
             [join('fit_functions', 'composite_fun.py')],
-        f'{PACKAGE_NAME}.v2.convolution':
+        f'{PACKAGE_NAME}.v2.functions.convolution':
             [join('fit_functions', 'conv_with_res.py')],
-        f'{PACKAGE_NAME}.v2.qldata_function':
+        f'{PACKAGE_NAME}.v2.functions.qldata_function':
             [join('fit_functions', 'qldata_function.py')],
 
-        f'{PACKAGE_NAME}.v2.scipy_fit':
+        f'{PACKAGE_NAME}.v2.fitting.scipy_fit':
             [join('fit_engines', 'scipy_fit.py')],
 
-        f'{PACKAGE_NAME}.v2.spline':
+        f'{PACKAGE_NAME}.v2.utils.spline':
             [join('utils', 'spline.py')],
-        f'{PACKAGE_NAME}.v2.crop_data':
+        f'{PACKAGE_NAME}.v2.utils.crop_data':
             [join('utils', 'crop_data.py')]
         }
     path = join('src', PACKAGE_NAME)

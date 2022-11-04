@@ -1,4 +1,4 @@
-from quasielasticbayes.v2.base import BaseFitFunction
+from quasielasticbayes.v2.functions.base import BaseFitFunction
 from numpy import ndarray, pi
 import numpy as np
 from typing import Dict, List

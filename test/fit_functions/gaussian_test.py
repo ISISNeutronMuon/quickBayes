@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.gaussian import Gaussian
+from quasielasticbayes.v2.functions.gaussian import Gaussian
 
 
 class GaussianTest(unittest.TestCase):

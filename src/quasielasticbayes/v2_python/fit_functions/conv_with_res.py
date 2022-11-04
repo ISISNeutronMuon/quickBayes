@@ -1,6 +1,6 @@
-from quasielasticbayes.v2.base import BaseFitFunction
-from quasielasticbayes.v2.composite import CompositeFunction
-from quasielasticbayes.v2.crop_data import crop
+from quasielasticbayes.v2.functions.base import BaseFitFunction
+from quasielasticbayes.v2.functions.composite import CompositeFunction
+from quasielasticbayes.v2.utils.crop_data import crop
 from numpy import ndarray
 from scipy import signal
 

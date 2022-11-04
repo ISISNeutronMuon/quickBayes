@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.lorentz import Lorentzian
+from quasielasticbayes.v2.functions.lorentz import Lorentzian
 
 
 class LorentzianTest(unittest.TestCase):
