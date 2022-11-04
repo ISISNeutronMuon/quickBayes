@@ -9,13 +9,15 @@ from numpy.distutils.core import setup
 from numpy.distutils.command.build_src import build_src as _build_src
 from cython_setup import get_cython_extensions
 from fortran_setup import get_fortran_extensions, FortranExtensionBuilder
+from v2_setup import get_v2_extensions
 
 
 PACKAGE_NAME = 'quasielasticbayes'
 
 
 extensions = (get_fortran_extensions(PACKAGE_NAME)
-              + get_cython_extensions(PACKAGE_NAME))
+              + get_cython_extensions(PACKAGE_NAME)
+              + get_v2_extensions(PACKAGE_NAME))
 
 
 class build_source(_build_src):
