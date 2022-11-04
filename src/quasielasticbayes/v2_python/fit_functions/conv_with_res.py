@@ -1,4 +1,4 @@
-from quasielasticbayes.v2.base import BaseFunction
+from quasielasticbayes.v2.base import BaseFitFunction
 from quasielasticbayes.v2.composite import CompositeFunction
 from quasielasticbayes.v2.crop_data import crop
 from numpy import ndarray
@@ -22,7 +22,7 @@ class ConvolutionWithResolution(CompositeFunction):
         # this is to normalise the kernal to get correct amplitudes
         self._ry /= sum(self._ry)
 
-    def add_function(self, func: BaseFunction):
+    def add_function(self, func: BaseFitFunction):
         """
         Adds a function to the convolution
         :param func: the function to add
