@@ -38,6 +38,7 @@ class QLDataFunctionTest(unittest.TestCase):
 
         report = {}
         report = ql.report(report, 1, 2, 3, 4)
+        self.assertEqual(len(report.keys()), 4)
         self.assertEqual(report["f1.BG gradient"], [1.])
         self.assertEqual(report["f1.BG constant"], [2.])
 
@@ -60,12 +61,19 @@ class QLDataFunctionTest(unittest.TestCase):
             self.assertAlmostEqual(y[j], expect[j], 3)
 
         report = {}
-        report = ql.report(report, 1, 2, 3, 4, 5, 6, 7)
+        report = ql.report(report, 1, 2, 3., 4, 5., 6, 7)
+        self.assertEqual(len(report.keys()), 8)
         self.assertEqual(report["f1.BG gradient"], [1.])
         self.assertEqual(report["f1.BG constant"], [2.])
 
         self.assertEqual(report["f2.f1.Amplitude"], [3.])
         self.assertEqual(report["f2.f1.Centre"], [4])
+
+        self.assertEqual(report["f2.f2.Amplitude"], [5])
+        self.assertEqual(report["f2.f2.Peak Centre"], [6])
+        self.assertEqual(report["f2.f2.Gamma"], [7])
+
+        self.assertEqual(report["f2.f2.EISF"], [3./8.])
 
     def test_bg_and_delta_and_2_lorentzians(self):
         x = np.linspace(-5, 5, 5)
@@ -85,7 +93,8 @@ class QLDataFunctionTest(unittest.TestCase):
             self.assertAlmostEqual(y[j], expect[j], 3)
 
         report = {}
-        report = ql.report(report, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+        report = ql.report(report, 1, 2, 3., 4, 5., 6, 7, 8., 9, 10)
+        self.assertEqual(len(report.keys()), 12)
         self.assertEqual(report["f1.BG gradient"], [1.])
         self.assertEqual(report["f1.BG constant"], [2.])
 
@@ -99,6 +108,9 @@ class QLDataFunctionTest(unittest.TestCase):
         self.assertEqual(report["f2.f3.Amplitude"], [8])
         self.assertEqual(report["f2.f3.Peak Centre"], [9])
         self.assertEqual(report["f2.f3.Gamma"], [10])
+
+        self.assertEqual(report["f2.f2.EISF"], [3./8.])
+        self.assertEqual(report["f2.f3.EISF"], [3./11.])
 
 
 if __name__ == '__main__':

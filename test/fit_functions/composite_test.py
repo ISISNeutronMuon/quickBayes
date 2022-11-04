@@ -49,7 +49,7 @@ class CompositeFunctionTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             _ = c(x, 1, 2, 3)  # should have 2 params
 
-    def test_sum(sef):
+    def test_sum(self):
         x = np.linspace(-0.4, 0.4, 6)
 
         lor = Lorentzian()

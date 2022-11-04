@@ -1,4 +1,5 @@
 import unittest
+from numpy import ndarray
 import numpy as np
 from quasielasticbayes.v2.gaussian import Gaussian
 from quasielasticbayes.v2.convolution import ConvolutionWithResolution as conv
