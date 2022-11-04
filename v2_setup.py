@@ -45,6 +45,11 @@ def get_v2_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.v2.qldata_function':
             [join('fit_functions', 'qldata_function.py')],
 
+        f'{PACKAGE_NAME}.v2.scipy_fit':
+            [join('fit_engines', 'scipy_fit.py')],
+
+        f'{PACKAGE_NAME}.v2.spline':
+            [join('utils', 'spline.py')],
         f'{PACKAGE_NAME}.v2.crop_data':
             [join('utils', 'crop_data.py')]
         }
