@@ -48,6 +48,9 @@ def get_v2_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.v2.fitting.scipy_fit':
             [join('fit_engines', 'scipy_fit.py')],
 
+        f'{PACKAGE_NAME}.v2.log_likelihood':
+            ['log_likelihood.py'],
+
         f'{PACKAGE_NAME}.v2.utils.spline':
             [join('utils', 'spline.py')],
         f'{PACKAGE_NAME}.v2.utils.crop_data':
