@@ -7,7 +7,8 @@ from typing import List
 
 def scipy_curve_fit(x_data: ndarray, y_data: ndarray, e_data: ndarray,
                     func: BaseFitFunction,
-                    guess: [float]) -> (float, float, List[float], ndarray):
+                    guess: List[float]) -> (float, float,
+                                            List[float], ndarray):
     """
     A wrapper for the scipy curve fit optimizer.
     :param x_data: x data to fit

@@ -51,11 +51,15 @@ def get_v2_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.v2.log_likelihood':
             ['log_likelihood.py'],
 
+        f'{PACKAGE_NAME}.v2.QlData':
+            ['qldata_main.py'],
+
         f'{PACKAGE_NAME}.v2.utils.spline':
             [join('utils', 'spline.py')],
         f'{PACKAGE_NAME}.v2.utils.crop_data':
             [join('utils', 'crop_data.py')]
-        }
+
+            }
     path = join('src', PACKAGE_NAME)
     return cythonize([create_extension(name,
                      source_paths(str(join(path, 'v2_python')), sources)) for
