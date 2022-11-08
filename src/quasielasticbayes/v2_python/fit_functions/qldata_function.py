@@ -19,17 +19,18 @@ class QlDataFunction(BaseFitFunction):
         :param start_x: the start of the fitting range
         :param end_x: the end of the fitting range
         """
-        self.BG = bg_function
-        self.BG.add_to_prefix('f1')
-        self.conv = ConvolutionWithResolution(r_x, r_y, start_x, end_x, 'f2')
         self._N_peaks = 0
+        self.BG = bg_function
+        self.BG.add_to_prefix(self.prefix + 'f1')
+        self.conv = ConvolutionWithResolution(r_x, r_y, start_x,
+                                              end_x, self.prefix + 'f2')
         self.elastic = elastic_peak
 
         self.delta = elastic_peak
         if elastic_peak:
             delta = Delta('')
             self.conv.add_function(delta)
-        super().__init__(0, '')
+        super().__init__(0, self.prefix)
 
     @property
     def N_params(self):
@@ -37,18 +38,36 @@ class QlDataFunction(BaseFitFunction):
         :return the number of parameters in the function
         """
         # subtract 1 to share the peak position with delta
-        return self.BG.N_params + self.conv.N_params - 1
+        return self.BG.N_params + self.conv.N_params - 1*self._N_peaks
+
+    @property
+    def N_peaks(self) -> int:
+        return self._N_peaks
+
+    @property
+    def prefix(self):
+        return f'N{self.N_peaks}:'
 
     def add_single_lorentzian(self):
         """
         Add a single Lorentzian function to the qldata function
         """
-        lor = Lorentzian(self._prefix)
-        self.conv.add_function(lor)
         self._N_peaks += 1
+        lor = Lorentzian()
+        self.conv.add_function(lor)
+        # update the labels/prefixes
+        self.BG.update_prefix(self.prefix)
+        self.conv.update_prefix(self.prefix)
 
     def _get_params(self, args: List[float]) -> List[float]:
-        # tie the peak centers
+        """
+        For fitting we need to tie the peak centers for the
+        delta and lorentzians. This function creates the
+        extended parameter list (with repeats).
+        :param args: the arguments to the function (no repeats)
+        :return the arguments with repeats for the peak centers
+        in the correct places
+        """
         params = []
         k = 0
         N_BG_params = self.BG.N_params
@@ -103,9 +122,44 @@ class QlDataFunction(BaseFitFunction):
             for j in range(len(self.conv._funcs)-1):
                 k = j + 1
                 N_qe = self.conv._funcs[k].N_params
-                qe_amp = args[BG_N_params + N_e + j*N_qe]
+                # params has values for delta + lorentz
+                qe_amp = params[j*N_qe + N_e]
                 EISF = e_amp/(e_amp + qe_amp)
                 report_dict = self._add_to_report(self.conv._funcs[k]._prefix
                                                   + "EISF",
                                                   EISF, report_dict)
         return report_dict
+
+    def get_guess(self) -> List[float]:
+        guess = self.BG.get_guess()
+
+        # want to reduce the guess to remove tied paramaters
+        if len(self.conv._funcs) > 0:
+            guess += self.conv._funcs[0].get_guess()
+            for j in range(1, len(self.conv._funcs)):
+                full_guess = self.conv._funcs[j].get_guess()
+                guess += [full_guess[0], full_guess[2]]
+        return guess
+
+    def get_bounds(self) -> (List[float], List[float]):
+
+        bounds = self.BG.get_bounds()
+        lower = bounds[0]
+        upper = bounds[1]
+
+        if len(self.conv._funcs) > 0:
+            # want to reduce the guess to remove tied paramaters
+            f = self.conv._funcs[0]
+            bounds = f.get_bounds()
+            lower += bounds[0]
+            upper += bounds[1]
+
+            for j in range(1, len(self.conv._funcs)):
+                f = self.conv._funcs[j]
+                bounds = f.get_bounds()
+                tmp = bounds[0]
+                lower += [tmp[0], tmp[2]]
+                tmp = bounds[1]
+                upper += [tmp[0], tmp[2]]
+
+        return lower, upper

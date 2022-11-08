@@ -101,6 +101,27 @@ class CompositeFunctionTest(unittest.TestCase):
         self.assertEqual(out["old"], [1])
         self.assertEqual(len(out.keys()), 7)
 
+    def test_guess(self):
+        lor = Lorentzian()
+        c = CompositeFunction()
+        bg = LinearBG()
+        c.add_function(bg)
+        c.add_function(lor)
+
+        self.assertEqual(c.get_guess(), [0., 0., 0.01, 0., 0.02])
+
+    def test_bounds(self):
+        lor = Lorentzian()
+        c = CompositeFunction()
+        bg = LinearBG()
+        c.add_function(bg)
+        c.add_function(lor)
+
+        bounds = c.get_bounds()
+
+        self.assertEqual(bounds[0], [-1., -1., 0., -1., 1.e-6])
+        self.assertEqual(bounds[1], [1., 1., 1., 1., 1.])
+
 
 if __name__ == '__main__':
     unittest.main()

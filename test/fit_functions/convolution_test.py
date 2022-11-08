@@ -132,6 +132,22 @@ class ConvolutionTest(unittest.TestCase):
         c.add_function(g)
         self.assertEqual(c.N_params, 3)
 
+    def test_guess(self):
+        x = np.linspace(0, 1)
+        c = conv(x, x, 1, 2)
+        g = Gaussian()
+        c.add_function(g)
+        self.assertEqual(c.get_guess(), [1., 0., 0.1])
+
+    def test_bounds(self):
+        x = np.linspace(0, 1)
+        c = conv(x, x, 1, 2)
+        g = Gaussian()
+        c.add_function(g)
+        lower, upper = c.get_bounds()
+        self.assertEqual(lower, [0., -1., 0.0])
+        self.assertEqual(upper, [np.inf, 1., np.inf])
+
 
 if __name__ == '__main__':
     unittest.main()

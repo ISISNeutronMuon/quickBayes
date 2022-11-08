@@ -22,6 +22,18 @@ class BaseFitFunction(object):
         self._prefix = prefix
         return
 
+    def update_prefix(self, new: str):
+        """
+        Updates the begining of the prefix (before ":")
+        Assume there are only 1 or 0 instances of ":"
+        :param new: the new text to go before the ":"
+        """
+        if ":" not in self._prefix:
+            self._prefix = new + self._prefix
+        else:
+            tmp = self._prefix.split(":")
+            self._prefix = new + tmp[1]
+
     def add_to_prefix(self, to_add: str):
         """
         Used to update the prefix
@@ -62,4 +74,10 @@ class BaseFitFunction(object):
         raise NotImplementedError()
 
     def __call__(self):
+        raise NotImplementedError()
+
+    def get_guess(self):
+        raise NotImplementedError()
+
+    def get_bounds(self):
         raise NotImplementedError()

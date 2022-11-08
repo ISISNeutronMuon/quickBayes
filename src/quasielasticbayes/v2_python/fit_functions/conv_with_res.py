@@ -22,6 +22,14 @@ class ConvolutionWithResolution(CompositeFunction):
         # this is to normalise the kernal to get correct amplitudes
         self._ry /= sum(self._ry)
 
+    def update_prefix(self, new: str):
+        """
+        Update the begining of the prefixes
+        :param new: the new part of the prefix
+        """
+        for j in range(len(self._funcs)):
+            self._funcs[j].update_prefix(new)
+
     def add_function(self, func: BaseFitFunction):
         """
         Adds a function to the convolution

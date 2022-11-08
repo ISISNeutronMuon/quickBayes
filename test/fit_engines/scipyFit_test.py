@@ -32,10 +32,12 @@ class ScipyFitTest(unittest.TestCase):
         sigma = 0.2
         y, e = mock_data(x, amp, mu, sigma)
         g = Gaussian()
-        guess = [1.0, 0., .1]
+        guess = g.get_guess()
+        bounds = g.get_bounds()
 
         (chi2, hess_det,
-         params, fit) = scipy_curve_fit(x, y, e, g, guess)
+         params, fit) = scipy_curve_fit(x, y, e, g, guess, bounds[0],
+                                        bounds[1])
 
         self.assertAlmostEqual(params[0], amp, 2)
         self.assertAlmostEqual(params[1], mu, 2)

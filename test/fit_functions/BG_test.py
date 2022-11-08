@@ -3,7 +3,7 @@ import numpy as np
 from quasielasticbayes.v2.functions.BG import LinearBG
 
 
-class BGTest(unittest.TestCase):
+class LinearBGTest(unittest.TestCase):
 
     def test_linear_BG_call(self):
         x = np.linspace(0, 5, 6)
@@ -30,6 +30,16 @@ class BGTest(unittest.TestCase):
     def test_N_params(self):
         lbg = LinearBG()
         self.assertEqual(lbg.N_params, 2)
+
+    def test_guess(self):
+        lbg = LinearBG()
+        self.assertEqual(lbg.get_guess(), [0., 0.])
+
+    def test_bounds(self):
+        lbg = LinearBG()
+        lower, upper = lbg.get_bounds()
+        self.assertEqual(lower, [-1., -1.])
+        self.assertEqual(upper, [1., 1.])
 
 
 if __name__ == '__main__':

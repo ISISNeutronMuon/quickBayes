@@ -72,3 +72,25 @@ class CompositeFunction(BaseFitFunction):
         for j, func in enumerate(self._funcs):
             report_dict = func.report(report_dict, *fun_args[j])
         return report_dict
+
+    def get_guess(self) -> List[float]:
+        """
+        Get the starting guess for a fit function
+        :return the initial guess
+        """
+        guess = []
+        for func in self._funcs:
+            guess += func.get_guess()
+        return guess
+
+    def get_bounds(self) -> (List[float], List[float]):
+        """
+        Get the fitting bounds
+        :return lists for lower and upper bounds
+        """
+        upper, lower = [], []
+        for func in self._funcs:
+            bounds = func.get_bounds()
+            lower += bounds[0]
+            upper += bounds[1]
+        return lower, upper

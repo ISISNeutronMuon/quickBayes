@@ -51,6 +51,17 @@ class DeltaTest(unittest.TestCase):
         d = Delta()
         self.assertEqual(d.N_params, 2)
 
+    def test_guess(self):
+        d = Delta()
+        self.assertEqual(d.get_guess(), [1., 0.])
+
+    def test_bounds(self):
+        d = Delta()
+        bounds = d.get_bounds()
+
+        self.assertEqual(bounds[0], [0, -1])
+        self.assertEqual(bounds[1], [np.inf, 1])
+
 
 if __name__ == '__main__':
     unittest.main()

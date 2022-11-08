@@ -7,7 +7,8 @@ from typing import List
 
 def scipy_curve_fit(x_data: ndarray, y_data: ndarray, e_data: ndarray,
                     func: BaseFitFunction,
-                    guess: List[float]) -> (float, float,
+                    guess: List[float], lower: List[float],
+                    upper: List[float]) -> (float, float,
                                             List[float], ndarray):
     """
     A wrapper for the scipy curve fit optimizer.
@@ -16,12 +17,15 @@ def scipy_curve_fit(x_data: ndarray, y_data: ndarray, e_data: ndarray,
     :param e_data: error data for fit
     :param func: the fitting function
     :param guess: the initial fit values
+    :param lower: the lower bounds for the fit params
+    :param upper: the upper bounds for the fit params
     :return chi squared, log_10 of the determinant of the Hessian,
     parameters and the y fit values
     """
     params, covar = curve_fit(func, x_data, y_data, guess,
                               sigma=e_data, absolute_sigma=True,
-                              maxfev=220000)
+                              maxfev=220000,
+                              bounds=(lower, upper))
     fit = func(x_data, *params)
 
     hessian = np.linalg.inv(covar)
