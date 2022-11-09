@@ -12,7 +12,9 @@ from typing import Dict, List
 
 def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
                  BG_type: str, start_x: float, end_x: float,
-                 elastic: bool) -> (Dict[str, ndarray], List[float]):
+                 elastic: bool,
+                 results: Dict[str, ndarray]) -> (Dict[str, ndarray],
+                                                  List[float]):
     """
     The main function for calculating Qldata.
     Steps are:
@@ -30,10 +32,10 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     :param start_x: the start x for the calculation
     :param end_x: the end x for the calculation
     :param elastic: if to include the elastic peak
+    :param results: dict of results
     :result dict of the fit parameters and an array of the loglikelihoods
     """
     # step 0
-    results = {}
     BG = get_background_function(BG_type)
     max_num_peaks = 3
 
@@ -46,6 +48,7 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     se = spline(sample['x'], sample['e'], new_x)
     ry = spline(res['x'], res['y'], new_x)
 
+    beta = np.max(sy)*(np.max(new_x)-np.min(new_x))
     func = QlDataFunction(BG, elastic, new_x, ry, start_x, end_x)
     guess = func.get_guess()
     # loop doing steps 2 to 8
@@ -62,14 +65,14 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
 
         results = func.report(results, *params)
 
-        prob_name = 'N{N}:loglikelihood'
+        prob_name = f'N{N}:loglikelihood'
         if prob_name in results:
             results[prob_name].append(loglikelihood(len(sy), chi2,
                                                     hess_det,
-                                                    func.N_peaks))
+                                                    func.N_peaks, beta))
         else:
-            results[f'N{N}:loglikelihood'] = [loglikelihood(len(sy), chi2,
-                                                            hess_det,
-                                                            func.N_peaks)]
+            results[prob_name] = [loglikelihood(len(sy), chi2,
+                                                hess_det,
+                                                func.N_peaks, beta)]
 
     return results, new_x

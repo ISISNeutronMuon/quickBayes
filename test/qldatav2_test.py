@@ -18,14 +18,15 @@ class QlDataV2Test(unittest.TestCase):
 
         sample = {'x': sx, 'y': sy, 'e': se}
         resolution = {'x': rx, 'y': ry}
+        results = {}
 
         results, new_x = ql_data_main(sample, resolution,
-                                      "linear", -0.4, 0.4, True)
+                                      "linear", -0.4, 0.4, True, results)
 
         # not from Mantid
-        self.assertAlmostEqual(results['N1:loglikelihood'][0], -659.23, 2)
-        self.assertAlmostEqual(results['N2:loglikelihood'][0], -348.82, 2)
-        self.assertAlmostEqual(results['N3:loglikelihood'][0], -350.36, 2)
+        self.assertAlmostEqual(results['N1:loglikelihood'][0], -659.4, 2)
+        self.assertAlmostEqual(results['N2:loglikelihood'][0], -349.17, 2)
+        self.assertAlmostEqual(results['N3:loglikelihood'][0], -350.87, 2)
 
         # from Mantid, if not then as a comment
         self.assertAlmostEqual(results['N1:f2.f2.Gamma'][0], 0.0566, 2)
@@ -50,6 +51,32 @@ class QlDataV2Test(unittest.TestCase):
         self.assertAlmostEqual(results['N3:f2.f2.EISF'][0], 0.103, 2)  # 0.0401
         self.assertAlmostEqual(results['N3:f2.f3.EISF'][0], 0.021, 2)  # 0.0085
         self.assertAlmostEqual(results['N3:f2.f4.EISF'][0], 0.183, 2)  # 0.0668
+
+    def test_two(self):
+        """
+        Want to check that two calls to the function will append the results
+        correctly. So if we use the same input data as above, we expect
+        both values to be the same for every item in the dict.
+        """
+        sx, sy, se = np.load(os.path.join(DATA_DIR, 'sample_data_red.npy'))
+        rx, ry, re = np.load(os.path.join(DATA_DIR, 'resolution_data_red.npy'))
+
+        sample = {'x': sx, 'y': sy, 'e': se}
+        resolution = {'x': rx, 'y': ry}
+        results = {}
+
+        results, new_x = ql_data_main(sample, resolution,
+                                      "linear", -0.4, 0.4, True, results)
+
+        # call it again
+        results, new_x = ql_data_main(sample, resolution,
+                                      "linear", -0.4, 0.4, True, results)
+
+        for key in results.keys():
+            print(key, results[key])
+            self.assertEqual(len(results[key]), 2)
+            tmp = results[key]
+            self.assertEqual(tmp[0], tmp[1])
 
 
 if __name__ == '__main__':
