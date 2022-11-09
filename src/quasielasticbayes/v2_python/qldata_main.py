@@ -1,27 +1,13 @@
-from quasielasticbayes.v2.functions.base import BaseFitFunction
-from quasielasticbayes.v2.functions.BG import LinearBG
 from quasielasticbayes.v2.functions.qldata_function import QlDataFunction
 from quasielasticbayes.v2.fitting.scipy_fit import scipy_curve_fit
 from quasielasticbayes.v2.utils.spline import spline
+from quasielasticbayes.v2.utils.general import (update_guess,
+                                                get_background_function)
 from quasielasticbayes.v2.log_likelihood import loglikelihood
 
 from numpy import ndarray
 import numpy as np
 from typing import Dict, List
-
-
-def get_background_function(BG_type: str) -> (BaseFitFunction):
-    if BG_type.lower() == 'linear':
-        return LinearBG()
-    else:
-        raise ValueError("invalid BG function")
-
-
-def update_guess(params: List[float], func: BaseFitFunction) -> List[float]:
-    """
-    Get an updated list of guesses, using the known params
-    """
-    return params + func.get_guess()[len(params):]
 
 
 def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
@@ -85,8 +71,5 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
             results[f'N{N}:loglikelihood'] = [loglikelihood(len(sy), chi2,
                                                             hess_det,
                                                             func.N_peaks)]
-
-    for k in results.keys():
-        print(k, results[k])
 
     return results, new_x
