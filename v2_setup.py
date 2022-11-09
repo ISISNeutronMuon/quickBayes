@@ -44,6 +44,8 @@ def get_v2_extensions(PACKAGE_NAME):
             [join('fit_functions', 'conv_with_res.py')],
         f'{PACKAGE_NAME}.v2.functions.qldata_function':
             [join('fit_functions', 'qldata_function.py')],
+        f'{PACKAGE_NAME}.v2.functions.SE':
+            [join('fit_functions', 'stretch_exp.py')],
 
         f'{PACKAGE_NAME}.v2.fitting.scipy_fit':
             [join('fit_engines', 'scipy_fit.py')],
