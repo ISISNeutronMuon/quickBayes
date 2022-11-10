@@ -1,12 +1,11 @@
-from quasielasticbayes.v2.functions.base import BaseFitFunction
 from scipy.optimize import curve_fit
 from numpy import ndarray
 import numpy as np
-from typing import List
+from typing import List, Callable
 
 
 def scipy_curve_fit(x_data: ndarray, y_data: ndarray, e_data: ndarray,
-                    func: BaseFitFunction,
+                    func: Callable,
                     guess: List[float], lower: List[float],
                     upper: List[float]) -> (float, float,
                                             List[float], ndarray):
@@ -22,9 +21,10 @@ def scipy_curve_fit(x_data: ndarray, y_data: ndarray, e_data: ndarray,
     :return chi squared, log_10 of the determinant of the Hessian,
     parameters and the y fit values
     """
+    max_iterations = 220000
     params, covar = curve_fit(func, x_data, y_data, guess,
                               sigma=e_data, absolute_sigma=True,
-                              maxfev=220000,
+                              maxfev=max_iterations,
                               bounds=(lower, upper))
     fit = func(x_data, *params)
 

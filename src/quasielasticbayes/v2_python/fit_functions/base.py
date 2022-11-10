@@ -1,4 +1,6 @@
 from typing import Dict, List
+from abc import ABC, abstractmethod
+
 
 """
 There are no direct tests for this class.
@@ -8,7 +10,7 @@ from it
 """
 
 
-class BaseFitFunction(object):
+class BaseFitFunction(ABC):
     """
     A basic class outline for fit functions
     """
@@ -70,14 +72,18 @@ class BaseFitFunction(object):
             report_dict[name].append(value)
         return report_dict
 
+    @abstractmethod
     def report(self):
         raise NotImplementedError()
 
+    @abstractmethod
     def __call__(self):
         raise NotImplementedError()
 
+    @abstractmethod
     def get_guess(self):
         raise NotImplementedError()
 
+    @abstractmethod
     def get_bounds(self):
         raise NotImplementedError()
