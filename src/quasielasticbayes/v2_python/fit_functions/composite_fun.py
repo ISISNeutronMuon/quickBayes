@@ -13,7 +13,7 @@ class CompositeFunction(BaseFitFunction):
         super().__init__(0, prefix)
         self._funcs = []
 
-    def add_function(self, func: BaseFitFunction):
+    def add_function(self, func: BaseFitFunction) -> None:
         """
         Adds a function to the sum
         :param func: the function to add
