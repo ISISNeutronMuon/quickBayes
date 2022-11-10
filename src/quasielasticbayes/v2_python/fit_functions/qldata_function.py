@@ -46,7 +46,7 @@ class QlDataFunction(BaseFitFunction):
 
     @property
     def prefix(self) -> str:
-        return f'N{self.N_peaks}:'
+        return str(f'N{self.N_peaks}:')
 
     def add_single_lorentzian(self) -> None:
         """
