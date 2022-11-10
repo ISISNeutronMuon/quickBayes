@@ -72,16 +72,16 @@ class StretchExp(BaseFitFunction):
         """
         super().__init__(4, prefix)
 
-    def __call__(self, x: ndarray, x0: float,
-                 amplitude: float,
+    def __call__(self, x: ndarray,
+                 amplitude: float, x0: float,
                  tau: float, beta: float) -> ndarray:
         """
         Implement the stretched exponential.
         Need to follow the expected
         form for scipy
         :param x: x values for function evaluation
-        :param x0: the peak centre
         :param amplitude: amplitude
+        :param x0: the peak centre
         :param tau: relaxation time
         :param beta: stretching exponent
         :return y values for function evaluation
@@ -91,13 +91,13 @@ class StretchExp(BaseFitFunction):
         return amplitude*np.interp(x - x0,
                                    energies, fourier)
 
-    def report(self, report_dict: Dict[str, List[float]], x0: float, a: float,
+    def report(self, report_dict: Dict[str, List[float]], a: float, x0: float,
                tau, beta) -> Dict[str, List[float]]:
         """
         report parameters
         :param report_dic: dict of results
-        :param x0: the peak centre
         :param a: amplitude
+        :param x0: the peak centre
         :param tau: relaxation time
         :param beta: stretching exponent
         :return update results dict
@@ -117,11 +117,11 @@ class StretchExp(BaseFitFunction):
         Get the starting guess for a fit function
         :return the initial guess
         """
-        return [.0, 0.01, 0.01, 0.01]
+        return [.01, 0.0, 0.01, 0.01]
 
     def get_bounds(self) -> (List[float], List[float]):
         """
         Get the fitting bounds
         :return lists for lower and upper bounds
         """
-        return [-1, 0., 0, 0], [1., 1., 100., 1.]
+        return [0, -1., 0, 0], [1., 1., 100., 1.]

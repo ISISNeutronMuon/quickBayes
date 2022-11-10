@@ -10,7 +10,7 @@ class StretchExpTest(unittest.TestCase):
 
         se = StretchExp()
 
-        y = se(x, 0.0, 1, 25.0, 0.5)
+        y = se(x, 1.0, 0.0, 25.0, 0.5)
         # from Mantid version 6.5
         expect = [0.192, 0.299, 1.001, 1.001, 0.299, 0.192]
 
@@ -23,7 +23,7 @@ class StretchExpTest(unittest.TestCase):
 
         se = StretchExp()
 
-        y = se(x, 0.1, 0.5, 25.0, 0.5)
+        y = se(x, 0.5, 0.1, 25.0, 0.5)
         # from Mantid version 6.5
         expect = [0.083, 0.109, 0.201, 2.2993, 0.264, 0.122]
 
@@ -35,7 +35,7 @@ class StretchExpTest(unittest.TestCase):
         report = {"old": [1]}
 
         se = StretchExp()
-        out = se.report(report, 0.1, 1, 10, .5)
+        out = se.report(report, 1, 0.1, 10, .5)
 
         self.assertEqual(out["Amplitude"], [1])
         self.assertEqual(out["Peak Centre"], [0.1])
@@ -50,12 +50,12 @@ class StretchExpTest(unittest.TestCase):
 
     def test_guess(self):
         se = StretchExp()
-        self.assertEqual(se.get_guess(), [0, 0.01, 0.01, 0.01])
+        self.assertEqual(se.get_guess(), [0.01, 0.0, 0.01, 0.01])
 
     def test_bounds(self):
         se = StretchExp()
         bounds = se.get_bounds()
-        self.assertEqual(bounds[0], [-1., 0, 0, 0])
+        self.assertEqual(bounds[0], [0, -1., 0, 0])
         self.assertEqual(bounds[1], [1., 1, 100., 1.])
 
 
