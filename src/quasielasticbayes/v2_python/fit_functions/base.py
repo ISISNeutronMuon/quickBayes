@@ -1,4 +1,7 @@
 from typing import Dict, List
+from abc import ABC, abstractmethod
+from numpy import ndarray
+
 
 """
 There are no direct tests for this class.
@@ -8,7 +11,7 @@ from it
 """
 
 
-class BaseFitFunction(object):
+class BaseFitFunction(ABC):
     """
     A basic class outline for fit functions
     """
@@ -22,7 +25,7 @@ class BaseFitFunction(object):
         self._prefix = prefix
         return
 
-    def update_prefix(self, new: str):
+    def update_prefix(self, new: str) -> None:
         """
         Updates the begining of the prefix (before ":")
         Assume there are only 1 or 0 instances of ":"
@@ -34,7 +37,7 @@ class BaseFitFunction(object):
             tmp = self._prefix.split(":")
             self._prefix = new + tmp[1]
 
-    def add_to_prefix(self, to_add: str):
+    def add_to_prefix(self, to_add: str) -> None:
         """
         Used to update the prefix
         :param to_add: the name to insert
@@ -47,13 +50,14 @@ class BaseFitFunction(object):
         self._prefix = name
 
     @property
-    def N_params(self):
+    def N_params(self) -> int:
         """
         :return the number of parameters in function
         """
         return self._N_params
 
-    def _add_to_report(self, name: str, value: float,
+    @staticmethod
+    def _add_to_report(name: str, value: float,
                        report_dict:
                        Dict[str, List[float]]) -> Dict[str, List[float]]:
         """
@@ -70,14 +74,45 @@ class BaseFitFunction(object):
             report_dict[name].append(value)
         return report_dict
 
-    def report(self):
+    @abstractmethod
+    def report(self, results: Dict[str, List[float]],
+               *kwargs: float) -> Dict[str, List[float]]:
+        """
+        This method is for accumalating the parameters
+        into a single dict. This is useful for multiple
+        calls where the aim is to get the results for
+        different conditions (e.g. Q value).
+        :param results: the dict of results
+        :param kwargs: the parameters for the function
+        :return the updated results dict
+        """
         raise NotImplementedError()
 
-    def __call__(self):
+    @abstractmethod
+    def __call__(self, x: ndarray,
+                 *kwargs: float) -> ndarray:
+        """
+        Implement the function call.
+        Need to follow the expected
+        form for scipy
+        :param x: x values for function evaluation
+        :param kwargs: parameters for the function
+        :return y values for function evaluation
+        """
         raise NotImplementedError()
 
-    def get_guess(self):
+    @abstractmethod
+    def get_guess(self) -> List[float]:
+        """
+        Generates a guess for the fit values
+        :return a list of guesses
+        """
         raise NotImplementedError()
 
-    def get_bounds(self):
+    @abstractmethod
+    def get_bounds(self) -> (List[float], List[float]):
+        """
+        Gets the bounds for the fit
+        :retun lists of the lower and upper bounds
+        """
         raise NotImplementedError()

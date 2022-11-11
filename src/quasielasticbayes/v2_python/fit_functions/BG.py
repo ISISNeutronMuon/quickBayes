@@ -5,7 +5,7 @@ from typing import Dict, List
 
 
 class NoBG(BaseFitFunction):
-    def __init__(self, prefix=''):
+    def __init__(self, prefix: str = ''):
         """
         :param prefix: prefix for function parameters in report
         """
@@ -46,7 +46,7 @@ class NoBG(BaseFitFunction):
 
 
 class FlatBG(BaseFitFunction):
-    def __init__(self, prefix=''):
+    def __init__(self, prefix: str = ''):
         """
         :param prefix: prefix for function parameters in report
         """
@@ -91,7 +91,7 @@ class FlatBG(BaseFitFunction):
 
 
 class LinearBG(BaseFitFunction):
-    def __init__(self, prefix=''):
+    def __init__(self, prefix: str = ''):
         """
         :param prefix: prefix for function parameters in report
         """

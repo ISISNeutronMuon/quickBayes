@@ -33,7 +33,7 @@ class QlDataFunction(BaseFitFunction):
         super().__init__(0, self.prefix)
 
     @property
-    def N_params(self):
+    def N_params(self) -> int:
         """
         :return the number of parameters in the function
         """
@@ -45,10 +45,10 @@ class QlDataFunction(BaseFitFunction):
         return self._N_peaks
 
     @property
-    def prefix(self):
-        return f'N{self.N_peaks}:'
+    def prefix(self) -> str:
+        return str(f'N{self.N_peaks}:')
 
-    def add_single_lorentzian(self):
+    def add_single_lorentzian(self) -> None:
         """
         Add a single Lorentzian function to the qldata function
         """
@@ -131,6 +131,12 @@ class QlDataFunction(BaseFitFunction):
         return report_dict
 
     def get_guess(self) -> List[float]:
+        """
+        Get the intial guess values.
+        This takes into account the tied
+        parameters.
+        :return a list of guess parameters for the fit
+        """
         guess = self.BG.get_guess()
 
         # want to reduce the guess to remove tied paramaters
@@ -142,7 +148,10 @@ class QlDataFunction(BaseFitFunction):
         return guess
 
     def get_bounds(self) -> (List[float], List[float]):
-
+        """
+        Gets the bounds for the parameters.
+        :return a list of the lower and upper bounds
+        """
         bounds = self.BG.get_bounds()
         lower = bounds[0]
         upper = bounds[1]
