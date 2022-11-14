@@ -38,7 +38,10 @@ class QlDataFunction(BaseFitFunction):
         :return the number of parameters in the function
         """
         # subtract 1 to share the peak position with delta
-        return self.BG.N_params + self.conv.N_params - 1*self._N_peaks
+        peak_correction = self._N_peaks
+        if not self.delta and self._N_peaks > 0:
+            peak_correction -= 1
+        return self.BG.N_params + self.conv.N_params - 1*peak_correction
 
     @property
     def N_peaks(self) -> int:
@@ -48,6 +51,13 @@ class QlDataFunction(BaseFitFunction):
     def prefix(self) -> str:
         return str(f'N{self.N_peaks}:')
 
+    def _update_prefixes(self) -> None:
+        """
+        Method for updaing the prefixes for new number of peaks
+        """
+        self.BG.update_prefix(self.prefix)
+        self.conv.update_prefix(self.prefix)
+
     def add_single_lorentzian(self) -> None:
         """
         Add a single Lorentzian function to the qldata function
@@ -56,8 +66,7 @@ class QlDataFunction(BaseFitFunction):
         lor = Lorentzian()
         self.conv.add_function(lor)
         # update the labels/prefixes
-        self.BG.update_prefix(self.prefix)
-        self.conv.update_prefix(self.prefix)
+        self._update_prefixes()
 
     def _get_params(self, args: List[float]) -> List[float]:
         """
@@ -69,18 +78,22 @@ class QlDataFunction(BaseFitFunction):
         in the correct places
         """
         params = []
-        k = 0
         N_BG_params = self.BG.N_params
-        if self.elastic:
-            params = [*args[N_BG_params:N_BG_params + 2]]  # 2 for delta
-            k = 2
-            x0 = args[N_BG_params + 1]
-        elif self._N_peaks > 0:
-            x0 = args[N_BG_params + 1]
-        for j in range(self._N_peaks):
-            params += [args[N_BG_params + k + j*2]]  # adds amp
+        x0 = 0
+        N_f0 = 0
+        offset = 0
+        if len(self.conv._funcs) > 0:
+            N_f0 = self.conv._funcs[0].N_params
+            params = [*args[N_BG_params:N_BG_params + N_f0]]
+            x0 = args[N_BG_params + 1]  # same position for both lor and delta
+            if not self.elastic:
+                # if not elastic, already done first peak
+                offset = 1
+
+        for j in range(self._N_peaks - offset):
+            params += [args[N_BG_params + N_f0 + j*2]]  # adds amp
             params += [x0]
-            params += [args[N_BG_params + k + j*2 + 1]]  # adds FWHM
+            params += [args[N_BG_params + N_f0 + j*2 + 1]]  # adds FWHM
         return params
 
     def __call__(self, x: ndarray, *args: float) -> ndarray:
@@ -98,6 +111,41 @@ class QlDataFunction(BaseFitFunction):
         params = self._get_params(args)
         result += self.conv(x, *params)
         return result
+
+    def read_from_report(self, report_dict: Dict[str, List[float]],
+                         N: int, index: int = 0) -> List[float]:
+        """
+        Read the parameters from the results dict
+        :param report_dict: the dict of results
+        :param N: the number of peaks
+        :param index: the index to get results from
+        :return the parameters
+        """
+        if N > self._N_peaks:
+            raise ValueError("Too many peaks selected")
+        N_peaks = self._N_peaks
+        # set for number of peaks
+        self._N_peaks = N
+        self._update_prefixes()
+        # get parameters
+        params = self.BG.read_from_report(report_dict, index)
+        num_funcs = N
+        if self.delta:
+            num_funcs += 1
+
+        if num_funcs > 0:
+            # always want the first member in full
+            params += self.conv._funcs[0].read_from_report(report_dict, index)
+
+        for k in range(1, num_funcs):
+            tmp = self.conv._funcs[k].read_from_report(report_dict,
+                                                       index)
+            params += [tmp[0], tmp[2]]  # skips the mean
+
+        # reset the number of peaks
+        self._N_peaks = N_peaks
+        self._update_prefixes()
+        return params
 
     def report(self, report_dict: Dict[str, List[float]],
                *args: float) -> Dict[str, List[float]]:

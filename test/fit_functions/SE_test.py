@@ -40,9 +40,26 @@ class StretchExpTest(unittest.TestCase):
         self.assertEqual(out["Amplitude"], [1])
         self.assertEqual(out["Peak Centre"], [0.1])
         self.assertEqual(out["tau"], [10.])
+        self.assertAlmostEqual(out["FWHM"][0], 0.066, 3)
         self.assertEqual(out["beta"], [0.5])
         self.assertEqual(out["old"], [1])
-        self.assertEqual(len(out.keys()), 5)
+        self.assertEqual(len(out.keys()), 6)
+
+    def test_read(self):
+        report = {"old": [1]}
+
+        se = StretchExp()
+        out = se.report(report, 1, 0.1, 10, .5)
+        params = se.read_from_report(out, 0)
+
+        self.assertEqual(params, [1, 0.1, 10, 0.5])
+
+    def test_FWHM(self):
+        se = StretchExp()
+        FWHM = se.FWHM(3.5)
+        self.assertAlmostEqual(FWHM, 0.188, 3)
+        # check round trip works
+        self.assertAlmostEqual(se.tau(FWHM), 3.5)
 
     def test_N_params(self):
         se = StretchExp()
@@ -50,7 +67,11 @@ class StretchExpTest(unittest.TestCase):
 
     def test_guess(self):
         se = StretchExp()
-        self.assertEqual(se.get_guess(), [0.01, 0.0, 0.01, 0.01])
+        guess = se.get_guess(0.2)
+        expect = [0.1, 0.0, 3.291, 0.7]
+        self.assertEqual(len(guess), len(expect))
+        for k in range(len(guess)):
+            self.assertAlmostEqual(guess[k], expect[k], 3)
 
     def test_bounds(self):
         se = StretchExp()

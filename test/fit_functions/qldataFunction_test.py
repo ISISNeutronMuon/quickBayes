@@ -94,6 +94,63 @@ class QLDataFunctionTest(unittest.TestCase):
 
         self.assertEqual(report["N1:f2.f2.EISF"], [3./8.])
 
+    def test_bg_and_1_lorentzian(self):
+
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        lor = Lorentzian()
+        y = lor(x, 1., -.2, .6)
+        ql = QlDataFunction(bg, False, x, y, -6, 6)
+        ql.add_single_lorentzian()
+
+        y = ql(x, .02, 1, 1, 0.1, .6)
+        expect = [0.909, 0.985, 1.908, 1.082, 1.108]
+
+        self.assertEqual(ql.get_guess(), [0., 0., 0.01, 0.0, 0.02])
+
+        bounds = ql.get_bounds()
+        self.assertEqual(bounds[0], [-1, -1, 0, -1, 1.e-6])
+        self.assertEqual(bounds[1], [1, 1, 1, 1, 1.])
+
+        # shared param (peak centre)
+        self.assertEqual(ql.N_params, 5)
+        for j in range(len(x)):
+            self.assertAlmostEqual(y[j], expect[j], 3)
+
+        report = {}
+        report = ql.report(report, 1, 2, 4, 5., 6)
+        self.assertEqual(len(report.keys()), 5)
+        self.assertEqual(report["N1:f1.BG gradient"], [1.])
+        self.assertEqual(report["N1:f1.BG constant"], [2.])
+
+        self.assertEqual(report["N1:f2.f1.Amplitude"], [4])
+        self.assertEqual(report["N1:f2.f1.Peak Centre"], [5])
+        self.assertEqual(report["N1:f2.f1.Gamma"], [6])
+
+    def test_read_bg_and_delta_and_1_lorentzian(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        lor = Lorentzian()
+        y = lor(x, 1., -.2, .6)
+        ql = QlDataFunction(bg, True, x, y, -6, 6)
+        ql.add_single_lorentzian()
+        report = {}
+        report = ql.report(report, 1, 2, 3., 4, 5., 6)
+        params = ql.read_from_report(report, 1, 0)
+        self.assertEqual(params, [1., 2., 3., 4., 5., 6.])
+
+    def test_read_bg_and_1_lorentzian(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        lor = Lorentzian()
+        y = lor(x, 1., -.2, .6)
+        ql = QlDataFunction(bg, False, x, y, -6, 6)
+        ql.add_single_lorentzian()
+        report = {}
+        report = ql.report(report, 1, 2, 4, 5., 6)
+        params = ql.read_from_report(report, 1, 0)
+        self.assertEqual(params, [1., 2., 4., 5., 6.])
+
     def test_bg_and_delta_and_2_lorentzians(self):
         x = np.linspace(-5, 5, 5)
         bg = LinearBG()
@@ -131,6 +188,119 @@ class QLDataFunctionTest(unittest.TestCase):
 
         self.assertEqual(report["N2:f2.f2.EISF"], [3./8.])
         self.assertEqual(report["N2:f2.f3.EISF"], [3./11.])
+
+    def test_bg_and_2_lorentzians(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        lor = Lorentzian()
+        y = lor(x, 1., -.2, .6)
+
+        ql = QlDataFunction(bg, False, x, y, -6, 6)
+        ql.add_single_lorentzian()
+        ql.add_single_lorentzian()
+
+        y = ql(x, .02, 1, .2, .1, 1, .6, .7, .3)
+        expect = [0.907, 0.978, 1.596, 1.076, 1.107]
+
+        # shared param (peak centre)
+        self.assertEqual(ql.N_params, 7)
+        for j in range(len(x)):
+            self.assertAlmostEqual(y[j], expect[j], 3)
+
+        report = {}
+        report = ql.report(report, 1, 2, 3., 4, 5., 6, 7)
+        self.assertEqual(len(report.keys()), 8)
+        self.assertEqual(report["N2:f1.BG gradient"], [1.])
+        self.assertEqual(report["N2:f1.BG constant"], [2.])
+
+        self.assertEqual(report["N2:f2.f1.Amplitude"], [3])
+        self.assertEqual(report["N2:f2.f1.Peak Centre"], [4])
+        self.assertEqual(report["N2:f2.f1.Gamma"], [5])
+
+        self.assertEqual(report["N2:f2.f2.Amplitude"], [6])
+        self.assertEqual(report["N2:f2.f2.Peak Centre"], [4])
+        self.assertEqual(report["N2:f2.f2.Gamma"], [7])
+
+    def test_complex_read(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        lor = Lorentzian()
+        report = {}
+        y = lor(x, 1., -.2, .6)
+
+        ql = QlDataFunction(bg, True, x, y, -6, 6)
+        report = ql.report(report, -1, -2, -3., -4)
+
+        ql.add_single_lorentzian()
+        report = ql.report(report, 1, 2, 3., 4, 5., 6)
+
+        ql.add_single_lorentzian()
+        report = ql.report(report, 11, 12, 13., 14, 15., 16, 17, 18)
+
+        ql.add_single_lorentzian()
+        report = ql.report(report, 21, 22, 23., 24, 25., 26, 27, 28, 29, 30)
+        self.assertEqual(ql._N_peaks, 3)
+
+        # get params for single lorentzian
+        params = ql.read_from_report(report, 1, 0)
+        self.assertEqual(params, [1., 2., 3., 4., 5., 6.])
+        self.assertEqual(ql._N_peaks, 3)
+
+        # get params for three lorentzians
+        params = ql.read_from_report(report, 3, 0)
+        self.assertEqual(params, [21., 22., 23., 24., 25., 26., 27.,
+                                  28., 29., 30.])
+        self.assertEqual(ql._N_peaks, 3)
+
+        # get params for no lorentzians
+        params = ql.read_from_report(report, 0, 0)
+        self.assertEqual(params, [-1., -2., -3., -4.])
+        self.assertEqual(ql._N_peaks, 3)
+
+        # get params for two lorentzians
+        params = ql.read_from_report(report, 2, 0)
+        self.assertEqual(params, [11., 12., 13., 14., 15., 16., 17., 18.])
+        self.assertEqual(ql._N_peaks, 3)
+
+    def test_complex_read_no_delta(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        lor = Lorentzian()
+        report = {}
+        y = lor(x, 1., -.2, .6)
+
+        ql = QlDataFunction(bg, False, x, y, -6, 6)
+        report = ql.report(report, -1, -2)
+
+        ql.add_single_lorentzian()
+        report = ql.report(report, 1, 2, 4, 5., 6)
+
+        ql.add_single_lorentzian()
+        report = ql.report(report, 11, 12, 14, 15., 16, 17, 18)
+
+        ql.add_single_lorentzian()
+        report = ql.report(report, 21, 22, 24, 25., 26, 27, 28, 29, 30)
+        self.assertEqual(ql._N_peaks, 3)
+
+        # get params for single lorentzian
+        params = ql.read_from_report(report, 1, 0)
+        self.assertEqual(params, [1., 2., 4., 5., 6.])
+        self.assertEqual(ql._N_peaks, 3)
+
+        # get params for three lorentzians
+        params = ql.read_from_report(report, 3, 0)
+        self.assertEqual(params, [21., 22., 24., 25., 26., 27., 28., 29., 30.])
+        self.assertEqual(ql._N_peaks, 3)
+
+        # get params for no lorentzians
+        params = ql.read_from_report(report, 0, 0)
+        self.assertEqual(params, [-1., -2.])
+        self.assertEqual(ql._N_peaks, 3)
+
+        # get params for two lorentzians
+        params = ql.read_from_report(report, 2, 0)
+        self.assertEqual(params, [11., 12., 14., 15., 16., 17., 18.])
+        self.assertEqual(ql._N_peaks, 3)
 
 
 if __name__ == '__main__':

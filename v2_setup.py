@@ -57,6 +57,8 @@ def get_v2_extensions(PACKAGE_NAME):
 
         f'{PACKAGE_NAME}.v2.QlData':
             ['qldata_main.py'],
+        f'{PACKAGE_NAME}.v2.QSE':
+            ['qse_main.py'],
 
         f'{PACKAGE_NAME}.v2.utils.general':
             [join('utils', 'general.py')],

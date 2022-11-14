@@ -41,6 +41,34 @@ class LinearBGTest(unittest.TestCase):
         self.assertEqual(lower, [-1., -1.])
         self.assertEqual(upper, [1., 1.])
 
+    def test_read(self):
+        report = {"old": [1]}
+
+        lbg = LinearBG()
+        report = lbg.report(report, 3.2, -1)
+        params = lbg.read_from_report(report, 0)
+        self.assertEqual(params, [3.2, -1])
+
+    def test_multiple_report(self):
+        report = {}
+        lbg = LinearBG()
+        report = lbg.report(report, 3.2, -1)
+        report = lbg.report(report, 4.1, .5)
+        report = lbg.report(report, 0, -.4)
+
+        self.assertEqual(report[lbg.constant], [-1, .5, -.4])
+        self.assertEqual(report[lbg.grad], [3.2, 4.1, 0.])
+
+    def test_read_index_1(self):
+        report = {}
+        lbg = LinearBG()
+        report = lbg.report(report, 3.2, -1)
+        report = lbg.report(report, 4.1, .5)
+        report = lbg.report(report, 0, -.4)
+
+        params = lbg.read_from_report(report, 1)
+        self.assertEqual(params, [4.1, .5])
+
 
 if __name__ == '__main__':
     unittest.main()

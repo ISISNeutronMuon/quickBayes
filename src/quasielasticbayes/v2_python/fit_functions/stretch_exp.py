@@ -72,6 +72,34 @@ class StretchExp(BaseFitFunction):
         """
         super().__init__(4, prefix)
 
+    @property
+    def amplitude(self) -> str:
+        """
+        :return the string for the amplitude
+        """
+        return str(f"{self._prefix}Amplitude")
+
+    @property
+    def x0(self) -> str:
+        """
+        :return the string for the peak centre
+        """
+        return str(f"{self._prefix}Peak Centre")
+
+    @property
+    def beta(self) -> str:
+        """
+        :return the string for the beta value
+        """
+        return str(f"{self._prefix}beta")
+
+    @property
+    def tau_str(self) -> str:
+        """
+        :return the string value for tau
+        """
+        return str(f"{self._prefix}tau")
+
     def __call__(self, x: ndarray,
                  amplitude: float, x0: float,
                  tau: float, beta: float) -> ndarray:
@@ -91,6 +119,38 @@ class StretchExp(BaseFitFunction):
         return amplitude*np.interp(x - x0,
                                    energies, fourier)
 
+    def read_from_report(self, report_dict: Dict[str, List[float]],
+                         index: int = 0) -> List[float]:
+        """
+        Read the parameters from the results dict
+        :param report_dict: the dict of results
+        :param index: the index to get results from
+        :return the parameters
+        """
+        return [self._read_report(report_dict, self.amplitude, index),
+                self._read_report(report_dict, self.x0, index),
+                self._read_report(report_dict, self.tau_str, index),
+                self._read_report(report_dict, self.beta, index)]
+
+    @staticmethod
+    def FWHM(tau: float) -> float:
+        """
+        Method to convert tau to FWHM
+        :param tau: tau parameter
+        :return FWHM
+        """
+        return PLANCK_CONSTANT/(2.*np.pi*tau)
+
+    @staticmethod
+    def tau(FWHM: float) -> float:
+        """
+        Method to get tau from FWHM
+        Used for estimation
+        :param FWHM: full width half maximum
+        :return tau parameter
+        """
+        return PLANCK_CONSTANT/(2.*np.pi*FWHM)
+
     def report(self, report_dict: Dict[str, List[float]], a: float, x0: float,
                tau, beta) -> Dict[str, List[float]]:
         """
@@ -102,22 +162,25 @@ class StretchExp(BaseFitFunction):
         :param beta: stretching exponent
         :return update results dict
         """
-        report_dict = self._add_to_report(f"{self._prefix}Amplitude",
+        report_dict = self._add_to_report(self.amplitude,
                                           a, report_dict)
-        report_dict = self._add_to_report(f"{self._prefix}Peak Centre",
+        report_dict = self._add_to_report(self.x0,
                                           x0, report_dict)
-        report_dict = self._add_to_report(f"{self._prefix}beta",
+        report_dict = self._add_to_report(self.beta,
                                           beta, report_dict)
-        report_dict = self._add_to_report(f"{self._prefix}tau",
+        report_dict = self._add_to_report(self.tau_str,
                                           tau, report_dict)
+        report_dict = self._add_to_report(f"{self._prefix}FWHM",
+                                          self.FWHM(tau), report_dict)
         return report_dict
 
-    def get_guess(self) -> List[float]:
+    def get_guess(self, est_FWHM: float) -> List[float]:
         """
         Get the starting guess for a fit function
+        :param est_FWHM: estimate for FWHM (tau)
         :return the initial guess
         """
-        return [.01, 0.0, 0.01, 0.01]
+        return [.1, 0.0, self.tau(est_FWHM), 0.7]
 
     def get_bounds(self) -> (List[float], List[float]):
         """

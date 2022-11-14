@@ -38,7 +38,17 @@ class QSEFunction(BaseFitFunction):
         :return the number of parameters in the function
         """
         # subtract 1 to share the peak position with delta
-        return self.BG.N_params + self.conv.N_params - 1*self._N_peaks
+        peak_correction = self._N_peaks
+        if not self.delta and self._N_peaks > 0:
+            peak_correction -= 1
+        return self.BG.N_params + self.conv.N_params - 1*peak_correction
+
+    def _update_prefixes(self) -> None:
+        """
+        Method for updaing the prefixes for new number of peaks
+        """
+        self.BG.update_prefix(self.prefix)
+        self.conv.update_prefix(self.prefix)
 
     @property
     def N_peaks(self) -> int:
@@ -69,19 +79,23 @@ class QSEFunction(BaseFitFunction):
         in the correct places
         """
         params = []
-        k = 0
         N_BG_params = self.BG.N_params
-        if self.elastic:
-            params = [*args[N_BG_params:N_BG_params + 2]]  # 2 for delta
-            k = 2
-            x0 = args[N_BG_params + 1]
-        elif self._N_peaks > 0:
-            x0 = args[N_BG_params + 1]
-        for j in range(self._N_peaks):
-            params += [args[N_BG_params + k + j*2]]  # adds amp
+        x0 = 0
+        N_f0 = 0
+        offset = 0
+        if len(self.conv._funcs) > 0:
+            N_f0 = self.conv._funcs[0].N_params
+            params = [*args[N_BG_params:N_BG_params + N_f0]]
+            x0 = args[N_BG_params + 1]  # same position for both se and delta
+            if not self.elastic:
+                # if not elastic, already done se
+                offset = 1
+
+        for j in range(self._N_peaks - offset):
+            params += [args[N_BG_params + N_f0 + j*2]]  # adds amp
             params += [x0]
-            params += [args[N_BG_params + k + j*2 + 1]]  # adds tau
-            params += [args[N_BG_params + k + j*2 + 2]]  # adds beta
+            params += [args[N_BG_params + N_f0 + j*2 + 1]]  # adds tau
+            params += [args[N_BG_params + N_f0 + j*2 + 2]]  # adds beta
         return params
 
     def __call__(self, x: ndarray, *args: float) -> ndarray:
@@ -100,6 +114,41 @@ class QSEFunction(BaseFitFunction):
         result += self.conv(x, *params)
         return result
 
+    def read_from_report(self, report_dict: Dict[str, List[float]],
+                         N: int, index: int = 0) -> List[float]:
+        """
+        Read the parameters from the results dict
+        :param report_dict: the dict of results
+        :param N: the number of peaks
+        :param index: the index to get results from
+        :return the parameters
+        """
+        if N > self._N_peaks:
+            raise ValueError("Too many peaks selected")
+        N_peaks = self._N_peaks
+        # set for number of peaks
+        self._N_peaks = N
+        self._update_prefixes()
+        # get parameters
+        params = self.BG.read_from_report(report_dict, index)
+        num_funcs = N
+        if self.delta:
+            num_funcs += 1
+
+        if num_funcs > 0:
+            # always want the first member in full
+            params += self.conv._funcs[0].read_from_report(report_dict, index)
+
+        for k in range(1, num_funcs):
+            tmp = self.conv._funcs[k].read_from_report(report_dict,
+                                                       index)
+            params += [tmp[0], tmp[2], tmp[3]]  # skips the mean
+
+        # reset the number of peaks
+        self._N_peaks = N_peaks
+        self._update_prefixes()
+        return params
+
     def report(self, report_dict: Dict[str, List[float]],
                *args: float) -> Dict[str, List[float]]:
         """
@@ -117,19 +166,30 @@ class QSEFunction(BaseFitFunction):
         report_dict = self.conv.report(report_dict, *params)
         return report_dict
 
-    def get_guess(self) -> List[float]:
+    def get_guess(self, est_FWHM: float) -> List[float]:
+        """
+        Gets the guess for the fit params
+        :param est_FWHM: estimate for FWHM (tau)
+        :result a list of initial values for fit
+        """
         guess = self.BG.get_guess()
 
         # want to reduce the guess to remove tied paramaters
-        if len(self.conv._funcs) > 0:
+        if len(self.conv._funcs) > 0 and self.elastic:
             guess += self.conv._funcs[0].get_guess()
+        elif len(self.conv._funcs) > 0:
+            guess += self.conv._funcs[0].get_guess(est_FWHM)
+        if len(self.conv._funcs) > 1:
             for j in range(1, len(self.conv._funcs)):
-                full_guess = self.conv._funcs[j].get_guess()
+                full_guess = self.conv._funcs[j].get_guess(est_FWHM)
                 guess += [full_guess[0], full_guess[2], full_guess[3]]
         return guess
 
     def get_bounds(self) -> (List[float], List[float]):
-
+        """
+        Gets the bounds for the fit parameters
+        :return lists of the lower and upper bounds
+        """
         bounds = self.BG.get_bounds()
         lower = bounds[0]
         upper = bounds[1]

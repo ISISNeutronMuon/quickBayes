@@ -17,6 +17,14 @@ class LorentzianTest(unittest.TestCase):
         for j in range(5):
             self.assertAlmostEqual(y[j], expect[j], 3)
 
+    def test_read(self):
+        report = {"old": [1]}
+
+        lor = Lorentzian()
+        out = lor.report(report, 3.2, -1, 2.5)
+        params = lor.read_from_report(out, 0)
+        self.assertEqual(params, [3.2, -1, 2.5])
+
     def test_lorentzian_report(self):
         report = {"old": [1]}
 
