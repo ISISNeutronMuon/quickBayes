@@ -23,7 +23,7 @@ def qse_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     2. Fit BG + delta (if elastic=True)
     3. Fit BG + delta (if elastic=True) + stretch exp
     4. Calculate loglikelihood for fit
-    8. Report results
+    5. Report results
     :param sample: dict containing the sample x, y and e data (keys = x, y, e)
     :param res: dict containg the resolution x, y data (keys = x, y)
     :param BG_type: the type of BG ("none", "flat", "linear")
