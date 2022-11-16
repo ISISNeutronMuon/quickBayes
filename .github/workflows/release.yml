@@ -23,30 +23,6 @@ jobs:
         with:
           fetch-depth: "0"
 
-      - name: extract
-        if: matrix.os == 'windows-latest'
-        run: 7z x tools/vendored/mingw/MinGW64-4-6-1.7z
-
-      - name: install fortran
-        if: matrix.os == 'windows-latest'
-        shell: bash -l {0}
-        run:  |
-             if [[ ${{ matrix.os }} == "windows-latest" ]]; then
-                 #setx path "%path%;C;\MinGW64\bin;"
-                 #ls *
-                 echo "MinGW64/bin" >> $GITHUB_PATH
-                 #ls -a
-                 #cd libs
-                 gendef python38.dll > tmp.def
-                 #ls -a
-                 cat tmp.def
-                 dlltool -A --dllname python38.dll --def tmp.def --output-lib libpython38.a
-                 #
-                 #
-                 # gendef python38.dll > tmp.def
-                 # dlltool --dllname python38.dll --def tmp.def --output-lib libpython38.a
-             fi
-
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.8.0
         # to supply options, put them in 'env', like:
@@ -57,39 +33,21 @@ jobs:
           CIBW_BUILD: cp38-manylinux_x86_64 cp38-win_amd64
           #CIBW_BUILD: cp38-macosx_x86_64 cp38-macosx_arm64
 
-          # Install Eigen and pybind11 on manylinux images (no brew, need Eigen >= 3.4)
           CIBW_BEFORE_ALL_LINUX: >
              pip install numpy==1.16.*
              pip install cython>=0.29.32
              pip install scipy
-          #   sudo apt install gfortran
-          #   yum install -y wget &&
-          #   wget https://gitlab.com/libeigen/eigen/-/archive/3.4.0/eigen-3.4.0.tar.gz &&
-          #   tar xzf eigen-3.4.0.tar.gz &&
-          #   cd eigen-3.4.0 &&
-          #   mkdir build &&
-          #   cd build &&
-          #   cmake .. &&
-          #   make install &&
-          #   cd ../..
-          # CIBW_BEFORE_BUILD_LINUX: pip install pybind11[global]
-
-          # # Install Eigen and pybind11 on macOS
-          # CIBW_BEFORE_ALL_MACOS: brew install eigen pybind11
-
-          # # Install Eigen and pybind11 on Windows
-
           CIBW_BEFORE_BUILD_WINDOWS: >
+            pip install pybind11[global] delvewheel
             pip install numpy==1.16.*
             pip install cython>=0.29.32
             pip install scipy
-            pip install pybind11[global] delvewheel
 
-          # # cibuildwheel doesn't yet ship a default repair command for Windows
+          #  cibuildwheel doesn't yet ship a default repair command for Windows
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
 
-          # # Install test dependencies and run tests
-          CIBW_TEST_REQUIRES: numpy
+          # Install test dependencies and run tests
+          CIBW_TEST_REQUIRES: numpy, pytest
           CIBW_TEST_COMMAND: >
             pytest --ignore={project}/test/fortran/ -vvv {project}/test/*
 
