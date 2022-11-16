@@ -10,6 +10,7 @@ from scipy import constants
 """
 This code is taken from the open source code
 Mantid.
+https://github.com/mantidproject/mantid/blob/main/Framework/PythonInterface/plugins/functions/StretchedExpFTHelper.py
 """
 
 
