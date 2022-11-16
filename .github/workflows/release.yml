@@ -15,7 +15,7 @@ jobs:
         # Note: builds on these are backward compatible
         # (Linux builds use manylinux Docker containers)
         # (macOS builds target old versions by default)
-        os: [ubuntu-latest] # , windows-latest]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
 
@@ -90,9 +90,10 @@ jobs:
           # # Install test dependencies and run tests
           CIBW_TEST_REQUIRES: numpy
           CIBW_TEST_COMMAND: >
-            python {project}/test/qldata_test.py &&
-            python {project}/test/four_python_test.py &&
-            python {project}/test/Four_test.py
+            python -m pytest --ignore=test/fortran/
+            # python {project}/test/qldata_test.py &&
+            # python {project}/test/four_python_test.py &&
+            # python {project}/test/Four_test.py
             # python {project}/test/qlres_test.py &&
             # python {project}/test/qlse_test.py &&
 
