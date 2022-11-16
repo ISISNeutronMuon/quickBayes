@@ -38,7 +38,7 @@ jobs:
              pip install cython>=0.29.32
              pip install scipy
           CIBW_BEFORE_BUILD_WINDOWS: >
-            pip install pybind11[global] delvewheel
+            pip install delvewheel
             pip install numpy==1.16.*
             pip install cython>=0.29.32
             pip install scipy
@@ -49,7 +49,7 @@ jobs:
           # Install test dependencies and run tests
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: >
-            pytest --ignore={project}/test/fortran/ -vvv {project}/test/*
+            pytest --ignore={project}/test/fortran/ {project}/test
 
       - uses: actions/upload-artifact@v3
         with:
