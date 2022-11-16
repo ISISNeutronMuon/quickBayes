@@ -83,6 +83,8 @@ jobs:
             pip install numpy==1.16.*
             pip install cython>=0.29.32
             pip install scipy
+            pip install delvewheel
+            #pip install pybind11[global] delvewheel
 
           # # cibuildwheel doesn't yet ship a default repair command for Windows
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
