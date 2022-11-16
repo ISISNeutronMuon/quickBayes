@@ -47,7 +47,7 @@ jobs:
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
 
           # Install test dependencies and run tests
-          CIBW_TEST_REQUIRES: numpy, pytest
+          CIBW_TEST_REQUIRES: numpy pytest
           CIBW_TEST_COMMAND: >
             pytest --ignore={project}/test/fortran/ -vvv {project}/test/*
 
