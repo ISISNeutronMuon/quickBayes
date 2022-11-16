@@ -65,7 +65,7 @@ setup(
                      'An application of this package is '
                      'to fit quasi-elastic '
                      'neutron scattering data in Mantid '
-                     '(https://www.mantidproject.org)',
+                     '(https://www.mantidproject.org).`',
     author='Mantid Team',
     ext_modules=extensions,
     author_email="mantid-help@mantidproject.org",
