@@ -9,6 +9,7 @@ from numpy.distutils.core import setup
 from numpy.distutils.command.build_src import build_src as _build_src
 # from cython_setup import get_cython_extensions
 # from fortran_setup import get_fortran_extensions, FortranExtensionBuilder
+from fortran_setup import FortranExtensionBuilder
 from v2_setup import get_v2_extensions
 
 
