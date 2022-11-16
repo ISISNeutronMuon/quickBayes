@@ -90,6 +90,7 @@ jobs:
           # # Install test dependencies and run tests
           CIBW_TEST_REQUIRES: numpy
           CIBW_TEST_COMMAND: >
+            pip install pytest &&
             python -m pytest --ignore=test/fortran/
             # python {project}/test/qldata_test.py &&
             # python {project}/test/four_python_test.py &&
