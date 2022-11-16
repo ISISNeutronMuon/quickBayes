@@ -90,7 +90,6 @@ jobs:
           # # Install test dependencies and run tests
           CIBW_TEST_REQUIRES: numpy
           CIBW_TEST_COMMAND: >
-            pip install pytest &&
             pytest --ignore=test/fortran/
 
       - uses: actions/upload-artifact@v3
