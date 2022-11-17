@@ -76,6 +76,7 @@ class QEFunction(BaseFitFunction):
         """
         Method for updaing the prefixes for new number of peaks
         """
+        print("moo", self.prefix)
         self.BG.update_prefix(self.prefix)
         self.conv.update_prefix(self.prefix)
 
@@ -158,7 +159,9 @@ class QEFunction(BaseFitFunction):
         N_peaks = self._N_peaks
         # set for number of peaks
         self._N_peaks = N
+        print("test", self._prefix)
         self._update_prefixes()
+        print("test2", self._prefix)
         # get parameters
         params = self.BG.read_from_report(report_dict, index)
         num_funcs = N
