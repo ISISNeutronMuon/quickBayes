@@ -14,6 +14,7 @@ from v2_setup import get_v2_extensions
 
 
 PACKAGE_NAME = 'quasielasticbayes'
+version = "1.0.0a3"
 
 #
 # extensions = (get_fortran_extensions(PACKAGE_NAME)
@@ -70,7 +71,7 @@ setup(
     ext_modules=extensions,
     author_email="mantid-help@mantidproject.org",
     url='https://www.mantidproject.org',
-    version="1.0.0a3",
+    version=version,
     license='BSD',
     package_dir={'': 'src'},  # allows setup to find py and f90 files
     # cmdclass={'build_ext': extension_builder,
