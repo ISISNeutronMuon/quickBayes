@@ -21,6 +21,16 @@ class NoBG(BaseFitFunction):
         """
         return np.zeros(len(x))
 
+    def read_from_report(self, report_dict: Dict[str, List[float]],
+                         index: int = 0) -> List[float]:
+        """
+        Read the parameters from the results dict
+        :param report_dict: the dict of results
+        :param index: the index to get results from
+        :return the parameters
+        """
+        return []
+
     def report(self, report_dict: Dict[str,
                                        List[float]]) -> Dict[str, List[float]]:
         """
@@ -52,6 +62,10 @@ class FlatBG(BaseFitFunction):
         """
         super().__init__(1, prefix)
 
+    @property
+    def constant(self) -> str:
+        return str(f'{self._prefix}BG constant')
+
     def __call__(self, x: ndarray, c: float) -> ndarray:
         """
         Implement the flat BG.
@@ -63,6 +77,16 @@ class FlatBG(BaseFitFunction):
         """
         return c*np.ones(len(x))
 
+    def read_from_report(self, report_dict: Dict[str, List[float]],
+                         index: int = 0) -> List[float]:
+        """
+        Read the parameters from the results dict
+        :param report_dict: the dict of results
+        :param index: the index to get results from
+        :return the parameters
+        """
+        return [self._read_report(report_dict, self.constant, index)]
+
     def report(self, report_dict: Dict[str, List[float]],
                c: float) -> Dict[str, List[float]]:
         """
@@ -71,7 +95,7 @@ class FlatBG(BaseFitFunction):
         :param c: constant
         :return dict of parameters, including BG
         """
-        report_dict = self._add_to_report(f"{self._prefix}BG constant",
+        report_dict = self._add_to_report(self.constant,
                                           c, report_dict)
         return report_dict
 
@@ -97,6 +121,14 @@ class LinearBG(BaseFitFunction):
         """
         super().__init__(2, prefix)
 
+    @property
+    def constant(self) -> str:
+        return str(f'{self._prefix}BG constant')
+
+    @property
+    def grad(self) -> str:
+        return str(f'{self._prefix}BG gradient')
+
     def __call__(self, x: ndarray, m: float, c: float) -> ndarray:
         """
         Implement the Linear BG.
@@ -109,6 +141,17 @@ class LinearBG(BaseFitFunction):
         """
         return m*x + c
 
+    def read_from_report(self, report_dict: Dict[str, List[float]],
+                         index: int = 0) -> List[float]:
+        """
+        Read the parameters from the results dict
+        :param report_dict: the dict of results
+        :param index: the index to get results from
+        :return the parameters
+        """
+        return [self._read_report(report_dict, self.grad, index),
+                self._read_report(report_dict, self.constant, index)]
+
     def report(self, report_dict: Dict[str, List[float]],
                m: float, c: float) -> Dict[str, List[float]]:
         """
@@ -118,9 +161,9 @@ class LinearBG(BaseFitFunction):
         :param c: constant
         :return dict of parameters, including BG
         """
-        report_dict = self._add_to_report(f"{self._prefix}BG gradient",
+        report_dict = self._add_to_report(self.grad,
                                           m, report_dict)
-        report_dict = self._add_to_report(f"{self._prefix}BG constant",
+        report_dict = self._add_to_report(self.constant,
                                           c, report_dict)
         return report_dict
 

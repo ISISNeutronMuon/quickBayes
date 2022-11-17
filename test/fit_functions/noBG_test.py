@@ -38,6 +38,14 @@ class NoBGTest(unittest.TestCase):
         self.assertEqual(lower, [])
         self.assertEqual(upper, [])
 
+    def test_read(self):
+        report = {"old": [1]}
+
+        bg = NoBG()
+        report = bg.report(report)
+        params = bg.read_from_report(report, 0)
+        self.assertEqual(params, [])
+
 
 if __name__ == '__main__':
     unittest.main()

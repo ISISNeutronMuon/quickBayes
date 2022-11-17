@@ -74,6 +74,26 @@ class BaseFitFunction(ABC):
             report_dict[name].append(value)
         return report_dict
 
+    def _read_report(self, report_dict: Dict[str, List[float]],
+                     name: str, index: int) -> float:
+        if name not in report_dict.keys():
+            raise ValueError(f"parameter {name} not in results")
+        tmp = report_dict[name]
+        if index >= len(tmp):
+            raise ValueError("Not enough parameters for this index")
+        return tmp[index]
+
+    @abstractmethod
+    def read_from_report(self, report_dict: Dict[str, List[float]],
+                         index: int = 0) -> List[float]:
+        """
+        Read the parameters from the results dict
+        :param report_dict: the dict of results
+        :param index: the index to get results from
+        :return the parameters
+        """
+        raise NotImplementedError()
+
     @abstractmethod
     def report(self, results: Dict[str, List[float]],
                *kwargs: float) -> Dict[str, List[float]]:

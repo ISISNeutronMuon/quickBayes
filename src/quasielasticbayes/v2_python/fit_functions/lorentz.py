@@ -11,6 +11,27 @@ class Lorentzian(BaseFitFunction):
         """
         super().__init__(3, prefix)
 
+    @property
+    def amplitude(self) -> str:
+        """
+        :return string for the amplitude
+        """
+        return str(f"{self._prefix}Amplitude")
+
+    @property
+    def centre(self) -> str:
+        """
+        :return the string for the peak centre
+        """
+        return str(f"{self._prefix}Peak Centre")
+
+    @property
+    def Gamma(self) -> str:
+        """
+        :return the string for Gamma
+        """
+        return str(f"{self._prefix}Gamma")
+
     def __call__(self, x: ndarray, amplitude: float,
                  x0: float, Gamma: float) -> ndarray:
         """
@@ -26,6 +47,18 @@ class Lorentzian(BaseFitFunction):
         G = Gamma/2.
         return amplitude*G/(pi*(pow(x-x0, 2)+pow(G, 2)))
 
+    def read_from_report(self, report_dict: Dict[str, List[float]],
+                         index: int = 0) -> List[float]:
+        """
+        Read the parameters from the results dict
+        :param report_dict: the dict of results
+        :param index: the index to get results from
+        :return the parameters
+        """
+        return [self._read_report(report_dict, self.amplitude, index),
+                self._read_report(report_dict, self.centre, index),
+                self._read_report(report_dict, self.Gamma, index)]
+
     def report(self, report_dict: Dict[str, List[float]], a: float,
                x0: float, Gamma: float) -> Dict[str, List[float]]:
         """
@@ -36,11 +69,11 @@ class Lorentzian(BaseFitFunction):
         :param Gamma: half width at half maxima (HWHM)
         :return update results dict
         """
-        report_dict = self._add_to_report(f"{self._prefix}Amplitude",
+        report_dict = self._add_to_report(self.amplitude,
                                           a, report_dict)
-        report_dict = self._add_to_report(f"{self._prefix}Peak Centre",
+        report_dict = self._add_to_report(self.centre,
                                           x0, report_dict)
-        report_dict = self._add_to_report(f"{self._prefix}Gamma",
+        report_dict = self._add_to_report(self.Gamma,
                                           Gamma, report_dict)
         return report_dict
 

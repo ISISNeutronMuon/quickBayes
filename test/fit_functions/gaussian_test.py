@@ -29,6 +29,15 @@ class GaussianTest(unittest.TestCase):
         self.assertEqual(out["old"], [1])
         self.assertEqual(len(out.keys()), 4)
 
+    def test_read(self):
+        report = {"old": [1]}
+
+        g = Gaussian()
+        out = g.report(report, 3.2, -1, 2.5)
+        params = g.read_from_report(out, 0)
+
+        self.assertEqual(params, [3.2, -1, 2.5])
+
     def test_N_params(self):
         g = Gaussian()
         self.assertEqual(g.N_params, 3)

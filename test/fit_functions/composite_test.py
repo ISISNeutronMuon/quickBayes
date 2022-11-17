@@ -101,6 +101,30 @@ class CompositeFunctionTest(unittest.TestCase):
         self.assertEqual(out["old"], [1])
         self.assertEqual(len(out.keys()), 7)
 
+    def test_read(self):
+        report = {"old": [1]}
+
+        lor = Lorentzian()
+        c = CompositeFunction()
+        c.add_function(lor)
+
+        out = c.report(report, 3.2, -1, 2.5)
+        params = c.read_from_report(out, 0)
+        self.assertEqual(params, [3.2, -1, 2.5])
+
+    def test_read2(self):
+        report = {"old": [1]}
+
+        lor = Lorentzian()
+        c = CompositeFunction()
+        c.add_function(lor)
+        lor2 = Lorentzian()
+        c.add_function(lor2)
+
+        out = c.report(report, 3.2, -1, 2.5, 5, 6, 7)
+        params = c.read_from_report(out, 0)
+        self.assertEqual(params, [3.2, -1, 2.5, 5, 6, 7])
+
     def test_guess(self):
         lor = Lorentzian()
         c = CompositeFunction()

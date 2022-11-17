@@ -14,6 +14,20 @@ class Delta(BaseFitFunction):
         """
         super().__init__(2, prefix)
 
+    @property
+    def amplitude(self) -> str:
+        """
+        :return the string for the amplitude
+        """
+        return str(f"{self._prefix}Amplitude")
+
+    @property
+    def centre(self) -> str:
+        """
+        :return the string for peak centre
+        """
+        return str(f"{self._prefix}Centre")
+
     def __call__(self, x: ndarray, amplitude: float, x0: float) -> ndarray:
         """
         Implement the delta/top hat.
@@ -38,6 +52,17 @@ class Delta(BaseFitFunction):
         data[index] = amplitude/dx
         return data
 
+    def read_from_report(self, report_dict: Dict[str, List[float]],
+                         index: int = 0) -> List[float]:
+        """
+        Read the parameters from the results dict
+        :param report_dict: the dict of results
+        :param index: the index to get results from
+        :return the parameters
+        """
+        return [self._read_report(report_dict, self.amplitude, index),
+                self._read_report(report_dict, self.centre, index)]
+
     def report(self, report_dict: Dict[str, List[float]],
                amplitude: float, x0: float) -> Dict[str, List[float]]:
         """
@@ -47,9 +72,9 @@ class Delta(BaseFitFunction):
         :param x0: the position of the top hat
         :return updated results dict
         """
-        report_dict = self._add_to_report(f"{self._prefix}Amplitude",
+        report_dict = self._add_to_report(self.amplitude,
                                           amplitude, report_dict)
-        report_dict = self._add_to_report(f"{self._prefix}Centre",
+        report_dict = self._add_to_report(self.centre,
                                           x0, report_dict)
         return report_dict
 
