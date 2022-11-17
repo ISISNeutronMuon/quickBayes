@@ -140,7 +140,7 @@ class StretchExp(BaseFitFunction):
         :param tau: tau parameter
         :return FWHM
         """
-        return PLANCK_CONSTANT/(2.*np.pi*tau)
+        return 2.*PLANCK_CONSTANT/(2.*np.pi*tau)
 
     @staticmethod
     def tau(FWHM: float) -> float:
@@ -150,7 +150,7 @@ class StretchExp(BaseFitFunction):
         :param FWHM: full width half maximum
         :return tau parameter
         """
-        return PLANCK_CONSTANT/(2.*np.pi*FWHM)
+        return 2.*PLANCK_CONSTANT/(2.*np.pi*FWHM)
 
     def report(self, report_dict: Dict[str, List[float]], a: float, x0: float,
                tau, beta) -> Dict[str, List[float]]:

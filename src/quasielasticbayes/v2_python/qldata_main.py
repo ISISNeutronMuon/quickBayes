@@ -13,8 +13,9 @@ from typing import Dict, List
 def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
                  BG_type: str, start_x: float, end_x: float,
                  elastic: bool,
-                 results: Dict[str, ndarray]) -> (Dict[str, ndarray],
-                                                  List[float]):
+                 results: Dict[str, ndarray],
+                 params: List[float] = None) -> (Dict[str, ndarray],
+                                                 List[float]):
     """
     The main function for calculating Qldata.
     Steps are:
@@ -33,6 +34,7 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     :param end_x: the end x for the calculation
     :param elastic: if to include the elastic peak
     :param results: dict of results
+    :param params: initial values, if None (default) a guess will be made
     :result dict of the fit parameters and an array of the loglikelihoods
     """
     # step 0
@@ -50,9 +52,15 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
 
     beta = np.max(sy)*(np.max(new_x)-np.min(new_x))
     func = QlDataFunction(BG, elastic, new_x, ry, start_x, end_x)
-    guess = func.get_guess()
+
+    guess = None
+    if params is not None:
+        guess = params
+    else:
+        guess = func.get_guess()
     # loop doing steps 2 to 8
     params = guess
+    y = None
     for N in range(1, max_num_peaks+1):
         func.add_single_lorentzian()
 
@@ -62,6 +70,9 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
                                                         func, params,
                                                         lower, upper)
         params = list(params)
+
+        if N == 1:
+            y = func(new_x, *params)
 
         results = func.report(results, *params)
 
@@ -75,4 +86,4 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
                                                 hess_det,
                                                 func.N_peaks, beta)]
 
-    return results, new_x
+    return results, new_x, y

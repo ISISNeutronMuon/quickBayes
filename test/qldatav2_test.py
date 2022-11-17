@@ -1,5 +1,7 @@
 import unittest
 from quasielasticbayes.v2.QlData import ql_data_main
+from quasielasticbayes.v2.functions.qldata_function import QlDataFunction
+from quasielasticbayes.v2.functions.BG import LinearBG
 import numpy as np
 import os.path
 
@@ -20,8 +22,8 @@ class QlDataV2Test(unittest.TestCase):
         resolution = {'x': rx, 'y': ry}
         results = {}
 
-        results, new_x = ql_data_main(sample, resolution,
-                                      "linear", -0.4, 0.4, True, results)
+        results, new_x, _ = ql_data_main(sample, resolution,
+                                         "linear", -0.4, 0.4, True, results)
 
         # not from Mantid
         self.assertAlmostEqual(results['N1:loglikelihood'][0], -659.4, 2)
@@ -65,18 +67,24 @@ class QlDataV2Test(unittest.TestCase):
         resolution = {'x': rx, 'y': ry}
         results = {}
 
-        results, new_x = ql_data_main(sample, resolution,
-                                      "linear", -0.4, 0.4, True, results)
+        results, new_x, _ = ql_data_main(sample, resolution,
+                                         "linear", -0.4, 0.4, True, results)
 
         # call it again
-        results, new_x = ql_data_main(sample, resolution,
-                                      "linear", -0.4, 0.4, True, results)
+        ql = QlDataFunction(LinearBG(), True, rx, ry, -0.4, 0.4)
+        ql.add_single_lorentzian()
+        params = ql.read_from_report(results, 1, -1)
+        results, new_x, _ = ql_data_main(sample, resolution,
+                                         "linear", -0.4, 0.4, True,
+                                         results, params)
 
+        params = ql.read_from_report(results, 1, -1)
         for key in results.keys():
-            print(key, results[key])
             self.assertEqual(len(results[key]), 2)
             tmp = results[key]
-            self.assertEqual(tmp[0], tmp[1])
+
+            percentage_change = 100.*np.abs((tmp[0] - tmp[1])/tmp[0])
+            self.assertLessEqual(percentage_change, 20.)
 
 
 if __name__ == '__main__':
