@@ -39,6 +39,14 @@ class FlatBGTest(unittest.TestCase):
         self.assertEqual(lower, [-1.])
         self.assertEqual(upper, [1.])
 
+    def test_read(self):
+        report = {"old": [1]}
+
+        bg = FlatBG()
+        report = bg.report(report, 3.2)
+        params = bg.read_from_report(report, 0)
+        self.assertEqual(params, [3.2])
+
 
 if __name__ == '__main__':
     unittest.main()

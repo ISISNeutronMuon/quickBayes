@@ -47,6 +47,14 @@ class DeltaTest(unittest.TestCase):
         self.assertEqual(out["old"], [1])
         self.assertEqual(len(out.keys()), 3)
 
+    def test_read(self):
+        report = {"old": [1]}
+
+        d = Delta()
+        out = d.report(report, 3.2, -1)
+        params = d.read_from_report(out, 0)
+        self.assertEqual(params, [3.2, -1])
+
     def test_N_params(self):
         d = Delta()
         self.assertEqual(d.N_params, 2)

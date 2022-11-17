@@ -57,6 +57,19 @@ class CompositeFunction(BaseFitFunction):
             result += func(x, *fun_args[j])
         return result
 
+    def read_from_report(self, report_dict: Dict[str, List[float]],
+                         index: int = 0) -> List[float]:
+        """
+        Read the parameters from the results dict
+        :param report_dict: the dict of results
+        :param index: the index to get results from
+        :return the parameters
+        """
+        params = []
+        for fun in self._funcs:
+            params += fun.read_from_report(report_dict, index)
+        return params
+
     def report(self, report_dict: Dict[str, List[float]],
                *args: float) -> Dict[str, List[float]]:
         """
