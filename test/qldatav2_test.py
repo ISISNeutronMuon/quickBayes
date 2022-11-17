@@ -76,7 +76,7 @@ class QlDataV2Test(unittest.TestCase):
         params = ql.read_from_report(results, 1, -1)
         results, new_x, _ = ql_data_main(sample, resolution,
                                          "linear", -0.4, 0.4, True,
-                                          results, params)
+                                         results, params)
 
         for key in results.keys():
             self.assertEqual(len(results[key]), 2)
