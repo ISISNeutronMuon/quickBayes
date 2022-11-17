@@ -14,7 +14,7 @@ from v2_setup import get_v2_extensions
 
 
 PACKAGE_NAME = 'quasielasticbayes'
-version = "1.0.0a3"
+version = "1.0.0a4"
 
 #
 # extensions = (get_fortran_extensions(PACKAGE_NAME)
