@@ -70,7 +70,7 @@ setup(
     ext_modules=extensions,
     author_email="mantid-help@mantidproject.org",
     url='https://www.mantidproject.org',
-    version="1.0.0a1",
+    version="1.0.0a2",
     license='BSD',
     package_dir={'': 'src'},  # allows setup to find py and f90 files
     # cmdclass={'build_ext': extension_builder,
