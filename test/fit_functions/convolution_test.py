@@ -19,6 +19,25 @@ def analytic(x: ndarray, amp: float, mu: float, sig: float,
 
 class ConvolutionTest(unittest.TestCase):
 
+    def test_update_resolution(self):
+        def func(x):
+            return x*x - 3.*x + 1.2
+
+        x = np.linspace(-5, 5, 6)
+        y = func(x)
+        c = conv(x, y, -6, 6)
+
+        new_x = np.linspace(-5, 5, 100)
+        c.update_x_range(new_x)
+        ry = c._ry
+        expect = func(new_x)
+        # normalise the expected values:
+        expect /= sum(expect)
+
+        self.assertEqual(len(ry), len(new_x))
+        for j in range(len(ry)):
+            self.assertAlmostEqual(ry[j], expect[j], 3)
+
     def test_conv_call(self):
         """
         Need the x range to go to zero at the ends to

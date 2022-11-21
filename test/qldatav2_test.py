@@ -22,8 +22,8 @@ class QlDataV2Test(unittest.TestCase):
         resolution = {'x': rx, 'y': ry}
         results = {}
 
-        results, new_x, _ = ql_data_main(sample, resolution,
-                                         "linear", -0.4, 0.4, True, results)
+        results, new_x = ql_data_main(sample, resolution,
+                                      "linear", -0.4, 0.4, True, results)
 
         # not from Mantid
         self.assertAlmostEqual(results['N1:loglikelihood'][0], -659.4, 2)
@@ -67,17 +67,18 @@ class QlDataV2Test(unittest.TestCase):
         resolution = {'x': rx, 'y': ry}
         results = {}
 
-        results, new_x, _ = ql_data_main(sample, resolution,
-                                         "linear", -0.4, 0.4, True, results)
+        results, new_x = ql_data_main(sample, resolution,
+                                      "linear", -0.4, 0.4, True, results)
 
         # call it again
         ql = QlDataFunction(LinearBG(), True, rx, ry, -0.4, 0.4)
         ql.add_single_lorentzian()
         params = ql.read_from_report(results, 1, -1)
-        results, new_x, _ = ql_data_main(sample, resolution,
-                                         "linear", -0.4, 0.4, True,
-                                         results, params)
+        results, new_x = ql_data_main(sample, resolution,
+                                      "linear", -0.4, 0.4, True,
+                                      results, params)
 
+        params = ql.read_from_report(results, 1, -1)
         for key in results.keys():
             self.assertEqual(len(results[key]), 2)
             tmp = results[key]
