@@ -4,6 +4,7 @@ from quasielasticbayes.v2.functions.base import BaseFitFunction
 from quasielasticbayes.v2.functions.delta import Delta
 from numpy import ndarray
 from typing import Dict, List
+import copy
 
 
 """
@@ -35,7 +36,7 @@ class QEFunction(BaseFitFunction):
         :param end_x: the end of the fitting range
         """
         self._N_peaks = 0
-        self.BG = bg_function
+        self.BG = copy.copy(bg_function)
         self.BG.add_to_prefix(self.prefix + 'f1')
         self.conv = ConvolutionWithResolution(r_x, r_y, start_x,
                                               end_x, self.prefix + 'f2')
@@ -46,6 +47,17 @@ class QEFunction(BaseFitFunction):
             delta = Delta('')
             self.conv.add_function(delta)
         super().__init__(0, self.prefix)
+
+    def update_x_range(self, new_x: ndarray) -> None:
+        """
+        The sampling of the resolution function can make
+        a big difference to the quality of the function.
+        This is because of sampling issues. To solve
+        this problem a user can update the x (and y)
+        ranges using this method.
+        :param new_x: the new x range (y is interpolated)
+        """
+        self.conv.update_x_range(new_x)
 
     @property
     def N_params(self) -> int:
@@ -76,7 +88,6 @@ class QEFunction(BaseFitFunction):
         """
         Method for updaing the prefixes for new number of peaks
         """
-        print("moo", self.prefix)
         self.BG.update_prefix(self.prefix)
         self.conv.update_prefix(self.prefix)
 
@@ -159,9 +170,7 @@ class QEFunction(BaseFitFunction):
         N_peaks = self._N_peaks
         # set for number of peaks
         self._N_peaks = N
-        print("test", self._prefix)
         self._update_prefixes()
-        print("test2", self._prefix)
         # get parameters
         params = self.BG.read_from_report(report_dict, index)
         num_funcs = N

@@ -60,7 +60,6 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
         guess = func.get_guess()
     # loop doing steps 2 to 8
     params = guess
-    y = None
     for N in range(1, max_num_peaks+1):
         func.add_single_lorentzian()
 
@@ -70,9 +69,6 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
                                                         func, params,
                                                         lower, upper)
         params = list(params)
-
-        if N == 1:
-            y = func(new_x, *params)
 
         results = func.report(results, *params)
 
@@ -86,4 +82,4 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
                                                 hess_det,
                                                 func.N_peaks, beta)]
 
-    return results, new_x, y
+    return results, new_x
