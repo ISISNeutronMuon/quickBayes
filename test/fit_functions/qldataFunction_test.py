@@ -14,7 +14,7 @@ class QLDataFunctionTest(unittest.TestCase):
         x = np.linspace(-5, 5, 6)
         y = func(x)
         bg = LinearBG()
-        ql = QlDataFunction(bg, False, x, y, 0, 6)
+        ql = QlDataFunction(bg, False, x, y, -6, 6)
 
         new_x = np.linspace(-5, 5, 100)
         ql.update_x_range(new_x)
