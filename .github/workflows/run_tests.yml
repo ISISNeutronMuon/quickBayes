@@ -90,4 +90,5 @@ jobs:
              python -c "help('modules')"
              python -c "print('done')"
              python -c "help('quasielasticbayes')"
-             python -m pytest --ignore=test/fortran/
+             python -m pytest
+             # python -m pytest --ignore=test/fortran/

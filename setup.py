@@ -7,21 +7,18 @@ from setuptools.command.build_py import build_py as _build_py
 import sysconfig
 from numpy.distutils.core import setup
 from numpy.distutils.command.build_src import build_src as _build_src
-# from cython_setup import get_cython_extensions
-# from fortran_setup import get_fortran_extensions, FortranExtensionBuilder
-from fortran_setup import FortranExtensionBuilder
+from cython_setup import get_cython_extensions
+from fortran_setup import get_fortran_extensions, FortranExtensionBuilder
 from v2_setup import get_v2_extensions
 
 
 PACKAGE_NAME = 'quasielasticbayes'
-version = "1.0.0a7"
+version = "1.0.0a8"
 
-#
-# extensions = (get_fortran_extensions(PACKAGE_NAME)
-#               + get_cython_extensions(PACKAGE_NAME)
-#               + get_v2_extensions(PACKAGE_NAME))
 
-extensions = get_v2_extensions(PACKAGE_NAME)
+extensions = (get_fortran_extensions(PACKAGE_NAME)
+              + get_cython_extensions(PACKAGE_NAME)
+              + get_v2_extensions(PACKAGE_NAME))
 
 
 class build_source(_build_src):
@@ -74,9 +71,9 @@ setup(
     version=version,
     license='BSD',
     package_dir={'': 'src'},  # allows setup to find py and f90 files
-    # cmdclass={'build_ext': extension_builder,
-    #           'build_src': build_source,
-    #           'build_py': build_py}
-    cmdclass={'build_src': build_source,
+    cmdclass={'build_ext': extension_builder,
+              'build_src': build_source,
               'build_py': build_py}
+    #  cmdclass={'build_src': build_source,
+    #            'build_py': build_py}
 )

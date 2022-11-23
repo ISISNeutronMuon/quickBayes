@@ -15,7 +15,8 @@ jobs:
         # Note: builds on these are backward compatible
         # (Linux builds use manylinux Docker containers)
         # (macOS builds target old versions by default)
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
+        # os: [ubuntu-latest, windows-latest]
 
     steps:
 
@@ -47,7 +48,8 @@ jobs:
           # Install test dependencies and run tests
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: >
-            pytest --ignore={project}/test/fortran/ {project}/test
+            pytest {project}/test
+            # pytest --ignore={project}/test/fortran/ {project}/test
 
       - uses: actions/upload-artifact@v3
         with:
