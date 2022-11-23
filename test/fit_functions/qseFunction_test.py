@@ -100,7 +100,7 @@ class QSEFunctionTest(unittest.TestCase):
             self.assertAlmostEqual(y[j], expect[j], 3)
 
         guess = qse.get_guess(0.1)
-        expect = [0., 0., 1., 0., 0.1, 6.582, 0.7]
+        expect = [0., 0., 1., 0., 0.1, 13.164, 0.7]
         self.assertEqual(len(guess), len(expect))
         for k in range(len(expect)):
             self.assertAlmostEqual(guess[k], expect[k], 3)
@@ -152,7 +152,7 @@ class QSEFunctionTest(unittest.TestCase):
         for j in range(len(x)):
             self.assertAlmostEqual(y[j], expect[j], 3)
 
-        expect = [0., 0., 0.1, 0., 6.582, 0.7]
+        expect = [0., 0., 0.1, 0., 13.164, 0.7]
         guess = qse.get_guess(0.1)
         self.assertEqual(len(guess), len(expect))
         for k in range(len(expect)):
