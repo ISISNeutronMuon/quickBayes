@@ -117,7 +117,7 @@ class QSEFunctionTest(unittest.TestCase):
         self.assertEqual(report["N1:f2.f2.Amplitude"], [5])
         self.assertEqual(report["N1:f2.f2.Peak Centre"], [4])
         self.assertEqual(report["N1:f2.f2.tau"], [6])
-        self.assertAlmostEqual(report["N1:f2.f2.FWHM"][0], 0.110, 3)
+        self.assertAlmostEqual(report["N1:f2.f2.FWHM"][0], 0.219, 3)
         self.assertEqual(report["N1:f2.f2.beta"], [7])
 
     def test_read_bg_and_delta_and_1se(self):
@@ -167,7 +167,7 @@ class QSEFunctionTest(unittest.TestCase):
         self.assertEqual(report["N1:f2.f1.Amplitude"], [3])
         self.assertEqual(report["N1:f2.f1.Peak Centre"], [4])
         self.assertEqual(report["N1:f2.f1.tau"], [5])
-        self.assertAlmostEqual(report["N1:f2.f1.FWHM"][0], 0.132, 3)
+        self.assertAlmostEqual(report["N1:f2.f1.FWHM"][0], 0.263, 3)
         self.assertEqual(report["N1:f2.f1.beta"], [6])
 
     def test_read_bg_and_1se(self):
