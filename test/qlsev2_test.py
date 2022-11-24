@@ -63,7 +63,7 @@ class QSEV2Test(unittest.TestCase):
         # call it again
         results, new_x = qse_data_main(sample, resolution,
                                        "linear", -0.4, 0.4,
-                                        True, results, params)
+                                       True, results, params)
 
         for key in results.keys():
             self.assertEqual(len(results[key]), 2)
