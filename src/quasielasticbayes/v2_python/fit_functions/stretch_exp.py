@@ -153,7 +153,7 @@ class StretchExp(BaseFitFunction):
         return PLANCK_CONSTANT/(2.*np.pi*FWHM)
 
     def report(self, report_dict: Dict[str, List[float]], a: float, x0: float,
-               tau, beta) -> Dict[str, List[float]]:
+               tau: float, beta: float) -> Dict[str, List[float]]:
         """
         report parameters
         :param report_dic: dict of results
@@ -173,6 +173,34 @@ class StretchExp(BaseFitFunction):
                                           tau, report_dict)
         report_dict = self._add_to_report(f"{self._prefix}FWHM",
                                           self.FWHM(tau), report_dict)
+        return report_dict
+
+    def report_errors(self, report_dict: Dict[str, List[float]],
+                      errors: ndarray,
+                      params: ndarray) -> Dict[str, List[float]]:
+        """
+        report parameters
+        :param report_dic: dict of parameter errors
+        :param errors: the errors for the fit parameters
+        :param params: the fit parameters
+        :return update results dict
+        """
+        report_dict = self._add_to_report(self.amplitude,
+                                          errors[0], report_dict)
+        report_dict = self._add_to_report(self.x0,
+                                          errors[1], report_dict)
+        report_dict = self._add_to_report(self.beta,
+                                          errors[3], report_dict)
+        report_dict = self._add_to_report(self.tau_str,
+                                          errors[2], report_dict)
+        """
+        FWHM = 2 hbar /tau
+        sigma_{FWHM} = 2 hbar sigma_tau / tau^2 = FWHM sigma_tau/tau
+        """
+        tmp = errors[2]/params[2]
+        report_dict = self._add_to_report(f"{self._prefix}FWHM",
+                                          self.FWHM(params[2])*tmp,
+                                          report_dict)
         return report_dict
 
     def get_guess(self, est_FWHM: float) -> List[float]:

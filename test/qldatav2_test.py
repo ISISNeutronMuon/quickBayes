@@ -19,9 +19,12 @@ class QlDataV2Test(unittest.TestCase):
         sample = {'x': sx, 'y': sy, 'e': se}
         resolution = {'x': rx, 'y': ry}
         results = {}
+        errors = {}
 
-        results, new_x = ql_data_main(sample, resolution,
-                                      "linear", -0.4, 0.4, True, results)
+        (results, errors,
+         new_x, fits, f_errors) = ql_data_main(sample, resolution,
+                                               "linear", -0.4, 0.4,
+                                               True, results, errors)
 
         # not from Mantid
         self.assertAlmostEqual(results['N1:loglikelihood'][0], -659.4, 2)
@@ -38,6 +41,15 @@ class QlDataV2Test(unittest.TestCase):
         self.assertAlmostEqual(results['N3:f2.f3.Gamma'][0], 0.050, 1)
         self.assertAlmostEqual(results['N3:f2.f4.Gamma'][0], 0.016, 2)  # 0.012
 
+        self.assertAlmostEqual(errors['N1:f2.f2.Gamma'][0], 0.00018, 5)
+
+        self.assertAlmostEqual(errors['N2:f2.f2.Gamma'][0], 0.010, 2)
+        self.assertAlmostEqual(errors['N2:f2.f3.Gamma'][0], 0.0006, 4)
+
+        self.assertAlmostEqual(errors['N3:f2.f2.Gamma'][0], 0.02, 2)
+        self.assertAlmostEqual(errors['N3:f2.f3.Gamma'][0], 0.006, 3)
+        self.assertAlmostEqual(errors['N3:f2.f4.Gamma'][0], 0.03, 2)
+
         """
         dont check the amp's directly, instead do it via EISF
         since its the ratio thats important and different defs
@@ -52,6 +64,15 @@ class QlDataV2Test(unittest.TestCase):
         self.assertAlmostEqual(results['N3:f2.f3.EISF'][0], 0.021, 2)  # 0.0085
         self.assertAlmostEqual(results['N3:f2.f4.EISF'][0], 0.183, 2)  # 0.0668
 
+        self.assertAlmostEqual(errors['N1:f2.f2.EISF'][0], 0.006, 3)
+
+        self.assertAlmostEqual(errors['N2:f2.f2.EISF'][0], 0.02, 2)
+        self.assertAlmostEqual(errors['N2:f2.f3.EISF'][0], 0.002, 3)
+
+        self.assertAlmostEqual(errors['N3:f2.f2.EISF'][0], 0.4, 1)
+        self.assertAlmostEqual(errors['N3:f2.f3.EISF'][0], 0.015, 3)
+        self.assertAlmostEqual(errors['N3:f2.f4.EISF'][0], 0.3, 1)
+
     def test_two(self):
         """
         Want to check that two calls to the function will append the results
@@ -64,19 +85,33 @@ class QlDataV2Test(unittest.TestCase):
         sample = {'x': sx, 'y': sy, 'e': se}
         resolution = {'x': rx, 'y': ry}
         results = {}
+        errors = {}
 
-        results, new_x = ql_data_main(sample, resolution,
-                                      "linear", -0.4, 0.4, True, results)
+        (results, errors,
+         new_x, fit, fit_errors) = ql_data_main(sample, resolution,
+                                                "linear", -0.4, 0.4,
+                                                True, results, errors)
 
         # call it again
-        results, new_x = ql_data_main(sample, resolution,
-                                      "linear", -0.4, 0.4, True, results)
+        (results, errors,
+         new_x, fit2, fit_errors2) = ql_data_main(sample, resolution,
+                                                  "linear", -0.4, 0.4,
+                                                   True, results, errors)
 
         for key in results.keys():
-            print(key, results[key])
             self.assertEqual(len(results[key]), 2)
             tmp = results[key]
             self.assertEqual(tmp[0], tmp[1])
+
+        for key in errors.keys():
+            self.assertEqual(len(results[key]), 2)
+            tmp = results[key]
+            self.assertEqual(tmp[0], tmp[1])
+
+        for j in range(3):
+            for k in range(len(fit[j])):
+                self.assertAlmostEqual(fit[j][k], fit2[j][k])
+                self.assertAlmostEqual(fit_errors[j][k], fit_errors2[j][k])
 
 
 if __name__ == '__main__':

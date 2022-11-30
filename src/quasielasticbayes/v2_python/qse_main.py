@@ -1,5 +1,8 @@
 from quasielasticbayes.v2.functions.qse_function import QSEFunction
 from quasielasticbayes.v2.fitting.scipy_fit import scipy_curve_fit
+from quasielasticbayes.v2.fitting.fit_utils import (log10_hessian_det,
+                                                    chi_squared)
+# param_errors, derivative, fit_errors)
 from quasielasticbayes.v2.utils.spline import spline
 from quasielasticbayes.v2.utils.general import get_background_function
 from quasielasticbayes.v2.log_likelihood import loglikelihood
@@ -62,9 +65,12 @@ def qse_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     else:
         guess = func.get_guess(est_FWHM)
     lower, upper = func.get_bounds()
-    (chi2, hess_det, params, fit) = scipy_curve_fit(new_x, sy, se,
-                                                    func, guess,
-                                                    lower, upper)
+    (params, covar, fit) = scipy_curve_fit(new_x, sy, se,
+                                           func, guess,
+                                           lower, upper)
+
+    chi2 = chi_squared(new_x, sy, se, fit, params)
+    hess_det = log10_hessian_det(covar)
 
     params = list(params)
     results = func.report(results, *params)

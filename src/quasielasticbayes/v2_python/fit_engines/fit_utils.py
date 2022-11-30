@@ -6,7 +6,11 @@ from scipy.stats import t
 
 def log10_hessian_det(covar: ndarray) -> float:
     """
-
+    Calculate the log base 10 of the determinant
+    of the Hessian matrix
+    :param covar: the covarience matrix
+    :return the log of the determinant of the
+    Hessian matrix
     """
     hessian = np.linalg.inv(covar)
     return np.log10(np.linalg.det(hessian))
@@ -49,19 +53,25 @@ def derivative(x_data: ndarray, params: ndarray, func: Callable) -> ndarray:
     N = len(params)
     for j in range(N):
         # only want to change one parameter at a time
-        dparams = np.zeors(N)
+        dparams = np.zeros(N)
         # small (0.1%) change in parameter value
         dparams[j] = params[j]*0.001
         # forward difference
-        df_by_dp.append((func(x, *(params + dparams)) -
-                         func(x, *(params)))/np.sum(dparams))
+        df_by_dp.append((func(x_data, *(params + dparams)) -
+                         func(x_data, *(params)))/np.sum(dparams))
     return df_by_dp
 
 
 def fit_errors(x_data: ndarray, params: ndarray, fit: ndarray,
                covar: ndarray, df_by_dp: ndarray) -> ndarray:
     """
-
+    Generate the errors for the fit line
+    :param x_data: the x data
+    :param params: the parameters for the function
+    :param fit: the y data values from the fit
+    :param covar: the covarience matrix
+    :param df_by_dp: the derivatives
+    :return the error values
     """
     confidence = 0.6826  # 2 sigma
 
