@@ -40,7 +40,7 @@ class StretchExpTest(unittest.TestCase):
         self.assertEqual(out["Amplitude"], [1])
         self.assertEqual(out["Peak Centre"], [0.1])
         self.assertEqual(out["tau"], [10.])
-        self.assertAlmostEqual(out["FWHM"][0], 0.066, 3)
+        self.assertAlmostEqual(out["FWHM"][0], 0.132, 3)
         self.assertEqual(out["beta"], [0.5])
         self.assertEqual(out["old"], [1])
         self.assertEqual(len(out.keys()), 6)
@@ -73,7 +73,7 @@ class StretchExpTest(unittest.TestCase):
     def test_FWHM(self):
         se = StretchExp()
         FWHM = se.FWHM(3.5)
-        self.assertAlmostEqual(FWHM, 0.188, 3)
+        self.assertAlmostEqual(FWHM, 0.376, 3)
         # check round trip works
         self.assertAlmostEqual(se.tau(FWHM), 3.5)
 
@@ -84,7 +84,7 @@ class StretchExpTest(unittest.TestCase):
     def test_guess(self):
         se = StretchExp()
         guess = se.get_guess(0.2)
-        expect = [0.1, 0.0, 3.291, 0.7]
+        expect = [0.1, 0.0, 6.582, 0.7]
         self.assertEqual(len(guess), len(expect))
         for k in range(len(guess)):
             self.assertAlmostEqual(guess[k], expect[k], 3)

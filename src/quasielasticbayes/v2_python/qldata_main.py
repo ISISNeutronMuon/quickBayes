@@ -19,11 +19,12 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
                  BG_type: str, start_x: float, end_x: float,
                  elastic: bool,
                  results: Dict[str, ndarray],
-                 results_errors: Dict[str, ndarray]) -> (Dict[str, ndarray],
-                                                         Dict[str, ndarray],
-                                                         ndarray,
-                                                         List[ndarray],
-                                                         List[ndarray]):
+                 results_errors: Dict[str, ndarray],
+                 parameters: List[float] = None) -> (Dict[str, ndarray],
+                                                     Dict[str, ndarray],
+                                                     ndarray,
+                                                     List[ndarray],
+                                                     List[ndarray]):
     """
     The main function for calculating Qldata.
     Steps are:
@@ -43,8 +44,12 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     :param elastic: if to include the elastic peak
     :param results: dict of results
     :param results_errors: dict of errors for results
+    :param parameters: initial values, if None (default) a guess will be made
     :result dict of the fit parameters, their errors, the x range used, list of
     fit values and their errors.
+=======
+    :result dict of the fit parameters and the x range that was used
+>>>>>>> origin/main
     """
     # step 0
     BG = get_background_function(BG_type)
@@ -61,11 +66,12 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
 
     beta = np.max(sy)*(np.max(new_x)-np.min(new_x))
     func = QlDataFunction(BG, elastic, new_x, ry, start_x, end_x)
-    guess = func.get_guess()
     fits = []
     errors_fit = []
+    params = []
+    if parameters is not None:
+        params = parameters
     # loop doing steps 2 to 8
-    params = guess
     for N in range(1, max_num_peaks+1):
         func.add_single_lorentzian()
 

@@ -1,5 +1,7 @@
 import unittest
 from quasielasticbayes.v2.QlData import ql_data_main
+from quasielasticbayes.v2.functions.qldata_function import QlDataFunction
+from quasielasticbayes.v2.functions.BG import LinearBG
 import numpy as np
 import os.path
 
@@ -93,25 +95,36 @@ class QlDataV2Test(unittest.TestCase):
                                                 True, results, errors)
 
         # call it again
+        ql = QlDataFunction(LinearBG(), True, rx, ry, -0.4, 0.4)
+        ql.add_single_lorentzian()
+        params = ql.read_from_report(results, 1, -1)
+
         (results, errors,
          new_x, fit2, fit_errors2) = ql_data_main(sample, resolution,
                                                   "linear", -0.4, 0.4,
-                                                   True, results, errors)
+                                                   True, results,
+                                                   errors, params)
 
+        params = ql.read_from_report(results, 1, -1)
         for key in results.keys():
             self.assertEqual(len(results[key]), 2)
             tmp = results[key]
-            self.assertEqual(tmp[0], tmp[1])
+
+            percentage_change = 100.*np.abs((tmp[0] - tmp[1])/tmp[0])
+            self.assertLessEqual(percentage_change, 20.)
 
         for key in errors.keys():
             self.assertEqual(len(results[key]), 2)
-            tmp = results[key]
-            self.assertEqual(tmp[0], tmp[1])
+            tmp = errors[key]
+            self.assertAlmostEqual(tmp[0], tmp[1], 3)
+
+            percentage_change = 100.*np.abs((tmp[0] - tmp[1])/tmp[0])
+            self.assertLessEqual(percentage_change, 20.)
 
         for j in range(3):
             for k in range(len(fit[j])):
-                self.assertAlmostEqual(fit[j][k], fit2[j][k])
-                self.assertAlmostEqual(fit_errors[j][k], fit_errors2[j][k])
+                self.assertAlmostEqual(fit[j][k], fit2[j][k], 3)
+                self.assertAlmostEqual(fit_errors[j][k], fit_errors2[j][k], 3)
 
 
 if __name__ == '__main__':

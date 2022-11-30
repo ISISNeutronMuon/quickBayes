@@ -1,8 +1,10 @@
 from quasielasticbayes.v2.functions.base import BaseFitFunction
 from quasielasticbayes.v2.functions.composite import CompositeFunction
 from quasielasticbayes.v2.utils.crop_data import crop
+from quasielasticbayes.v2.utils.spline import spline
 from numpy import ndarray
 from scipy import signal
+import copy
 
 
 class ConvolutionWithResolution(CompositeFunction):
@@ -18,9 +20,24 @@ class ConvolutionWithResolution(CompositeFunction):
         :param prefix: prefix for fitting function
         """
         super().__init__(prefix)
-        self._rx, self._ry, _ = crop(res_x, res_y, None, start_x, end_x)
+        self._rx = copy.deepcopy(res_x)
+        self._ry = copy.deepcopy(res_y)
+        self._rx, self._ry, _ = crop(self._rx, self._ry, None, start_x, end_x)
         # this is to normalise the kernal to get correct amplitudes
         self._ry /= sum(self._ry)
+
+    def update_x_range(self, new_x: ndarray) -> None:
+        """
+        The sampling of the resolution function can make
+        a big difference to the quality of the function.
+        This is because of sampling issues. To solve
+        this problem a user can update the x (and y)
+        ranges using this method.
+        :param new_x: the new x range (y is interpolated)
+        """
+        self._ry = spline(self._rx, self._ry, new_x)
+        self._ry /= sum(self._ry)
+        self._rx = new_x
 
     def update_prefix(self, new: str) -> None:
         """
