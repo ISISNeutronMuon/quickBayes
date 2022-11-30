@@ -30,7 +30,7 @@ class QSEV2Test(unittest.TestCase):
         self.assertAlmostEqual(results['N1:loglikelihood'][0], -389.94, 2)
 
         # from Mantid, if not then as a comment
-        self.assertAlmostEqual(results['N1:f2.f2.FWHM'][0], 0.028, 3)
+        self.assertAlmostEqual(results['N1:f2.f2.FWHM'][0], 0.055, 3)
         self.assertAlmostEqual(results['N1:f2.f2.beta'][0], 0.794, 3)  # 0.752
 
         # dont compare amp to Mantid due to different scaling etc.

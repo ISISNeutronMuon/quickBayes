@@ -100,7 +100,7 @@ class QSEFunctionTest(unittest.TestCase):
             self.assertAlmostEqual(y[j], expect[j], 3)
 
         guess = qse.get_guess(0.1)
-        expect = [0., 0., 1., 0., 0.1, 6.582, 0.7]
+        expect = [0., 0., 1., 0., 0.1, 13.164, 0.7]
         self.assertEqual(len(guess), len(expect))
         for k in range(len(expect)):
             self.assertAlmostEqual(guess[k], expect[k], 3)
@@ -117,7 +117,7 @@ class QSEFunctionTest(unittest.TestCase):
         self.assertEqual(report["N1:f2.f2.Amplitude"], [5])
         self.assertEqual(report["N1:f2.f2.Peak Centre"], [4])
         self.assertEqual(report["N1:f2.f2.tau"], [6])
-        self.assertAlmostEqual(report["N1:f2.f2.FWHM"][0], 0.110, 3)
+        self.assertAlmostEqual(report["N1:f2.f2.FWHM"][0], 0.219, 3)
         self.assertEqual(report["N1:f2.f2.beta"], [7])
 
     def test_read_bg_and_delta_and_1se(self):
@@ -152,7 +152,7 @@ class QSEFunctionTest(unittest.TestCase):
         for j in range(len(x)):
             self.assertAlmostEqual(y[j], expect[j], 3)
 
-        expect = [0., 0., 0.1, 0., 6.582, 0.7]
+        expect = [0., 0., 0.1, 0., 13.164, 0.7]
         guess = qse.get_guess(0.1)
         self.assertEqual(len(guess), len(expect))
         for k in range(len(expect)):
@@ -167,7 +167,7 @@ class QSEFunctionTest(unittest.TestCase):
         self.assertEqual(report["N1:f2.f1.Amplitude"], [3])
         self.assertEqual(report["N1:f2.f1.Peak Centre"], [4])
         self.assertEqual(report["N1:f2.f1.tau"], [5])
-        self.assertAlmostEqual(report["N1:f2.f1.FWHM"][0], 0.132, 3)
+        self.assertAlmostEqual(report["N1:f2.f1.FWHM"][0], 0.263, 3)
         self.assertEqual(report["N1:f2.f1.beta"], [6])
 
     def test_read_bg_and_1se(self):

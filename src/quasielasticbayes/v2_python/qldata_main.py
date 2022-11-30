@@ -15,7 +15,7 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
                  elastic: bool,
                  results: Dict[str, ndarray],
                  params: List[float] = None) -> (Dict[str, ndarray],
-                                                 List[float]):
+                                                 ndarray):
     """
     The main function for calculating Qldata.
     Steps are:
@@ -35,7 +35,7 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     :param elastic: if to include the elastic peak
     :param results: dict of results
     :param params: initial values, if None (default) a guess will be made
-    :result dict of the fit parameters and an array of the loglikelihoods
+    :result dict of the fit parameters and the x range that was used
     """
     # step 0
     BG = get_background_function(BG_type)
