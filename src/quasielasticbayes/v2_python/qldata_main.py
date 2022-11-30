@@ -13,8 +13,9 @@ from typing import Dict, List
 def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
                  BG_type: str, start_x: float, end_x: float,
                  elastic: bool,
-                 results: Dict[str, ndarray]) -> (Dict[str, ndarray],
-                                                  List[float]):
+                 results: Dict[str, ndarray],
+                 params: List[float] = None) -> (Dict[str, ndarray],
+                                                 ndarray):
     """
     The main function for calculating Qldata.
     Steps are:
@@ -33,7 +34,8 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     :param end_x: the end x for the calculation
     :param elastic: if to include the elastic peak
     :param results: dict of results
-    :result dict of the fit parameters and an array of the loglikelihoods
+    :param params: initial values, if None (default) a guess will be made
+    :result dict of the fit parameters and the x range that was used
     """
     # step 0
     BG = get_background_function(BG_type)
@@ -50,7 +52,12 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
 
     beta = np.max(sy)*(np.max(new_x)-np.min(new_x))
     func = QlDataFunction(BG, elastic, new_x, ry, start_x, end_x)
-    guess = func.get_guess()
+
+    guess = None
+    if params is not None:
+        guess = params
+    else:
+        guess = func.get_guess()
     # loop doing steps 2 to 8
     params = guess
     for N in range(1, max_num_peaks+1):

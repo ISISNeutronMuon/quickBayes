@@ -7,6 +7,26 @@ from quasielasticbayes.v2.functions.qldata_function import QlDataFunction
 
 class QLDataFunctionTest(unittest.TestCase):
 
+    def test_update_resolution(self):
+        def func(x):
+            return x*x - 3.*x + 1.2
+
+        x = np.linspace(-5, 5, 6)
+        y = func(x)
+        bg = LinearBG()
+        ql = QlDataFunction(bg, False, x, y, -6, 6)
+
+        new_x = np.linspace(-5, 5, 100)
+        ql.update_x_range(new_x)
+        ry = ql.conv._ry
+        expect = func(new_x)
+        # normalise the expected values:
+        expect /= sum(expect)
+
+        self.assertEqual(len(ry), len(new_x))
+        for j in range(len(ry)):
+            self.assertAlmostEqual(ry[j], expect[j], 3)
+
     def test_just_bg(self):
         x = np.linspace(0, 5, 6)
         bg = LinearBG()
