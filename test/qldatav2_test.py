@@ -102,8 +102,8 @@ class QlDataV2Test(unittest.TestCase):
         (results, errors,
          new_x, fit2, fit_errors2) = ql_data_main(sample, resolution,
                                                   "linear", -0.4, 0.4,
-                                                   True, results,
-                                                   errors, params)
+                                                  True, results,
+                                                  errors, params)
 
         params = ql.read_from_report(results, 1, -1)
         for key in results.keys():
