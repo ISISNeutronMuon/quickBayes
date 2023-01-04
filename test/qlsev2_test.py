@@ -22,9 +22,12 @@ class QSEV2Test(unittest.TestCase):
         sample = {'x': sx, 'y': sy, 'e': se}
         resolution = {'x': rx, 'y': ry}
         results = {}
+        errors = {}
 
-        results, new_x = qse_data_main(sample, resolution,
-                                       "linear", -0.4, 0.4, True, results)
+        (results, errors,
+         new_x, fits, fit_e) = qse_data_main(sample, resolution,
+                                             "linear", -0.4, 0.4, True,
+                                             results, errors)
 
         # not from Mantid
         self.assertAlmostEqual(results['N1:loglikelihood'][0], -389.94, 2)
@@ -49,10 +52,12 @@ class QSEV2Test(unittest.TestCase):
         sample = {'x': sx, 'y': sy, 'e': se}
         resolution = {'x': rx, 'y': ry}
         results = {}
+        errors = {}
 
-        results, new_x = qse_data_main(sample, resolution,
-                                       "linear", -0.4, 0.4,
-                                       True, results)
+        (results, errors,
+         new_x, fits, fit_e) = qse_data_main(sample, resolution,
+                                             "linear", -0.4, 0.4,
+                                             True, results, errors)
 
         # use the previous results to make it faster
         lbg = LinearBG()
@@ -61,9 +66,10 @@ class QSEV2Test(unittest.TestCase):
         params = qse.read_from_report(results, 1, 0)
 
         # call it again
-        results, new_x = qse_data_main(sample, resolution,
-                                       "linear", -0.4, 0.4,
-                                       True, results, params)
+        (results, errors,
+         new_x, fit, fit_e) = qse_data_main(sample, resolution,
+                                            "linear", -0.4, 0.4,
+                                            True, results, errors, params)
 
         for key in results.keys():
             self.assertEqual(len(results[key]), 2)

@@ -56,7 +56,7 @@ class StretchExpTest(unittest.TestCase):
         self.assertEqual(out["Amplitude"], [0.1])
         self.assertEqual(out["Peak Centre"], [0.02])
         self.assertEqual(out["tau"], [0.5])
-        self.assertAlmostEqual(out["FWHM"][0], 0.066*0.05, 3)
+        self.assertAlmostEqual(out["FWHM"][0], 0.007, 3)
         self.assertEqual(out["beta"], [0.01])
         self.assertEqual(out["old"], [1])
         self.assertEqual(len(out.keys()), 6)

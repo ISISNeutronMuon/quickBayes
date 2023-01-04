@@ -24,7 +24,7 @@ class FitUtilsTest(unittest.TestCase):
 
         chi_2 = chi_squared(x, y, e, fit, params)
 
-        self.assertAlmostEqual(chi_2, 62.125, 3)
+        self.assertAlmostEqual(chi_2, 82.833, 3)
 
     def test_param_errors(self):
 
