@@ -47,9 +47,6 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     :param parameters: initial values, if None (default) a guess will be made
     :result dict of the fit parameters, their errors, the x range used, list of
     fit values and their errors.
-=======
-    :result dict of the fit parameters and the x range that was used
->>>>>>> origin/main
     """
     # step 0
     BG = get_background_function(BG_type)
