@@ -20,7 +20,7 @@ class Exp(BaseFitFunction):
         return str(f"{self._prefix}Amplitude")
 
     @property
-    def lambda(self) -> str:
+    def decay_rate(self) -> str:
         """
         :return string for name of lambda
         """
@@ -48,7 +48,7 @@ class Exp(BaseFitFunction):
         :return the parameters
         """
         return [self._read_report(report_dict, self.amplitude, index),
-                self._read_report(report_dict, self.lambda, index)]
+                self._read_report(report_dict, self.decay_rate, index)]
 
     def report(self, report_dict: Dict[str, List[float]], a: float,
                decay_rate: float) -> Dict[str, List[float]]:
@@ -61,7 +61,7 @@ class Exp(BaseFitFunction):
         """
         report_dict = self._add_to_report(self.amplitude,
                                           a, report_dict)
-        report_dict = self._add_to_report(self.lambda,
+        report_dict = self._add_to_report(self.decay_rate,
                                           decay_rate, report_dict)
         return report_dict
 
