@@ -45,6 +45,22 @@ class StretchExpTest(unittest.TestCase):
         self.assertEqual(out["old"], [1])
         self.assertEqual(len(out.keys()), 6)
 
+    def test_errors_report(self):
+        report = {"old": [1]}
+
+        se = StretchExp()
+        errors = np.array([0.1, 0.02, 0.5, 0.01])
+        params = np.array([1, .1, 10, .5])
+        out = se.report_errors(report, errors, params)
+
+        self.assertEqual(out["Amplitude"], [0.1])
+        self.assertEqual(out["Peak Centre"], [0.02])
+        self.assertEqual(out["tau"], [0.5])
+        self.assertAlmostEqual(out["FWHM"][0], 0.007, 3)
+        self.assertEqual(out["beta"], [0.01])
+        self.assertEqual(out["old"], [1])
+        self.assertEqual(len(out.keys()), 6)
+
     def test_read(self):
         report = {"old": [1]}
 

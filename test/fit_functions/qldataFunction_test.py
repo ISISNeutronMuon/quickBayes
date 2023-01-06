@@ -322,6 +322,37 @@ class QLDataFunctionTest(unittest.TestCase):
         self.assertEqual(params, [11., 12., 14., 15., 16., 17., 18.])
         self.assertEqual(ql._N_peaks, 3)
 
+    def test_errors(self):
+        """
+        Since only the EISF is interesting for errors
+        we will only test delta + 1 lorentzian
+        """
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        lor = Lorentzian()
+        y = lor(x, 1., -.2, .6)
+        ql = QlDataFunction(bg, True, x, y, -6, 6)
+        ql.add_single_lorentzian()
+        report = {}
+        params = [1, 2, 3, 4, 5, 6]
+        errors = [.1, .2, .3, .4, .5, .6]
+
+        report = ql.report_errors(report, errors, params)
+        # EISF is the only interesting one
+        self.assertEqual(len(report["N1:f2.f2.EISF"]), 1)
+        self.assertAlmostEqual(report["N1:f2.f2.EISF"][0], 0.04, 2)
+        # check the others
+        self.assertEqual(len(report.keys()), 8)
+        self.assertEqual(report["N1:f1.BG gradient"], [.1])
+        self.assertEqual(report["N1:f1.BG constant"], [.2])
+
+        self.assertEqual(report["N1:f2.f1.Amplitude"], [.3])
+        self.assertEqual(report["N1:f2.f1.Centre"], [.4])
+
+        self.assertEqual(report["N1:f2.f2.Amplitude"], [.5])
+        self.assertEqual(report["N1:f2.f2.Peak Centre"], [.4])
+        self.assertEqual(report["N1:f2.f2.Gamma"], [.6])
+
 
 if __name__ == '__main__':
     unittest.main()

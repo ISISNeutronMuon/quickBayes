@@ -2,6 +2,7 @@ from quasielasticbayes.v2.functions.base import BaseFitFunction
 from quasielasticbayes.v2.functions.qe_function import QEFunction
 from quasielasticbayes.v2.functions.lorentz import Lorentzian
 from numpy import ndarray
+from math import sqrt
 from typing import Dict, List
 
 
@@ -58,6 +59,37 @@ class QlDataFunction(QEFunction):
                 # params has values for delta + lorentz
                 qe_amp = params[j*N_qe + N_e]
                 EISF = e_amp/(e_amp + qe_amp)
+                report_dict = self._add_to_report(self.conv._funcs[k]._prefix
+                                                  + "EISF",
+                                                  EISF, report_dict)
+        return report_dict
+
+    def report_errors(self, report_dict: Dict[str, List[float]],
+                      errors: List[float],
+                      params: List[float]) -> Dict[str, List[float]]:
+        """
+        Reports the parameter errors
+        :param report_dict: dict of errors
+        :param errrors: error values
+        :param params: parameter values
+        :returns updated errors dict
+        """
+        report_dict = super().report(report_dict, *errors)
+        # manually add EISF errors
+        if self.delta and self.conv.N_params > 2:
+            BG_N_params = self.BG.N_params
+            e_amp = params[BG_N_params]
+            sigma_e_amp = errors[BG_N_params]
+            N_e = self.conv._funcs[0].N_params
+            for j in range(len(self.conv._funcs)-1):
+                k = j + 1
+                N_qe = self.conv._funcs[k].N_params
+                # params has values for delta + lorentz
+                qe_amp = params[j*N_qe + N_e]
+                sigma_qe_amp = errors[j*N_qe + N_e]
+                EISF = sqrt(((qe_amp**2)*(sigma_e_amp**2) +
+                             (sigma_qe_amp**2)*(e_amp**2))/pow(e_amp +
+                                                               qe_amp, 4))
                 report_dict = self._add_to_report(self.conv._funcs[k]._prefix
                                                   + "EISF",
                                                   EISF, report_dict)
