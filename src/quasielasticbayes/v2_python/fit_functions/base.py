@@ -108,6 +108,21 @@ class BaseFitFunction(ABC):
         """
         raise NotImplementedError()
 
+    def report_errors(self, results: Dict[str, List[float]],
+                      errors: List[float],
+                      params: List[float]) -> Dict[str, List[float]]:
+        """
+        This method is for accumalating the parameter errors
+        into a single dict. This is useful for multiple
+        calls where the aim is to get the results for
+        different conditions (e.g. Q value).
+        :param results: the dict of parameter errors
+        :param errors: the parameter errors
+        :param params: the parameter values
+        :return the updated results dict
+        """
+        return self.report(results, *errors)
+
     @abstractmethod
     def __call__(self, x: ndarray,
                  *kwargs: float) -> ndarray:

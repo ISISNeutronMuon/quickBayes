@@ -2,6 +2,8 @@ import unittest
 from numpy import ndarray
 import numpy as np
 from quasielasticbayes.v2.fitting.scipy_fit import scipy_curve_fit
+from quasielasticbayes.v2.fitting.fit_utils import (log10_hessian_det,
+                                                    chi_squared)
 from quasielasticbayes.v2.functions.gaussian import Gaussian
 
 
@@ -35,9 +37,12 @@ class ScipyFitTest(unittest.TestCase):
         guess = g.get_guess()
         bounds = g.get_bounds()
 
-        (chi2, hess_det,
-         params, fit) = scipy_curve_fit(x, y, e, g, guess, bounds[0],
-                                        bounds[1])
+        (params, covar, fit) = scipy_curve_fit(x, y, e, g, guess,
+                                               bounds[0],
+                                               bounds[1])
+
+        hess_det = log10_hessian_det(covar)
+        chi2 = chi_squared(x, y, e, fit, params)
 
         self.assertAlmostEqual(params[0], amp, 2)
         self.assertAlmostEqual(params[1], mu, 2)

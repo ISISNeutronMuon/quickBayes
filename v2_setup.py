@@ -50,9 +50,13 @@ def get_v2_extensions(PACKAGE_NAME):
             [join('fit_functions', 'stretch_exp.py')],
         f'{PACKAGE_NAME}.v2.functions.qse_function':
             [join('fit_functions', 'qse.py')],
+        f'{PACKAGE_NAME}.v2.functions.exp':
+            [join('fit_functions', 'exp.py')],
 
         f'{PACKAGE_NAME}.v2.fitting.scipy_fit':
             [join('fit_engines', 'scipy_fit.py')],
+        f'{PACKAGE_NAME}.v2.fitting.fit_utils':
+            [join('fit_engines', 'fit_utils.py')],
 
         f'{PACKAGE_NAME}.v2.log_likelihood':
             ['log_likelihood.py'],

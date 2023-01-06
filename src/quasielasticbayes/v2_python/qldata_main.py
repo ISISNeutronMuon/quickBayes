@@ -1,5 +1,10 @@
 from quasielasticbayes.v2.functions.qldata_function import QlDataFunction
 from quasielasticbayes.v2.fitting.scipy_fit import scipy_curve_fit
+from quasielasticbayes.v2.fitting.fit_utils import (log10_hessian_det,
+                                                    chi_squared,
+                                                    param_errors,
+                                                    derivative,
+                                                    fit_errors)
 from quasielasticbayes.v2.utils.spline import spline
 from quasielasticbayes.v2.utils.general import (update_guess,
                                                 get_background_function)
@@ -14,8 +19,12 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
                  BG_type: str, start_x: float, end_x: float,
                  elastic: bool,
                  results: Dict[str, ndarray],
-                 params: List[float] = None) -> (Dict[str, ndarray],
-                                                 ndarray):
+                 results_errors: Dict[str, ndarray],
+                 init_parameters: List[float] = None) -> (Dict[str, ndarray],
+                                                          Dict[str, ndarray],
+                                                          ndarray,
+                                                          List[ndarray],
+                                                          List[ndarray]):
     """
     The main function for calculating Qldata.
     Steps are:
@@ -34,8 +43,10 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     :param end_x: the end x for the calculation
     :param elastic: if to include the elastic peak
     :param results: dict of results
-    :param params: initial values, if None (default) a guess will be made
-    :result dict of the fit parameters and the x range that was used
+    :param results_errors: dict of errors for results
+    :param init_parameters: initial values, if None a guess will be made
+    :result dict of the fit parameters, their errors, the x range used, list of
+    fit values and their errors.
     """
     # step 0
     BG = get_background_function(BG_type)
@@ -52,29 +63,30 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
 
     beta = np.max(sy)*(np.max(new_x)-np.min(new_x))
     func = QlDataFunction(BG, elastic, new_x, ry, start_x, end_x)
-
-    guess = None
-    if params is not None:
-        guess = params
-    else:
-        guess = func.get_guess()
+    fits = []
+    errors_fit = []
+    params = init_parameters if init_parameters is not None else []
     # loop doing steps 2 to 8
-    params = guess
-    y = None
     for N in range(1, max_num_peaks+1):
         func.add_single_lorentzian()
 
         lower, upper = func.get_bounds()
         params = update_guess(params, func)
-        (chi2, hess_det, params, fit) = scipy_curve_fit(new_x, sy, se,
-                                                        func, params,
-                                                        lower, upper)
+        (params, covar, fit) = scipy_curve_fit(new_x, sy, se,
+                                               func, params,
+                                               lower, upper)
+        fits.append(fit)
+        chi2 = chi_squared(new_x, sy, se, fit, params)
+        hess_det = log10_hessian_det(covar)
+        errors_p = param_errors(covar)
+        df_by_dp = derivative(new_x, params, func)
+        tmp = fit_errors(new_x, params, fit, covar, df_by_dp)
+        errors_fit.append(tmp)
+
         params = list(params)
 
-        if N == 1:
-            y = func(new_x, *params)
-
         results = func.report(results, *params)
+        results_errors = func.report_errors(results_errors, errors_p, params)
 
         prob_name = f'N{N}:loglikelihood'
         if prob_name in results:
@@ -86,4 +98,4 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
                                                 hess_det,
                                                 func.N_peaks, beta)]
 
-    return results, new_x, y
+    return results, results_errors, new_x, fits, errors_fit

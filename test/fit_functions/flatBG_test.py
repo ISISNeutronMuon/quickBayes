@@ -25,6 +25,16 @@ class FlatBGTest(unittest.TestCase):
         self.assertEqual(out["old"], [1])
         self.assertEqual(len(out.keys()), 2)
 
+    def test_flat_BG_report_error(self):
+        report = {"old": [1]}
+
+        bg = FlatBG()
+        out = bg.report_errors(report, [0.1], [3.2])
+
+        self.assertEqual(out["BG constant"], [0.1])
+        self.assertEqual(out["old"], [1])
+        self.assertEqual(len(out.keys()), 2)
+
     def test_N_params(self):
         bg = FlatBG()
         self.assertEqual(bg.N_params, 1)
