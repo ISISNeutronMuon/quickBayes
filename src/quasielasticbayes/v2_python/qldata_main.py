@@ -20,11 +20,11 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
                  elastic: bool,
                  results: Dict[str, ndarray],
                  results_errors: Dict[str, ndarray],
-                 parameters: List[float] = None) -> (Dict[str, ndarray],
-                                                     Dict[str, ndarray],
-                                                     ndarray,
-                                                     List[ndarray],
-                                                     List[ndarray]):
+                 init_parameters: List[float] = None) -> (Dict[str, ndarray],
+                                                          Dict[str, ndarray],
+                                                          ndarray,
+                                                          List[ndarray],
+                                                          List[ndarray]):
     """
     The main function for calculating Qldata.
     Steps are:
@@ -44,7 +44,7 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     :param elastic: if to include the elastic peak
     :param results: dict of results
     :param results_errors: dict of errors for results
-    :param parameters: initial values, if None (default) a guess will be made
+    :param init_parameters: initial values, if None a guess will be made
     :result dict of the fit parameters, their errors, the x range used, list of
     fit values and their errors.
     """
@@ -65,9 +65,7 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     func = QlDataFunction(BG, elastic, new_x, ry, start_x, end_x)
     fits = []
     errors_fit = []
-    params = []
-    if parameters is not None:
-        params = parameters
+    params = init_parameters if init_parameters is not None else []
     # loop doing steps 2 to 8
     for N in range(1, max_num_peaks+1):
         func.add_single_lorentzian()

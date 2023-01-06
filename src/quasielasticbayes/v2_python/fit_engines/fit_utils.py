@@ -1,7 +1,10 @@
 from numpy import ndarray
 import numpy as np
 from typing import Callable
-from scipy.stats import t
+from scipy.stats import t as student_t_dist
+
+
+TWO_SIGMA = 0.6826
 
 
 def log10_hessian_det(covar: ndarray) -> float:
@@ -73,13 +76,13 @@ def fit_errors(x_data: ndarray, params: ndarray, fit: ndarray,
     :param df_by_dp: the derivatives
     :return the error values
     """
-    confidence = 0.6826  # 2 sigma
+    confidence = TWO_SIGMA
 
     prob = 0.5 + confidence/2.  # even distribution above and below data point
     N = len(params)
     M = len(x_data)
     dof = M - N
-    tval = t.ppf(prob, dof)
+    tval = student_t_dist.ppf(prob, dof)
 
     df_sq = np.zeros(M)
     for j in range(N):
