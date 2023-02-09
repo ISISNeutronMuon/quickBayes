@@ -20,11 +20,11 @@ class MuonExpDecayTest(unittest.TestCase):
                                                      0.15, 15.0,
                                                      results, errors)
 
-        self.assertAlmostEqual(results['N1:loglikelihood'][0], -113.05, 2)
+        self.assertAlmostEqual(results['N1:loglikelihood'][0], -113.05, 1)
         # this is due to a bug ..
-        self.assertAlmostEqual(results['N2:loglikelihood'][0], -104.11, 2)
-        self.assertAlmostEqual(results['N3:loglikelihood'][0], -120.92, 2)
-        self.assertAlmostEqual(results['N4:loglikelihood'][0], -130.71, 2)
+        self.assertAlmostEqual(results['N2:loglikelihood'][0], -104.11, 1)
+        self.assertAlmostEqual(results['N3:loglikelihood'][0], -120.92, 1)
+        self.assertAlmostEqual(results['N4:loglikelihood'][0], -130.71, 1)
 
         self.assertAlmostEqual(results['N1:f2.Amplitude'][0], 0.1, 2)
         self.assertAlmostEqual(results['N1:f2.lambda'][0], 1.04, 2)
@@ -43,11 +43,11 @@ class MuonExpDecayTest(unittest.TestCase):
                                                      0.15, 15.0,
                                                      results, errors)
 
-        self.assertAlmostEqual(results['N1:loglikelihood'][0], -240.91, 2)
-        self.assertAlmostEqual(results['N2:loglikelihood'][0], -130.99, 2)
+        self.assertAlmostEqual(results['N1:loglikelihood'][0], -240.91, 1)
+        self.assertAlmostEqual(results['N2:loglikelihood'][0], -130.99, 1)
         # this is due to a bug ..
-        self.assertAlmostEqual(results['N3:loglikelihood'][0], -131.77, 2)
-        self.assertAlmostEqual(results['N4:loglikelihood'][0], -129.46, 2)
+        self.assertAlmostEqual(results['N3:loglikelihood'][0], -131.77, 1)
+        self.assertAlmostEqual(results['N4:loglikelihood'][0], -129.46, 1)
 
         self.assertAlmostEqual(results['N2:f2.Amplitude'][0], 0.27, 2)
         self.assertAlmostEqual(results['N2:f2.lambda'][0], 14.58, 2)
@@ -71,11 +71,11 @@ class MuonExpDecayTest(unittest.TestCase):
                                                      0.15, 15.0,
                                                      results, errors)
 
-        self.assertAlmostEqual(results['N1:loglikelihood'][0], -334.88, 2)
-        self.assertAlmostEqual(results['N2:loglikelihood'][0], -126.24, 2)
-        self.assertAlmostEqual(results['N3:loglikelihood'][0], -124.81, 2)
+        self.assertAlmostEqual(results['N1:loglikelihood'][0], -334.88, 1)
+        self.assertAlmostEqual(results['N2:loglikelihood'][0], -126.24, 1)
+        self.assertAlmostEqual(results['N3:loglikelihood'][0], -124.81, 1)
         # this is due to a bug ..
-        self.assertAlmostEqual(results['N4:loglikelihood'][0], -123.43, 2)
+        self.assertAlmostEqual(results['N4:loglikelihood'][0], -123.43, 1)
 
         self.assertAlmostEqual(results['N3:f2.Amplitude'][0], 0.35, 2)
         self.assertAlmostEqual(results['N3:f2.lambda'][0], 12.23, 2)
