@@ -33,8 +33,8 @@ class Exp(BaseFitFunction):
         Need to follow the expected
         form for scipy
         :param x: x values for the function evaluation
-        :param amplitude: amplitude of gaussian
-        :param decay_rate: thelambda value (decay  rate)
+        :param amplitude: amplitude of decay
+        :param decay_rate: the lambda value (decay  rate)
         :return y values for the function
         """
         return amplitude*np.exp(-decay_rate*x)
@@ -55,7 +55,7 @@ class Exp(BaseFitFunction):
         """
         Report the results
         :param report_dict: dict of results
-        :param a: amplitude of gaussian
+        :param a: amplitude of exp decay
         :param decay_rate: the lambda value
         returns the updated results dict
         """

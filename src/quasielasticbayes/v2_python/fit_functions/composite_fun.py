@@ -22,6 +22,14 @@ class CompositeFunction(BaseFitFunction):
         self._funcs.append(func)
         self._N_params += func.N_params
 
+    def update_prefix(self, new: str) -> None:
+        """
+        Update the begining of the prefixes
+        :param new: the new part of the prefix
+        """
+        for j in range(len(self._funcs)):
+            self._funcs[j].update_prefix(new)
+
     def split_args(self, args: List[float]) -> List[List[float]]:
         """
         Split the single args list into a list of lists
