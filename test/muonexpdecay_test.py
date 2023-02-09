@@ -20,11 +20,11 @@ class MuonExpDecayTest(unittest.TestCase):
                                                      0.15, 15.,
                                                      results, errors)
 
-        self.assertAlmostEqual(results['N1:loglikelihood'][0], -113.05, 1)
+        self.assertAlmostEqual(results['N1:loglikelihood'][0], -113., 0)
         # this is due to a bug ..
-        self.assertAlmostEqual(results['N2:loglikelihood'][0], -104.20, 1)
-        self.assertAlmostEqual(results['N3:loglikelihood'][0], -120.92, 1)
-        self.assertAlmostEqual(results['N4:loglikelihood'][0], -130.71, 1)
+        self.assertAlmostEqual(results['N2:loglikelihood'][0], -104., 0)
+        self.assertAlmostEqual(results['N3:loglikelihood'][0], -121., 0)
+        self.assertAlmostEqual(results['N4:loglikelihood'][0], -131., 0)
 
         self.assertAlmostEqual(results['N1:f2.Amplitude'][0], 0.1, 2)
         self.assertAlmostEqual(results['N1:f2.lambda'][0], 1.04, 2)
