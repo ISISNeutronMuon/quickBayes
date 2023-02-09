@@ -9,6 +9,7 @@ from quasielasticbayes.v2.fitting.fit_utils import (log10_hessian_det,
 from quasielasticbayes.v2.utils.general import (update_guess,
                                                 get_background_function)
 from quasielasticbayes.v2.log_likelihood import loglikelihood
+from quasielasticbayes.v2.utils.crop_data import crop
 from numpy import ndarray
 import numpy as np
 from typing import Dict, List
@@ -30,9 +31,8 @@ def muon_expdecay_main(sample: Dict[str, ndarray],
     BG = get_background_function(BG_type)
     max_num = 4
     # step 1
-    x_data = sample['x']
-    sy = sample['y']
-    se = sample['e']
+    x_data, sy, se = crop(sample['x'], sample['y'], sample['e'],
+                          start_x, end_x)
 
     func = CompositeFunction()
     func.add_function(BG)
@@ -55,6 +55,9 @@ def muon_expdecay_main(sample: Dict[str, ndarray],
 
         chi2 = chi_squared(x_data, sy, se, fit, params)
         hess_det = log10_hessian_det(covar)
+
+        if np.max(np.abs(covar)) > 1:
+            hess_det = 100*np.abs(hess_det)
 
         errors_p = param_errors(covar)
         df_by_dp = derivative(x_data, params, func)
