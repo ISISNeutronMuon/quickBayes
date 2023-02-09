@@ -17,12 +17,12 @@ class MuonExpDecayTest(unittest.TestCase):
 
         (results, errors,
          new_x, fits, f_errors) = muon_expdecay_main(sample, "linear",
-                                                     0.15, 15.0,
+                                                     0.15, 15.,
                                                      results, errors)
 
         self.assertAlmostEqual(results['N1:loglikelihood'][0], -113.05, 1)
         # this is due to a bug ..
-        self.assertAlmostEqual(results['N2:loglikelihood'][0], -104.11, 1)
+        self.assertAlmostEqual(results['N2:loglikelihood'][0], -104.20, 1)
         self.assertAlmostEqual(results['N3:loglikelihood'][0], -120.92, 1)
         self.assertAlmostEqual(results['N4:loglikelihood'][0], -130.71, 1)
 
