@@ -31,6 +31,8 @@ def muon_expdecay_main(sample: Dict[str, ndarray],
     max_num = 4
     # step 1
     x_data = sample['x']
+    sy = sample['y']
+    se = sample['e']
 
     func = CompositeFunction()
     func.add_function(BG)
