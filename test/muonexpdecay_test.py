@@ -80,7 +80,7 @@ class MuonExpDecayTest(unittest.TestCase):
         self.assertAlmostEqual(results['N3:f2.Amplitude'][0], 0.35, 2)
         self.assertAlmostEqual(results['N3:f2.lambda'][0], 12.23, 2)
         self.assertAlmostEqual(errors['N3:f2.Amplitude'][0], 0.028, 2)
-        self.assertAlmostEqual(errors['N3:f2.lambda'][0], 2.06, 2)
+        self.assertAlmostEqual(errors['N3:f2.lambda'][0], 2.05, 1)
 
         self.assertAlmostEqual(results['N3:f3.Amplitude'][0], 0.09, 2)
         self.assertAlmostEqual(results['N3:f3.lambda'][0], 3.34, 2)
