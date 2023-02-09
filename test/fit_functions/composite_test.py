@@ -146,6 +146,21 @@ class CompositeFunctionTest(unittest.TestCase):
         self.assertEqual(bounds[0], [-1., -1., 0., -1., 1.e-6])
         self.assertEqual(bounds[1], [1., 1., 1., 1., 1.])
 
+    def test_update_prefix(self):
+        lor = Lorentzian()
+        c = CompositeFunction()
+        bg = LinearBG()
+        c.add_function(bg)
+        c.add_function(lor)
+
+        for j, fun in enumerate(c._funcs):
+            self.assertEqual(fun._prefix, f'f{j+1}.')
+
+        c.update_prefix("test:")
+
+        for j, fun in enumerate(c._funcs):
+            self.assertEqual(fun._prefix, f'test:f{j+1}.')
+
 
 if __name__ == '__main__':
     unittest.main()

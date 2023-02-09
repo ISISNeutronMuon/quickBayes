@@ -1,5 +1,5 @@
 from quasielasticbayes.v2.functions.composite import CompositeFunction
-from quasielasticbayes.v2.functions.exp import Exp
+from quasielasticbayes.v2.functions.exp_decay import ExpDecay
 from quasielasticbayes.v2.fitting.scipy_fit import scipy_curve_fit
 from quasielasticbayes.v2.fitting.fit_utils import (log10_hessian_det,
                                                     chi_squared,
@@ -42,7 +42,7 @@ def muon_expdecay_main(sample: Dict[str, ndarray],
     beta = np.max(sy)*(np.max(x_data) - np.min(x_data))
     # loop doing steps 2 to 8
     for N in range(1, max_num+1):
-        exp_function = Exp()
+        exp_function = ExpDecay()
         func.add_function(exp_function)
         func.update_prefix(f'N{N}:')
 

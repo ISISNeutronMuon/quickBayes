@@ -4,10 +4,10 @@ import numpy as np
 from typing import Dict, List
 
 
-class Exp(BaseFitFunction):
+class ExpDecay(BaseFitFunction):
     def __init__(self, prefix: str = ''):
         """
-        Create an exponential function
+        Create an exponential decay function
         :param prefix: prefix for parameter reporting
         """
         super().__init__(2, prefix)
@@ -29,7 +29,7 @@ class Exp(BaseFitFunction):
     def __call__(self, x: ndarray, amplitude: float,
                  decay_rate: float) -> ndarray:
         """
-        Implement an exponential.
+        Implement an exponential decay.
         Need to follow the expected
         form for scipy
         :param x: x values for the function evaluation
