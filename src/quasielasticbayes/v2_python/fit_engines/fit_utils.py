@@ -16,7 +16,11 @@ def log10_hessian_det(covar: ndarray) -> float:
     Hessian matrix
     """
     hessian = np.linalg.inv(covar)
-    return np.log10(np.linalg.det(hessian))
+    det = np.linalg.det(hessian)
+    # cannot have a negative value in log
+    if det <= 0:
+        det = 1.e-9
+    return np.log10(det)
 
 
 def chi_squared(x_data: ndarray, y_data: ndarray, e_data: ndarray,
