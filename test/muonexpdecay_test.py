@@ -17,7 +17,7 @@ class MuonExpDecayTest(unittest.TestCase):
 
         (results, errors,
          new_x, fits, f_errors) = muon_expdecay_main(sample, "flat",
-                                                     0.15, 15.,
+                                                     0.12, 15.,
                                                      results, errors)
         # just need to check that the correct answer is the most likely
         # so all other options should be more negative
@@ -28,7 +28,7 @@ class MuonExpDecayTest(unittest.TestCase):
         self.assertLess(results['N4:loglikelihood'][0], expected)
 
         self.assertAlmostEqual(results['N1:f2.Amplitude'][0], 0.1, 2)
-        self.assertAlmostEqual(results['N1:f2.lambda'][0], 1.02, 2)
+        self.assertAlmostEqual(results['N1:f2.lambda'][0], 1.03, 2)
         self.assertAlmostEqual(errors['N1:f2.Amplitude'][0], 0.001, 3)
         self.assertAlmostEqual(errors['N1:f2.lambda'][0], 0.02, 2)
 
