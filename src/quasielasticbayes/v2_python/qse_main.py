@@ -1,7 +1,6 @@
 from quasielasticbayes.v2.functions.qse_function import QSEFunction
 from quasielasticbayes.v2.fitting.scipy_fit import scipy_curve_fit
-from quasielasticbayes.v2.fitting.fit_utils import (log10_hessian_det,
-                                                    chi_squared,
+from quasielasticbayes.v2.fitting.fit_utils import (chi_squared,
                                                     param_errors,
                                                     derivative,
                                                     fit_errors)
@@ -82,7 +81,7 @@ def qse_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
 
     fits.append(fit)
     chi2 = chi_squared(new_x, sy, se, fit, params)
-    hess_det = log10_hessian_det(covar)
+
     errors_p = param_errors(covar)
     df_by_dp = derivative(new_x, params, func)
     tmp = fit_errors(new_x, params, fit, covar, df_by_dp)
@@ -95,12 +94,12 @@ def qse_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     prob_name = f'N{N}:loglikelihood'
     if prob_name in results:
         results[prob_name].append(loglikelihood(len(sy), chi2,
-                                                hess_det,
+                                                covar,
                                                 func.N_peaks,
                                                 scale_factor))
     else:
         results[prob_name] = [loglikelihood(len(sy), chi2,
-                                            hess_det,
+                                            covar,
                                             func.N_peaks,
                                             scale_factor)]
 
