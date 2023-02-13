@@ -41,21 +41,21 @@ class MuonExpDecayTest(unittest.TestCase):
 
         (results, errors,
          new_x, fits, f_errors) = muon_expdecay_main(sample, "flat",
-                                                     0.16, 14.5,
+                                                     0.16, 15,
                                                      results, errors)
         expected = results['N2:loglikelihood'][0]
         self.assertLess(results['N1:loglikelihood'][0], expected)
-        self.assertAlmostEqual(expected, -110., 0)
+        self.assertAlmostEqual(expected, -114., 0)
         self.assertLess(results['N3:loglikelihood'][0], expected)
         self.assertLess(results['N4:loglikelihood'][0], expected)
 
         self.assertAlmostEqual(results['N2:f2.Amplitude'][0], 0.17, 2)
-        self.assertAlmostEqual(results['N2:f2.lambda'][0], 3.87, 2)
+        self.assertAlmostEqual(results['N2:f2.lambda'][0], 3.86, 2)
         self.assertAlmostEqual(errors['N2:f2.Amplitude'][0], 0.01, 2)
         self.assertAlmostEqual(errors['N2:f2.lambda'][0], 0.34, 2)
 
         self.assertAlmostEqual(results['N2:f3.Amplitude'][0], 0.10, 2)
-        self.assertAlmostEqual(results['N2:f3.lambda'][0], 1.02, 2)
+        self.assertAlmostEqual(results['N2:f3.lambda'][0], 1.01, 2)
         self.assertAlmostEqual(errors['N2:f3.Amplitude'][0], 0.01, 2)
         self.assertAlmostEqual(errors['N2:f3.lambda'][0], 0.08, 2)
 
