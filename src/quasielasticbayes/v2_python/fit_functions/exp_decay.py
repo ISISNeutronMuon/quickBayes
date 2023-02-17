@@ -34,7 +34,7 @@ class ExpDecay(BaseFitFunction):
         form for scipy
         :param x: x values for the function evaluation
         :param amplitude: amplitude of decay
-        :param decay_rate: the lambda value (decay  rate)
+        :param decay_rate: the lambda value (decay rate)
         :return y values for the function
         """
         return amplitude*np.exp(-decay_rate*x)
