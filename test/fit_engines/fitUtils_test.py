@@ -14,6 +14,13 @@ class FitUtilsTest(unittest.TestCase):
         result = log10_hessian_det(covar)
         self.assertAlmostEqual(result, -1.041, 3)
 
+    def test_log10HessDetBadData(self):
+        # this data will produce a negative arg for a log
+        covar = np.array([np.array([-.08, -0.04]), np.array([-0.04, 0.9])])
+        result = log10_hessian_det(covar)
+        # should return a negative number instead of NAN
+        self.assertAlmostEqual(result, -9.0, 3)
+
     def test_chi2(self):
         x = np.array([0, 1, 2, 3, 4])
         y = np.array([-0.9, 1.1, 2.05, 2.8, 2.9])

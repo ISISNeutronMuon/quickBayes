@@ -50,6 +50,8 @@ def get_v2_extensions(PACKAGE_NAME):
             [join('fit_functions', 'stretch_exp.py')],
         f'{PACKAGE_NAME}.v2.functions.qse_function':
             [join('fit_functions', 'qse.py')],
+        f'{PACKAGE_NAME}.v2.functions.exp_decay':
+            [join('fit_functions', 'exp_decay.py')],
 
         f'{PACKAGE_NAME}.v2.fitting.scipy_fit':
             [join('fit_engines', 'scipy_fit.py')],
@@ -63,6 +65,8 @@ def get_v2_extensions(PACKAGE_NAME):
             ['qldata_main.py'],
         f'{PACKAGE_NAME}.v2.QSE':
             ['qse_main.py'],
+        f'{PACKAGE_NAME}.v2.MuonExpDecay':
+            ['muon_exp_decay_main.py'],
 
         f'{PACKAGE_NAME}.v2.utils.general':
             [join('utils', 'general.py')],
