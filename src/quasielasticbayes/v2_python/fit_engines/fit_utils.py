@@ -7,6 +7,33 @@ from scipy.stats import t as student_t_dist
 TWO_SIGMA = 0.6826
 
 
+def var(func: Callable, x_data: ndarray, y_data: ndarray,
+        params: ndarray) -> float:
+    """
+    Calculate the variance of the data: sum_i (f(x_i) - y_i)^2
+    :param func: the fitting function
+    :param x_data: the x data
+    :param y_data: the y data
+    :param params: the fitting parameters
+    :return the variance
+    """
+    return np.sum(pow(func(x_data, *params) - y_data, 2))
+
+
+def res(func, x_data, y_data, e_data, param):
+    """
+    Calculate the residuals of the data: sum_i ((f(x_i) - y_i)/e_i)^2
+    :param func: the fitting function
+    :param x_data: the x data
+    :param y_data: the y data
+    :param e_data: the e data
+    :param params: the fitting parameters
+    :return the residuals
+    """
+    tmp = (func(x_data, *param) - y_data)/e_data
+    return np.sum(tmp*tmp)
+
+
 def log10_hessian_det(covar: ndarray) -> float:
     """
     Calculate the log base 10 of the determinant

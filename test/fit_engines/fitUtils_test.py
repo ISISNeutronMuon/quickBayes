@@ -1,10 +1,13 @@
 import unittest
 import numpy as np
+from quasielasticbayes.v2.functions.BG import LinearBG
 from quasielasticbayes.v2.fitting.fit_utils import (log10_hessian_det,
                                                     chi_squared,
                                                     param_errors,
                                                     derivative,
-                                                    fit_errors)
+                                                    fit_errors,
+                                                    var,
+                                                    res)
 
 
 class FitUtilsTest(unittest.TestCase):
@@ -71,6 +74,23 @@ class FitUtilsTest(unittest.TestCase):
         self.assertEqual(len(errors), len(result))
         for k in range(len(result)):
             self.assertAlmostEqual(errors[k], result[k], 3)
+
+    def test_var(self):
+        x = np.array([0, 1, 2, 3])
+        y = 2*x + .1
+        params = [1.9, .1]
+        bg = LinearBG()
+        result = var(bg, x, y, params)
+        self.assertAlmostEqual(result, .14, 3)
+
+    def test_res(self):
+        x = np.array([0, 1, 2, 3])
+        y = 2*x + .1
+        e = 0.1*np.ones(len(y))
+        params = [1.9, .1]
+        bg = LinearBG()
+        result = res(bg, x, y, e, params)
+        self.assertAlmostEqual(result, 14., 3)
 
 
 if __name__ == '__main__':
