@@ -3,7 +3,7 @@ from numpy import ndarray
 from typing import Callable
 import numpy as np
 from scipy.optimize import curve_fit
-from quasielasticbayes.fitting.fit_engine import FitEngine
+from quasielasticbayes.v2.fitting.fit_engine import FitEngine
 from quasielasticbayes.test_helpers.template_fit_test import FitEngineTemplate
 
 

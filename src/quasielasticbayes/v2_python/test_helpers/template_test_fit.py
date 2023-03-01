@@ -2,9 +2,9 @@ from numpy import ndarray
 import numpy as np
 from abc import abstractmethod
 from quasielasticbayes.v2.functions.BG import LinearBG
-from quasielasticbayes.v2.test_helpers.fitting_data import (basic_data,
-                                                            spline_data,
-                                                            func)
+from quasielasticbayes.test_helpers.fitting_data import (basic_data,
+                                                         spline_data,
+                                                         func)
 
 
 """
