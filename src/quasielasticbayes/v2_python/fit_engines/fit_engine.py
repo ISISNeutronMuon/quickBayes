@@ -128,7 +128,7 @@ class FitEngine(object):
         self._param_errors.append(param_errors(self._covars[-1]))
 
     def do_fit(self, x_data: ndarray, y_data: ndarray, e_data: ndarray,
-                func: Callable) -> None:
+               func: Callable) -> None:
         """
         Call for doing a fit and updating the history
         :param x_data: the x data to fit against
