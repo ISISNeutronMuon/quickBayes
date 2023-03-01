@@ -72,7 +72,6 @@ class FitEngineTest(unittest.TestCase):
 
     def test_name(self):
         x_data, y_data, e_data = data_1()
-
         engine = TestEngine(x_data, y_data, e_data)
         self.assertEqual(engine.name, 'test')
 

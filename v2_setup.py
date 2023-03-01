@@ -60,6 +60,12 @@ def get_v2_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.v2.fitting.fit_engine':
             [join('fit_engines', 'fit_engine.py')],
 
+        f'{PACKAGE_NAME}.test_helpers.template_fit_test':
+            [join('test_helpers', 'template_test_fit.py')],
+        f'{PACKAGE_NAME}.test_helpers.fitting_data':
+            [join('test_helpers', 'fitting_data.py')],
+
+
         f'{PACKAGE_NAME}.v2.log_likelihood':
             ['log_likelihood.py'],
 
