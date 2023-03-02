@@ -43,7 +43,8 @@ class ScipyFitEngine(FitEngine):
         """
         # validate
         if len(guess) != len(upper) or len(upper) != len(lower):
-            raise ValueError("The guess, lower and upper bounds must "
+            raise ValueError(f"The guess {guess}, lower {lower} and "
+                             f"upper {upper} bounds must "
                              "be the same length")
         self._guess = guess
         self._lower = lower

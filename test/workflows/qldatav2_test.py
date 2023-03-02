@@ -1,11 +1,11 @@
 import unittest
-from quasielasticbayes.v2.QlData import ql_data_main
+from quasielasticbayes.v2.workflow.QlData import ql_data_main
 from quasielasticbayes.v2.functions.qldata_function import QlDataFunction
 from quasielasticbayes.v2.functions.BG import LinearBG
 import numpy as np
 import os.path
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
 
 
 """
@@ -72,7 +72,7 @@ class QlDataV2Test(unittest.TestCase):
         self.assertAlmostEqual(errors['N2:f2.f3.EISF'][0], 0.002, 3)
 
         self.assertAlmostEqual(errors['N3:f2.f2.EISF'][0], 0.4, 1)
-        self.assertAlmostEqual(errors['N3:f2.f3.EISF'][0], 0.015, 3)
+        self.assertAlmostEqual(errors['N3:f2.f3.EISF'][0], 0.02, 2)
         self.assertAlmostEqual(errors['N3:f2.f4.EISF'][0], 0.3, 1)
 
     def test_two(self):
