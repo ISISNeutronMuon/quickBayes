@@ -59,6 +59,8 @@ def get_v2_extensions(PACKAGE_NAME):
             [join('fit_engines', 'fit_utils.py')],
         f'{PACKAGE_NAME}.v2.fitting.fit_engine':
             [join('fit_engines', 'fit_engine.py')],
+        f'{PACKAGE_NAME}.v2.fitting.scipy_engine':
+            [join('fit_engines', 'scipy_fit_engine.py')],
 
         f'{PACKAGE_NAME}.test_helpers.template_fit_test':
             [join('test_helpers', 'template_test_fit.py')],
