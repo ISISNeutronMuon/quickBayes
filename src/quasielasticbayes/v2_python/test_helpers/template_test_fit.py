@@ -12,8 +12,6 @@ This is a testing template for the fit engines.
 This provides the minimum amount of testing.
 If a fit engine has extra features they will
 need to be tested too.
-
-
 """
 
 

@@ -16,6 +16,24 @@ class Workflow(object):
     Each method can be overwritten to provide
     unique functionality for the specific
     use case.
+
+    The inherited class must include:
+    - _update_function method to increment the fit function
+
+    The properties are:
+    - fit_engine
+    - get_parameters_and_errors
+
+    To add a fit engine:
+    - set_scipy_engine (scipy curve fit)
+
+    Other methods:
+    - preprocess_data
+    - update_fit_engine
+    - update_function (call this one not the overwritten one)
+    - report
+    - execute
+    - update_scipy_fit_engine
     """
     def __init__(self, results: Dict[str, ndarray],
                  results_errors: Dict[str, ndarray]):
