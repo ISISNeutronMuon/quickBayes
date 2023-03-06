@@ -70,6 +70,25 @@ class DeltaTest(unittest.TestCase):
         self.assertEqual(bounds[0], [0, -1])
         self.assertEqual(bounds[1], [np.inf, 1])
 
+    def test_set_guess(self):
+        d = Delta()
+        self.assertEqual(d.get_guess(), [1., 0.])
+        d.set_guess([10., 1.])
+        self.assertEqual(d.get_guess(), [10., 1.])
+
+    def test_set_bounds(self):
+        d = Delta()
+        bounds = d.get_bounds()
+
+        self.assertEqual(bounds[0], [0, -1])
+        self.assertEqual(bounds[1], [np.inf, 1])
+
+        bounds = d.set_bounds([1, 2], [5, 6])
+        bounds = d.get_bounds()
+
+        self.assertEqual(bounds[0], [1, 2])
+        self.assertEqual(bounds[1], [5, 6])
+
 
 if __name__ == '__main__':
     unittest.main()

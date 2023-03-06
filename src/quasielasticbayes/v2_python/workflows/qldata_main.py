@@ -89,7 +89,6 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
 
     params = init_params if init_params is not None else func.get_guess()
     # just want a guess the same length as lower, it is not used
-    print("mooo", lower, upper, func.get_guess())
     workflow.set_scipy_engine(func.get_guess(), lower, upper)
 
     # do the calculation

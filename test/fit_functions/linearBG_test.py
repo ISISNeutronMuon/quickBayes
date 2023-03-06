@@ -69,6 +69,24 @@ class LinearBGTest(unittest.TestCase):
         params = lbg.read_from_report(report, 1)
         self.assertEqual(params, [4.1, .5])
 
+    def test_set_guess(self):
+        lbg = LinearBG()
+        self.assertEqual(lbg.get_guess(), [0., 0.])
+
+        lbg.set_guess([1., 1.])
+        self.assertEqual(lbg.get_guess(), [1., 1.])
+
+    def test_set_bounds(self):
+        lbg = LinearBG()
+        lower, upper = lbg.get_bounds()
+        self.assertEqual(lower, [-1., -1])
+        self.assertEqual(upper, [1., 1.])
+
+        lbg.set_bounds([0, 0], [2, 2])
+        lower, upper = lbg.get_bounds()
+        self.assertEqual(lower, [0., 0])
+        self.assertEqual(upper, [2., 2])
+
 
 if __name__ == '__main__':
     unittest.main()
