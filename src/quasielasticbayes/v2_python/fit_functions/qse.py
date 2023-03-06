@@ -47,10 +47,9 @@ class QSEFunction(QEFunction):
         # skip peak centre
         return [full_guess[0], full_guess[2], full_guess[3]]
 
-    def get_guess(self, est_FWHM: float) -> List[float]:
+    def get_guess(self) -> List[float]:
         """
         Gets the guess for the fit params
-        :param est_FWHM: estimate for FWHM (tau)
         :result a list of initial values for fit
         """
         guess = self.BG.get_guess()
@@ -59,9 +58,9 @@ class QSEFunction(QEFunction):
         if len(self.conv._funcs) > 0 and self.elastic:
             guess += self.conv._funcs[0].get_guess()
         elif len(self.conv._funcs) > 0:
-            guess += self.conv._funcs[0].get_guess(est_FWHM)
+            guess += self.conv._funcs[0].get_guess()
         if len(self.conv._funcs) > 1:
             for j in range(1, len(self.conv._funcs)):
-                full_guess = self.conv._funcs[j].get_guess(est_FWHM)
+                full_guess = self.conv._funcs[j].get_guess()
                 guess += self._func_guess(full_guess)
         return guess

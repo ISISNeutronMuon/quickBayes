@@ -10,7 +10,7 @@ class CompositeFunction(BaseFitFunction):
         Defines a function to wrap a sum of functions
         :param prefix: the prefix for parameters
         """
-        super().__init__(0, prefix)
+        super().__init__(0, prefix, [], [], [])
         self._funcs = []
 
     def add_function(self, func: BaseFitFunction) -> None:

@@ -12,7 +12,7 @@ class Delta(BaseFitFunction):
         in the limit of binwidth-> 0 is a delta
         :param prefix: prefix for the parameters
         """
-        super().__init__(2, prefix)
+        super().__init__(2, prefix, [1., 0.], [0., -1], [np.inf, 1.])
 
     @property
     def amplitude(self) -> str:
@@ -77,17 +77,3 @@ class Delta(BaseFitFunction):
         report_dict = self._add_to_report(self.centre,
                                           x0, report_dict)
         return report_dict
-
-    def get_guess(self) -> List[float]:
-        """
-        Get the starting guess for a fit function
-        :return the initial guess
-        """
-        return [1., 0.]
-
-    def get_bounds(self) -> (List[float], List[float]):
-        """
-        Get the fitting bounds
-        :return lists for lower and upper bounds
-        """
-        return [0., -1.], [np.inf, 1.]

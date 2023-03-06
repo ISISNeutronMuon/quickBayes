@@ -58,7 +58,8 @@ class QLDataFunctionTest(unittest.TestCase):
         y = ql(x, 1.2, 3, .2, .1)
         expect = [-3, 0.00184, 3.076, 6.001, 9.000]
 
-        self.assertEqual(ql.get_guess(), [0., 0., 1., 0.])
+        g = ql.get_guess()
+        self.assertEqual(g, [0., 0., 1., 0.])
 
         bounds = ql.get_bounds()
         self.assertEqual(bounds[0], [-1, -1, 0., -1])

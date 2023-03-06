@@ -10,7 +10,7 @@ class ExpDecay(BaseFitFunction):
         Create an exponential decay function
         :param prefix: prefix for parameter reporting
         """
-        super().__init__(2, prefix)
+        super().__init__(2, prefix, [1., 0.1], [0., 0.001], [1., 20.])
 
     @property
     def amplitude(self) -> str:
@@ -64,17 +64,3 @@ class ExpDecay(BaseFitFunction):
         report_dict = self._add_to_report(self.decay_rate,
                                           decay_rate, report_dict)
         return report_dict
-
-    def get_guess(self) -> List[float]:
-        """
-        Get the starting guess for a fit function
-        :return the initial guess
-        """
-        return [1., 0.1]
-
-    def get_bounds(self) -> (List[float], List[float]):
-        """
-        Get the fitting bounds
-        :return lists for lower and upper bounds
-        """
-        return [0., 0.001], [1., 20.]

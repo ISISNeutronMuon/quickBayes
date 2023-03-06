@@ -71,7 +71,8 @@ class StretchExp(BaseFitFunction):
         Create a stretched exponenetial function
         :param prefix: the prefix for the parameters
         """
-        super().__init__(4, prefix)
+        super().__init__(4, prefix, [.1, 0.0, 0.2, 0.7],
+                         [0., -1., 0, 0], [1., 1., 100., 1.])
 
     @property
     def amplitude(self) -> str:
@@ -203,17 +204,11 @@ class StretchExp(BaseFitFunction):
                                           report_dict)
         return report_dict
 
-    def get_guess(self, est_FWHM: float) -> List[float]:
+    def set_guess(self, values: List[float]) -> List[float]:
         """
-        Get the starting guess for a fit function
-        :param est_FWHM: estimate for FWHM (tau)
-        :return the initial guess
+        set the starting guess for a fit function
+        :param values: the guess values. The 3rd value is the FWHM
         """
-        return [.1, 0.0, self.tau(est_FWHM), 0.7]
-
-    def get_bounds(self) -> (List[float], List[float]):
-        """
-        Get the fitting bounds
-        :return lists for lower and upper bounds
-        """
-        return [0, -1., 0, 0], [1., 1., 100., 1.]
+        self._check_length(values, 'guess')
+        self._guess = [values[0], values[1],
+                       self.tau(values[2]), values[3]]

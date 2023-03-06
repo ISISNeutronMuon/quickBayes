@@ -18,7 +18,7 @@ class QSEFunctionTest(unittest.TestCase):
         for j in range(len(x)):
             self.assertAlmostEqual(y[j], expect[j])
 
-        self.assertEqual(qse.get_guess(0.1), [0., 0.])
+        self.assertEqual(qse.get_guess(), [0., 0.])
 
         bounds = qse.get_bounds()
         self.assertEqual(bounds[0], [-1, -1])
@@ -49,7 +49,7 @@ class QSEFunctionTest(unittest.TestCase):
         y = qse(x, 1.2, 3, .2, .1)
         expect = [-3, 0.0001, 3.080, 6.000, 9.000]
 
-        self.assertEqual(qse.get_guess(0.1), [0., 0., 1., 0.])
+        self.assertEqual(qse.get_guess(), [0., 0., 1., 0.])
 
         bounds = qse.get_bounds()
         self.assertEqual(bounds[0], [-1, -1, 0., -1])
@@ -99,8 +99,8 @@ class QSEFunctionTest(unittest.TestCase):
         for j in range(len(x)):
             self.assertAlmostEqual(y[j], expect[j], 3)
 
-        guess = qse.get_guess(0.1)
-        expect = [0., 0., 1., 0., 0.1, 13.164, 0.7]
+        guess = qse.get_guess()
+        expect = [0., 0., 1., 0., 0.1, 6.582, 0.7]
         self.assertEqual(len(guess), len(expect))
         for k in range(len(expect)):
             self.assertAlmostEqual(guess[k], expect[k], 3)
@@ -152,8 +152,8 @@ class QSEFunctionTest(unittest.TestCase):
         for j in range(len(x)):
             self.assertAlmostEqual(y[j], expect[j], 3)
 
-        expect = [0., 0., 0.1, 0., 13.164, 0.7]
-        guess = qse.get_guess(0.1)
+        expect = [0., 0., 0.1, 0., 6.582, 0.7]
+        guess = qse.get_guess()
         self.assertEqual(len(guess), len(expect))
         for k in range(len(expect)):
             self.assertAlmostEqual(guess[k], expect[k], 3)

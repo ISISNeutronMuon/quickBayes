@@ -46,7 +46,14 @@ class QEFunction(BaseFitFunction):
         if elastic_peak:
             delta = Delta('')
             self.conv.add_function(delta)
-        super().__init__(0, self.prefix)
+        lower_bg, upper_bg = self.BG.get_bounds()
+        lower, upper = self.conv.get_bounds()
+
+        guess = self.BG.get_guess() + self.conv.get_guess()
+
+        super().__init__(self.BG.N_params + self.conv.N_params,
+                         self.prefix, guess,
+                         lower_bg + lower, upper_bg + upper)
 
     def update_x_range(self, new_x: ndarray) -> None:
         """
@@ -224,7 +231,6 @@ class QEFunction(BaseFitFunction):
         :return a list of guess parameters for the fit
         """
         guess = self.BG.get_guess()
-
         # want to reduce the guess to remove tied paramaters
         if len(self.conv._funcs) > 0:
             guess += self.conv._funcs[0].get_guess()
