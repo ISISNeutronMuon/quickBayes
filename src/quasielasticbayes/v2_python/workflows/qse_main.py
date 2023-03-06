@@ -67,7 +67,10 @@ class QlStretchedExp(Workflow):
         if len(params) == len(upper):
             guess = params
         else:
-            guess = func.get_guess(est_FWHM)
+            guess = func.get_guess()
+            guess[2] = est_FWHM
+            func.set_guess(guess)
+            guess = func.get_guess()
         self._engine.set_guess_and_bounds(guess, lower, upper)
 
 
@@ -113,8 +116,8 @@ def qse_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     because it will be missing the stretched exp terms
     """
 
-    params = init_params if init_params is not None else func.get_guess(0)
-    workflow.set_scipy_engine(func.get_guess(0), lower, upper)
+    params = init_params if init_params is not None else func.get_guess()
+    workflow.set_scipy_engine(func.get_guess(), lower, upper)
 
     # do the calculation
     func = workflow.execute(max_num_peaks, func, params)

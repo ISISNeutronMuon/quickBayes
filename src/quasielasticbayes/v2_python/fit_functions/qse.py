@@ -2,6 +2,7 @@ from quasielasticbayes.v2.functions.base import BaseFitFunction
 from quasielasticbayes.v2.functions.qe_function import QEFunction
 from quasielasticbayes.v2.functions.SE import StretchExp
 from numpy import ndarray
+import copy
 from typing import List
 
 
@@ -52,15 +53,15 @@ class QSEFunction(QEFunction):
         Gets the guess for the fit params
         :result a list of initial values for fit
         """
-        guess = self.BG.get_guess()
+        guess = copy.copy(self.BG.get_guess())
 
         # want to reduce the guess to remove tied paramaters
         if len(self.conv._funcs) > 0 and self.elastic:
-            guess += self.conv._funcs[0].get_guess()
+            guess += copy.copy(self.conv._funcs[0].get_guess())
         elif len(self.conv._funcs) > 0:
-            guess += self.conv._funcs[0].get_guess()
+            guess += copy.copy(self.conv._funcs[0].get_guess())
         if len(self.conv._funcs) > 1:
             for j in range(1, len(self.conv._funcs)):
-                full_guess = self.conv._funcs[j].get_guess()
+                full_guess = copy.copy(self.conv._funcs[j].get_guess())
                 guess += self._func_guess(full_guess)
         return guess

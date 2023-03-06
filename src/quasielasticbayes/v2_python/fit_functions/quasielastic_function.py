@@ -230,12 +230,13 @@ class QEFunction(BaseFitFunction):
         parameters.
         :return a list of guess parameters for the fit
         """
-        guess = self.BG.get_guess()
+        # need to copy to prevent incrementing guess by calling this function
+        guess = copy.copy(self.BG.get_guess())
         # want to reduce the guess to remove tied paramaters
         if len(self.conv._funcs) > 0:
-            guess += self.conv._funcs[0].get_guess()
+            guess += copy.copy(self.conv._funcs[0].get_guess())
             for j in range(1, len(self.conv._funcs)):
-                full_guess = self.conv._funcs[j].get_guess()
+                full_guess = copy.copy(self.conv._funcs[j].get_guess())
                 guess += self._func_guess(full_guess)
         return guess
 
@@ -244,23 +245,24 @@ class QEFunction(BaseFitFunction):
         Gets the bounds for the parameters.
         :return a list of the lower and upper bounds
         """
+        # need to copy to prevent incrementing bounds by calling this function
         bounds = self.BG.get_bounds()
-        lower = bounds[0]
-        upper = bounds[1]
+        lower = copy.copy(bounds[0])
+        upper = copy.copy(bounds[1])
 
         if len(self.conv._funcs) > 0:
             # want to reduce the guess to remove tied paramaters
             func = self.conv._funcs[0]
             bounds = func.get_bounds()
-            lower += bounds[0]
-            upper += bounds[1]
+            lower += copy.copy(bounds[0])
+            upper += copy.copy(bounds[1])
 
             for j in range(1, len(self.conv._funcs)):
                 f = self.conv._funcs[j]
                 bounds = f.get_bounds()
                 tmp = bounds[0]
-                lower += self._func_guess(tmp)
+                lower += copy.copy(self._func_guess(tmp))
                 tmp = bounds[1]
-                upper += self._func_guess(tmp)
+                upper += copy.copy(self._func_guess(tmp))
 
         return lower, upper
