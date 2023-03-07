@@ -75,5 +75,6 @@ class QSEFunction(QEFunction):
         :param guess: the new guess values for the function being changed
         :return the updated list
         """
+        # copy the mean value
         to_update[1] = guess[1]
         return to_update
