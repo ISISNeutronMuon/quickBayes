@@ -247,6 +247,15 @@ class QEFunction(BaseFitFunction):
                 guess += self._func_guess(full_guess)
         return guess
 
+    def get_func_guess(self, index=-1):
+        if self.N_peaks == 0:
+            return
+        delta_offset = 1 if self.delta and index != -1 else 0
+        guess = self.conv._funcs[index + delta_offset].get_guess()
+        tie_values = self.conv._funcs[0].get_guess()
+        guess = self.update_first_values(guess, tie_values)
+        return guess
+
     def set_guess(self, guess: List[float]) -> None:
         """
         Override the default guess setting.

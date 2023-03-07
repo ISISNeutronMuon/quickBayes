@@ -454,6 +454,23 @@ class QLDataFunctionTest(unittest.TestCase):
         ql.set_func_guess([4, 5, -1], 0)
         self.assertEqual(ql.get_guess(), [0, 0, 1, 5, 4, -1, 3, 1])
 
+    def test_get_func_guess(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QlDataFunction(bg, True, x, x + 1, -6, 6)
+        ql.add_single_lorentzian()
+        ql.add_single_lorentzian()
+        self.assertEqual(ql.get_guess(), [0, 0, 1, 0, 0.01, 0.02, 0.01, 0.02])
+
+        ql.set_func_guess([3, 2, 1])
+        self.assertEqual(ql.get_guess(), [0, 0, 1, 2, 0.01, 0.02, 3, 1])
+
+        ql.set_func_guess([4, 5, -1], 0)
+        self.assertEqual(ql.get_guess(), [0, 0, 1, 5, 4, -1, 3, 1])
+
+        self.assertEqual(ql.get_func_guess(), [3, 5, 1])
+        self.assertEqual(ql.get_func_guess(0), [4, 5, -1])
+
     def test_set_delta_bounds(self):
         x = np.linspace(-5, 5, 5)
         bg = LinearBG()
