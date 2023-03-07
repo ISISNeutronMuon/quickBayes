@@ -56,7 +56,7 @@ class QSEFunction(QEFunction):
         guess = copy.copy(self.BG.get_guess())
 
         # want to reduce the guess to remove tied paramaters
-        if len(self.conv._funcs) > 0 and self.elastic:
+        if len(self.conv._funcs) > 0 and self.delta:
             guess += copy.copy(self.conv._funcs[0].get_guess())
         elif len(self.conv._funcs) > 0:
             guess += copy.copy(self.conv._funcs[0].get_guess())
@@ -65,3 +65,15 @@ class QSEFunction(QEFunction):
                 full_guess = copy.copy(self.conv._funcs[j].get_guess())
                 guess += self._func_guess(full_guess)
         return guess
+
+    def update_first_values(self, to_update: List[float],
+                            guess: List[float]) -> List[float]:
+        """
+        Method for copying the updated values into the first function
+        in the convolution (this determines the value in evaluation.
+        :param to_update: the values to update (due to ties)
+        :param guess: the new guess values for the function being changed
+        :return the updated list
+        """
+        to_update[1] = guess[1]
+        return to_update

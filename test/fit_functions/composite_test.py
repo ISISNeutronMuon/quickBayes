@@ -146,6 +146,45 @@ class CompositeFunctionTest(unittest.TestCase):
         self.assertEqual(bounds[0], [-1., -1., 0., -1., 1.e-6])
         self.assertEqual(bounds[1], [1., 1., 1., 1., 1.])
 
+    def test_set_guess(self):
+        lor = Lorentzian()
+        c = CompositeFunction()
+        bg = LinearBG()
+        c.add_function(bg)
+        c.add_function(lor)
+
+        self.assertEqual(c.get_guess(), [0., 0., 0.01, 0., 0.02])
+
+        c.set_guess([1, 2], 0)
+        self.assertEqual(c.get_guess(), [1., 2., 0.01, 0., 0.02])
+
+        c.set_guess([3, 4, 5])
+        self.assertEqual(c.get_guess(), [1., 2., 3, 4., 5])
+
+    def test_set_bounds(self):
+        lor = Lorentzian()
+        c = CompositeFunction()
+        bg = LinearBG()
+        c.add_function(bg)
+        c.add_function(lor)
+
+        bounds = c.get_bounds()
+
+        self.assertEqual(bounds[0], [-1., -1., 0., -1., 1.e-6])
+        self.assertEqual(bounds[1], [1., 1., 1., 1., 1.])
+
+        c.set_bounds([-2, -3], [2, 3], 0)
+        bounds = c.get_bounds()
+
+        self.assertEqual(bounds[0], [-2., -3., 0., -1., 1.e-6])
+        self.assertEqual(bounds[1], [2., 3., 1., 1., 1.])
+
+        c.set_bounds([-4, -5, -6], [4, 5, 6])
+        bounds = c.get_bounds()
+
+        self.assertEqual(bounds[0], [-2., -3., -4., -5., -6])
+        self.assertEqual(bounds[1], [2., 3., 4., 5., 6.])
+
     def test_update_prefix(self):
         lor = Lorentzian()
         c = CompositeFunction()

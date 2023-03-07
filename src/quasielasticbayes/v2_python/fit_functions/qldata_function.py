@@ -104,3 +104,15 @@ class QlDataFunction(QEFunction):
         """
         # skip peak centre
         return [full_guess[0], full_guess[2]]
+
+    def update_first_values(self, to_update: List[float],
+                            guess: List[float]) -> List[float]:
+        """
+        Method for copying the updated values into the first function
+        in the convolution (this determines the value in evaluation.
+        :param to_update: the values to update (due to ties)
+        :param guess: the new guess values for the function being changed
+        :return the updated list
+        """
+        to_update[1] = guess[1]
+        return to_update

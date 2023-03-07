@@ -10,8 +10,8 @@ class CompositeFunction(BaseFitFunction):
         Defines a function to wrap a sum of functions
         :param prefix: the prefix for parameters
         """
-        super().__init__(0, prefix, [], [], [])
         self._funcs = []
+        super().__init__(0, prefix, [], [], [])
 
     def add_function(self, func: BaseFitFunction) -> None:
         """
@@ -115,3 +115,27 @@ class CompositeFunction(BaseFitFunction):
             lower += bounds[0]
             upper += bounds[1]
         return lower, upper
+
+    def set_guess(self, guess: List[float], index: int = -1):
+        """
+        Allows the user to set the guess values for a
+        specific function in the composite.
+        :param guess: the new guess values
+        :param index: the index of the function to update
+        """
+        if index > len(self._funcs) or len(self._funcs) == 0:
+            return
+        self._funcs[index].set_guess(guess)
+
+    def set_bounds(self, lower: List[float],
+                   upper: List[float], index: int = -1):
+        """
+        Allows the user to set the guess values for a
+        specific function in the composite.
+        :param lower: the new lower values
+        :param upper: the new upper values
+        :param index: the index of the function to update
+        """
+        if index > len(self._funcs) or len(self._funcs) == 0:
+            return
+        self._funcs[index].set_bounds(lower, upper)
