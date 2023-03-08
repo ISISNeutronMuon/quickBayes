@@ -278,7 +278,6 @@ class QSEFunctionTest(unittest.TestCase):
         ql = QSEFunction(bg, True, x, x + 1, -6, 6)
         ql.add_single_SE()
         self.assertList(ql.get_guess(), [0, 0, 1, 0, 0.1, 6.582, 0.7])
-
         ql.set_func_guess_FWHM([3, 2, 0.4, 4])
         self.assertList(ql.get_guess(), [0, 0, 1, 2, 3, 3.291, 4])
 
