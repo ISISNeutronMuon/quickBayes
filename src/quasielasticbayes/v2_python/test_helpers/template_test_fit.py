@@ -259,13 +259,7 @@ class FitEngineTemplate(object):
 
         self.assert_covar_matrix(calculated, expect)
 
-    def test_spline_data_params(self) -> None:
-        """
-        Want to test fitting data with high and low sampling/stats.
-        These should both be recorded (history).
-        Both should match the original data sampling.
-        This test is for the parameters.
-        """
+    def fit_data_with_diff_sampling(self):
         x_data, y_data, e_data, xx, yy, ee = spline_data()
         bg = LinearBG()
 
@@ -275,7 +269,16 @@ class FitEngineTemplate(object):
         self.engine.do_fit(xx, yy, ee, bg)
         # fit with more data
         self.engine.do_fit(x_data, y_data, e_data, bg)
+        return xx
 
+    def test_spline_data_params(self) -> None:
+        """
+        Want to test fitting data with high and low sampling/stats.
+        These should both be recorded (history).
+        Both should match the original data sampling.
+        This test is for the parameters.
+        """
+        _ = self.fit_data_with_diff_sampling()
         # check latest results
         params, errors = self.engine.get_fit_parameters()
         expected_p, expected_e = self.get_spline_params()
@@ -295,15 +298,7 @@ class FitEngineTemplate(object):
         Both should match the original data sampling.
         This test is for the fits.
         """
-        x_data, y_data, e_data, xx, yy, ee = spline_data()
-        bg = LinearBG()
-
-        self.engine = self.get_test_engine(xx, yy, ee)
-
-        # fit with less data
-        self.engine.do_fit(xx, yy, ee, bg)
-        # fit with more data
-        self.engine.do_fit(x_data, y_data, e_data, bg)
+        xx = self.fit_data_with_diff_sampling()
 
         # check latest results
         xf, yf, ef, df, de = self.engine.get_fit_values()
@@ -329,15 +324,7 @@ class FitEngineTemplate(object):
         Both should match the original data sampling.
         This test is for the chi^2.
         """
-        x_data, y_data, e_data, xx, yy, ee = spline_data()
-        bg = LinearBG()
-
-        self.engine = self.get_test_engine(xx, yy, ee)
-
-        # fit with less data
-        self.engine.do_fit(xx, yy, ee, bg)
-        # fit with more data
-        self.engine.do_fit(x_data, y_data, e_data, bg)
+        _ = self.fit_data_with_diff_sampling()
 
         expect = self.get_spline_chi2()
         self.assertAlmostEqual(self.engine.get_chi_squared(),
@@ -352,15 +339,7 @@ class FitEngineTemplate(object):
         Both should match the original data sampling.
         This test is for the covariance matricies.
         """
-        x_data, y_data, e_data, xx, yy, ee = spline_data()
-        bg = LinearBG()
-
-        self.engine = self.get_test_engine(xx, yy, ee)
-
-        # fit with less data
-        self.engine.do_fit(xx, yy, ee, bg)
-        # fit with more data
-        self.engine.do_fit(x_data, y_data, e_data, bg)
+        _ = self.fit_data_with_diff_sampling()
 
         calculated = self.engine.get_covariance_matrix()
         expect = self.get_spline_covar()

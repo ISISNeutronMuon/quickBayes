@@ -39,7 +39,8 @@ class QLData(Workflow):
 
         return new_x, ry
 
-    def _update_function(self, func: BaseFitFunction) -> BaseFitFunction:
+    @staticmethod
+    def _update_function(func: BaseFitFunction) -> BaseFitFunction:
         """
         This method adds a single lorentzian to the fitting function
         :param func: the fitting function that needs modifing
