@@ -272,6 +272,16 @@ class QSEFunctionTest(unittest.TestCase):
         ql.set_func_guess([4, 5, -1, -2], 0)
         self.assertList(ql.get_guess(), [0, 0, 1., 5, 4, -1, -2, 3, 1, 4])
 
+    def test_set_func_guess_FWHM(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+        ql.add_single_SE()
+        self.assertList(ql.get_guess(), [0, 0, 1, 0, 0.1, 6.582, 0.7])
+
+        ql.set_func_guess_FWHM([3, 2, 0.4, 4])
+        self.assertList(ql.get_guess(), [0, 0, 1, 2, 3, 3.291, 4])
+
     def test_get_func_guess(self):
         x = np.linspace(-5, 5, 5)
         bg = LinearBG()
