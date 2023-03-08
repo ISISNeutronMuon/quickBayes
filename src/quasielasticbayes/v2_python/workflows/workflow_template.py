@@ -51,7 +51,7 @@ class Workflow(object):
     def fit_engine(self):
         """
         Simple method for getting the fit engine
-        :reeturn the fit engine used
+        :return the fit engine used
         """
         return self._engine
 
@@ -110,7 +110,7 @@ class Workflow(object):
         This method updates the fitting function when the number of
         features has been incremented.
         It will be unique to the workflow.
-        :param func: the fitting function that needs modifing
+        :param func: the fitting function that needs modifying
         :return the modified fitting function
         """
         function = self._update_function(func)

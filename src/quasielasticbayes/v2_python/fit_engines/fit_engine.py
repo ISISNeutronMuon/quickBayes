@@ -163,10 +163,10 @@ class FitEngine(object):
         jac = np.array(df_by_dp).T
         # factorize the matrix
         _, upper_triangle = np.linalg.qr(jac)
-        # Calcuate the inverse value of upper triangle
+        # Calculate the inverse value of upper triangle
         inverse = np.linalg.solve(upper_triangle,
                                   np.identity(upper_triangle.shape[0]))
-        # Matrix multiplcation: (J^T J)^{-1}
+        # Matrix multiplication: (J^T J)^{-1}
         JTJ_inv = np.matmul(inverse, inverse.transpose())
 
         # weight: sum( y - f)^2/sum( (y-f)^2/e^2) -> cannot cancel due to sum

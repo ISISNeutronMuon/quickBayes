@@ -15,7 +15,7 @@ class ScipyFitEngine(FitEngine):
                  lower: ndarray, upper: ndarray, guess: ndarray,
                  max_iterations: int = 220000):
         """
-        Creates the scipy curve fit historty class
+        Creates the scipy curve fit engine class
         Stores useful information about each fit
         :param name: name of the fit engine
         :param x_data: original x data (can fit to an interpolation)
@@ -23,7 +23,7 @@ class ScipyFitEngine(FitEngine):
         :param e_data: original e data (can fit to an interpolation)
         :param lower: the lower bounds for the fit parameters
         :param upper: the upper bounds for the fit parameters
-        :param guess: the inital guess for the fit parameters
+        :param guess: the initial guess for the fit parameters
         :param max_iterations: the maximum number of iterations for the fit
         """
         super().__init__("scipy", x_data, y_data, e_data)

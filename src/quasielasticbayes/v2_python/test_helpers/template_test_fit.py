@@ -171,7 +171,7 @@ class FitEngineTemplate(object):
     def assert_covar_matrix(self, covar: ndarray,
                             expect: ndarray) -> None:
         """
-        Method to test that 2D matricies match
+        Method to test that 2D matrices match
         :param covar: calculated covariance matrix
         :param expect: the expected covariance matrix
         """
@@ -337,7 +337,7 @@ class FitEngineTemplate(object):
         Want to test fitting data with high and low sampling/stats.
         These should both be recorded (history).
         Both should match the original data sampling.
-        This test is for the covariance matricies.
+        This test is for the covariance matrices.
         """
         _ = self.fit_data_with_diff_sampling()
 

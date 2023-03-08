@@ -12,7 +12,7 @@ from typing import Dict, List
 
 class QlStretchedExp(Workflow):
     """
-    A class for the quaielastic lorentzians workflow
+    A class for the quasielastic lorentzian workflow
     """
     def preprocess_data(self, x_data: ndarray,
                         y_data: ndarray, e_data: ndarray,
@@ -52,7 +52,7 @@ class QlStretchedExp(Workflow):
 
     def update_scipy_fit_engine(self, func: BaseFitFunction, params: ndarray):
         """
-        This updates the the bounds and guess for scipy
+        This updates the bounds and guess for scipy
         fit engine.
         :param func: the fitting function
         :param params: the fitting parameters
@@ -86,14 +86,14 @@ def qse_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     The main function for calculating QSEdata.
     This uses the stretch exponential workflow
     :param sample: dict containing the sample x, y and e data (keys = x, y, e)
-    :param res: dict containg the resolution x, y data (keys = x, y)
+    :param res: dict containing the resolution x, y data (keys = x, y)
     :param BG_type: the type of BG ("none", "flat", "linear")
     :param start_x: the start x for the calculation
     :param end_x: the end x for the calculation
     :param elastic: if to include the elastic peak
     :param results: dict of results
     :param results_errors: the dict of parameter errors
-    :param params: initial values, if None (default) a guess will be made
+    :param init_params: initial values, if None (default) a guess will be made
     :result dict of the fit parameters, their errors, the x range used, list
     of fit values and their errors.
     """
