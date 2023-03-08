@@ -53,20 +53,31 @@ def get_v2_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.v2.functions.exp_decay':
             [join('fit_functions', 'exp_decay.py')],
 
-        f'{PACKAGE_NAME}.v2.fitting.scipy_fit':
-            [join('fit_engines', 'scipy_fit.py')],
         f'{PACKAGE_NAME}.v2.fitting.fit_utils':
             [join('fit_engines', 'fit_utils.py')],
+        f'{PACKAGE_NAME}.v2.fitting.fit_engine':
+            [join('fit_engines', 'fit_engine.py')],
+        f'{PACKAGE_NAME}.v2.fitting.scipy_engine':
+            [join('fit_engines', 'scipy_fit_engine.py')],
+
+        f'{PACKAGE_NAME}.test_helpers.template_fit_test':
+            [join('test_helpers', 'template_test_fit.py')],
+        f'{PACKAGE_NAME}.test_helpers.fitting_data':
+            [join('test_helpers', 'fitting_data.py')],
+        f'{PACKAGE_NAME}.test_helpers.template_scipy_fit':
+            [join('test_helpers', 'template_scipy_fit_test.py')],
 
         f'{PACKAGE_NAME}.v2.log_likelihood':
             ['log_likelihood.py'],
 
-        f'{PACKAGE_NAME}.v2.QlData':
-            ['qldata_main.py'],
-        f'{PACKAGE_NAME}.v2.QSE':
-            ['qse_main.py'],
-        f'{PACKAGE_NAME}.v2.MuonExpDecay':
-            ['muon_exp_decay_main.py'],
+        f'{PACKAGE_NAME}.v2.workflow.template':
+            [join('workflows', 'workflow_template.py')],
+        f'{PACKAGE_NAME}.v2.workflow.QlData':
+            [join('workflows', 'qldata_main.py')],
+        f'{PACKAGE_NAME}.v2.workflow.QSE':
+            [join('workflows', 'qse_main.py')],
+        f'{PACKAGE_NAME}.v2.workflow.MuonExpDecay':
+            [join('workflows', 'muon_exp_decay_main.py')],
 
         f'{PACKAGE_NAME}.v2.utils.general':
             [join('utils', 'general.py')],

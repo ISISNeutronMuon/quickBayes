@@ -1,16 +1,15 @@
 import unittest
-from quasielasticbayes.v2.MuonExpDecay import muon_expdecay_main
+from quasielasticbayes.v2.workflow.MuonExpDecay import muon_expdecay_main
 import numpy as np
 import os.path
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
 DATA_DIR = os.path.join(DATA_DIR, 'muon')
 
 
 class MuonExpDecayTest(unittest.TestCase):
     def test_one_decay(self):
         sx, sy, se = np.loadtxt(os.path.join(DATA_DIR, 'muon_expdecay_1.npy'))
-
         sample = {'x': sx, 'y': sy, 'e': se}
         results = {}
         errors = {}
@@ -43,6 +42,7 @@ class MuonExpDecayTest(unittest.TestCase):
          new_x, fits, f_errors) = muon_expdecay_main(sample, "flat",
                                                      0.16, 15,
                                                      results, errors)
+
         expected = results['N2:loglikelihood'][0]
         self.assertLess(results['N1:loglikelihood'][0], expected)
         self.assertAlmostEqual(expected, -114., 0)
@@ -79,6 +79,7 @@ class MuonExpDecayTest(unittest.TestCase):
          new_x, fits, f_errors) = muon_expdecay_main(sample, "flat",
                                                      0.2, 14.0,
                                                      results, errors)
+
         expected = results['N2:loglikelihood'][0]
         self.assertLess(results['N1:loglikelihood'][0], expected)
         self.assertAlmostEqual(expected, -106, 0)
@@ -98,7 +99,6 @@ class MuonExpDecayTest(unittest.TestCase):
     def test_three_decays_big(self):
         sx, sy, se = np.loadtxt(os.path.join(DATA_DIR,
                                              'muon_expdecay_3_big.npy'))
-
         sample = {'x': sx, 'y': sy, 'e': se}
         results = {}
         errors = {}

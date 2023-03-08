@@ -1,11 +1,11 @@
 import unittest
 from quasielasticbayes.v2.functions.qse_function import QSEFunction
 from quasielasticbayes.v2.functions.BG import LinearBG
-from quasielasticbayes.v2.QSE import qse_data_main
+from quasielasticbayes.v2.workflow.QSE import qse_data_main
 import numpy as np
 import os.path
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), 'data')
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
 
 
 """
