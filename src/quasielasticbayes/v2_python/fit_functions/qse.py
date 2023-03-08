@@ -77,3 +77,17 @@ class QSEFunction(QEFunction):
         """
         to_update[1] = guess[1]
         return to_update
+
+    def set_func_guess_FWHM(self, guess: List[float], index=-1) -> None:
+        """
+        Set the  guess values.
+        :param guess: the guess for the function
+        :param index: the index of the function
+        """
+        if self.N_peaks == 0:
+            return
+        values = guess
+        offset = 1 if self.delta else 0
+
+        values[2] = self.conv._funcs[offset].tau(guess[2])
+        super().set_func_guess(values)

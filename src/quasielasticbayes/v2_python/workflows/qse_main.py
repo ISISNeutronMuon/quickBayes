@@ -69,7 +69,7 @@ class QlStretchedExp(Workflow):
         else:
             guess = func.get_func_guess()
             guess[2] = est_FWHM
-            func.set_func_guess(guess)
+            func.set_func_guess_FWHM(guess)
             guess = func.get_guess()
         self._engine.set_guess_and_bounds(guess, lower, upper)
 

@@ -362,10 +362,6 @@ class QEFunction(BaseFitFunction):
         :param upper: the upper bound values
         :param index: the index of the function
         """
-        # need to handle the tied params too!!!
-
-        # no func
-        # just delta
         if self._N_peaks == 0:
             return
         delta_offset = 1 if self.delta and index != -1 else 0
