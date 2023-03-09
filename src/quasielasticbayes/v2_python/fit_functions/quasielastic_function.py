@@ -219,7 +219,6 @@ class QEFunction(BaseFitFunction):
         :param guess: the guess for the function
         :param index: the index of the function
         """
-        # need to handle the tied params too!!!
         raise NotImplementedError()
 
     def _func_guess(self, full_guess: List[float]) -> List[float]:

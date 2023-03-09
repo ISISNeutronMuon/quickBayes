@@ -205,7 +205,6 @@ class StretchExp(BaseFitFunction):
                                           report_dict)
         return report_dict
 
-    # need to add tests for this and update code to use it
     def set_guess_FWHM(self, values: List[float]) -> List[float]:
         """
         set the starting guess for a fit function
