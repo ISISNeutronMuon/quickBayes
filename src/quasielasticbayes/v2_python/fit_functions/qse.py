@@ -55,7 +55,7 @@ class QSEFunction(QEFunction):
         """
         guess = copy.copy(self.BG.get_guess())
 
-        # want to reduce the guess to remove tied paramaters
+        # want to reduce the guess to remove tied parameters
         if len(self.conv._funcs) > 0 and self.delta:
             guess += copy.copy(self.conv._funcs[0].get_guess())
         elif len(self.conv._funcs) > 0:

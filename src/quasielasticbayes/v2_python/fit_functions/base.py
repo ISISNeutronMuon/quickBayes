@@ -21,7 +21,7 @@ class BaseFitFunction(ABC):
         Base class for fit function
         :param N_params: number of parameters in function
         :param prefix: prefix for parameters when reporting
-        :param gauess: the default guess values for the parameters
+        :param guess: the default guess values for the parameters
         :param lower: the default lower limits for the parameters
         :param upper: the default upper limits for the parameters
         """

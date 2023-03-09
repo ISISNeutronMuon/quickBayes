@@ -238,7 +238,7 @@ class QEFunction(BaseFitFunction):
         """
         # need to copy to prevent incrementing guess by calling this function
         guess = copy.copy(self.BG.get_guess())
-        # want to reduce the guess to remove tied paramaters
+        # want to reduce the guess to remove tied parameters
         if len(self.conv._funcs) > 0:
             guess += copy.copy(self.conv._funcs[0].get_guess())
             for j in range(1, len(self.conv._funcs)):
@@ -308,7 +308,7 @@ class QEFunction(BaseFitFunction):
         upper = copy.copy(bounds[1])
 
         if len(self.conv._funcs) > 0:
-            # want to reduce the guess to remove tied paramaters
+            # want to reduce the guess to remove tied parameters
             func = self.conv._funcs[0]
             bounds = func.get_bounds()
             lower += copy.copy(bounds[0])
