@@ -11,7 +11,7 @@ from typing import Dict, List
 
 class QLData(Workflow):
     """
-    A class for the quaielastic lorentzians workflow
+    A class for the quasielastic lorentzian workflow
     """
     def preprocess_data(self, x_data: ndarray,
                         y_data: ndarray, e_data: ndarray,
@@ -39,10 +39,11 @@ class QLData(Workflow):
 
         return new_x, ry
 
-    def _update_function(self, func: BaseFitFunction) -> BaseFitFunction:
+    @staticmethod
+    def _update_function(func: BaseFitFunction) -> BaseFitFunction:
         """
         This method adds a single lorentzian to the fitting function
-        :param func: the fitting function that needs modifing
+        :param func: the fitting function that needs modifying
         :return the modified fitting function
         """
         func.add_single_lorentzian()
@@ -62,14 +63,14 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     """
     Method for wrapping the qldata workflow.
     :param sample: dict containing the sample x, y and e data (keys = x, y, e)
-    :param res: dict containg the resolution x, y data (keys = x, y)
+    :param res: dict containing the resolution x, y data (keys = x, y)
     :param BG_type: the type of BG ("none", "flat", "linear")
     :param start_x: the start x for the calculation
     :param end_x: the end x for the calculation
     :param elastic: if to include the elastic peak
     :param results: dict of results
     :param results_errors: dict of errors for results
-    :param init_parameters: initial values, if None a guess will be made
+    :param init_params: initial values, if None a guess will be made
     :result dict of the fit parameters, their errors, the x range used, list of
     fit values and their errors.
     """

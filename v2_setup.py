@@ -63,8 +63,9 @@ def get_v2_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.test_helpers.template_fit_test':
             [join('test_helpers', 'template_test_fit.py')],
         f'{PACKAGE_NAME}.test_helpers.fitting_data':
-            [join('test_helpers', 'fitting_data.py')],
-
+            [join('test_helpers', 'fitting_data.py')],=
+        f'{PACKAGE_NAME}.test_helpers.template_scipy_fit':
+            [join('test_helpers', 'template_scipy_fit_test.py')],
 
         f'{PACKAGE_NAME}.v2.log_likelihood':
             ['log_likelihood.py'],

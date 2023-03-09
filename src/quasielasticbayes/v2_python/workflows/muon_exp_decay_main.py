@@ -28,11 +28,12 @@ class MuonExpDecay(Workflow):
                           start_x, end_x)
         super().preprocess_data(sx, sy, se)
 
-    def _update_function(self, func: BaseFitFunction) -> BaseFitFunction:
+    @staticmethod
+    def _update_function(func: BaseFitFunction) -> BaseFitFunction:
         """
         This method adds a exponential decay to the fitting
         function.
-        :param func: the fitting function that needs modifing
+        :param func: the fitting function that needs modifying
         :return the modified fitting function
         """
 
@@ -59,7 +60,7 @@ def muon_expdecay_main(sample: Dict[str, ndarray],
     :param end_x: the end x for the calculation
     :param results: dict of results
     :param results_errors: dict of errors for results
-    :param init_parameters: initial values, if None a guess will be made
+    :param init_params: initial values, if None a guess will be made
     :result dict of the fit parameters, their errors, the x range used, list of
     fit values and their errors.
     """

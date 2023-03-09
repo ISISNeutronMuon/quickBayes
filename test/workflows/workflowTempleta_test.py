@@ -17,7 +17,8 @@ def gen_data():
 
 
 class SimpleWorkflow(Workflow):
-    def _update_function(self, func):
+    @staticmethod
+    def _update_function(func):
         """
         Add a flat BG term
         """
