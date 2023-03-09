@@ -171,7 +171,6 @@ class FitEngineTemplate(object):
     def assert_covar_matrix(self, covar: ndarray,
                             expect: ndarray) -> None:
         """
-
         Method to test that 2D matrices match
         :param covar: calculated covariance matrix
         :param expect: the expected covariance matrix

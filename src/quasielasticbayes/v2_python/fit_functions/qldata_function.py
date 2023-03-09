@@ -111,7 +111,7 @@ class QlDataFunction(QEFunction):
                             guess: List[float]) -> List[float]:
         """
         Method for copying the updated values into the first function
-        in the convolution (this determines the value in evaluation.
+        in the convolution (this determines the value in evaluation).
         :param to_update: the values to update (due to ties)
         :param guess: the new guess values for the function being changed
         :return the updated list
