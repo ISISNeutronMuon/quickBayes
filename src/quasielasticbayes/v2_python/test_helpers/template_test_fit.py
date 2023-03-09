@@ -260,7 +260,6 @@ class FitEngineTemplate(object):
 
         self.assert_covar_matrix(calculated, expect)
 
-
     def fit_data_with_diff_sampling(self):
         x_data, y_data, e_data, xx, yy, ee = spline_data()
         bg = LinearBG()
