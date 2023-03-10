@@ -63,21 +63,13 @@ class GoFitEngine(FitEngine):
         """
         super().__init__("gofit", x_data, y_data, e_data)
         # extra parameters
-        self.set_bounds(lower, upper)
+        self.set_bounds_and_N_params(lower, upper)
         self._max_iterations = max_iterations
         self._samples = samples
-        self._N_params = 0
 
-    def set_N_params(self, N_params: int) -> None:
+    def set_bounds_and_N_params(self, lower: ndarray, upper: ndarray) -> None:
         """
-        sets the number of parameters
-        :param N_params: the number of parameters for the fit
-        """
-        self._N_params = N_params
-
-    def set_bounds(self, lower: ndarray, upper: ndarray) -> None:
-        """
-        Sets the current bounds for the fit function.
+        Sets the current bounds and number of parameters for the fit function.
         If the functional form changes this method will need to be called
         with updated values.
         :param lower: the lower bound for the function parameters
@@ -90,6 +82,7 @@ class GoFitEngine(FitEngine):
                              "be the same length")
         self._lower = lower
         self._upper = upper
+        self._N_params = len(upper)
 
     def _do_fit(self, x_data: ndarray, y_data: ndarray, e_data: ndarray,
                 func: Callable) -> ndarray:
@@ -101,12 +94,6 @@ class GoFitEngine(FitEngine):
         :param func: the fitting function
         :return the fit parameters
         """
-        if self._N_params != len(self._upper) or self._N_params != len(self._lower):  # noqa E501
-            raise RuntimeError(f"The number of parameters {self._N_params} "
-                               "does not match the upper bound "
-                               f"{len(self._upper)} "
-                               f"or the lower bound {len(self._lower)}.")
-
         cost_function = ChiSquared(x_data, y_data, e_data, func)
 
         data_length = len(x_data)

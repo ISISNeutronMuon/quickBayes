@@ -1,4 +1,5 @@
 import unittest
+from numpy import ndarray
 import numpy as np
 from quasielasticbayes.v2.fitting.gofit_engine import GoFitEngine
 from quasielasticbayes.test_helpers.template_fit_test import FitEngineTemplate
@@ -8,12 +9,10 @@ class GoFitEngineTest(FitEngineTemplate, unittest.TestCase):
 
     @staticmethod
     def get_test_engine(x, y, e):
-        engine = GoFitEngine(x, y, e,
-                             lower=[-10, -10],
-                             upper=[10, 10],
-                             samples=10)
-        engine.set_N_params(2)
-        return engine
+        return GoFitEngine(x, y, e,
+                           lower=[-10, -10],
+                           upper=[10, 10],
+                           samples=10)
 
     @staticmethod
     def get_name():
@@ -86,73 +85,80 @@ class GoFitEngineTest(FitEngineTemplate, unittest.TestCase):
 
         return {'high': high, 'low': low}
 
-    """
-     extra tests for scipy fit engine
-    def test_change_guess_and_bounds(self):
+    # extra tests for gofit engine
+    def test_change_guess_and_N_params(self):
         # not going to do a fit so data can be empty
         x_data, y_data, e_data = [], [], []
         self.engine = self.get_test_engine(x_data, y_data, e_data)
-        self.engine.set_guess_and_bounds([1, 1],
-                                         [0, 0],
-                                         [2, 2])
-        self.assertEqual(self.engine._guess, [1, 1])
+        self.engine.set_bounds_and_N_params([0, 0],
+                                            [2, 2])
+        self.assertEqual(self.engine._N_params, 2)
         self.assertEqual(self.engine._lower, [0, 0])
         self.assertEqual(self.engine._upper, [2, 2])
-
-    def test_bad_guess(self):
-        # not going to do a fit so data can be empty
-        x_data, y_data, e_data = [], [], []
-        self.engine = self.get_test_engine(x_data, y_data, e_data)
-        with self.assertRaises(ValueError):
-            self.engine.set_guess_and_bounds([1],
-                                             [0, 0],
-                                             [2, 2])
 
     def test_bad_lower(self):
         # not going to do a fit so data can be empty
         x_data, y_data, e_data = [], [], []
         self.engine = self.get_test_engine(x_data, y_data, e_data)
         with self.assertRaises(ValueError):
-            self.engine.set_guess_and_bounds([1, 1],
-                                             [0, 0, 0],
-                                             [2, 2])
+            self.engine.set_bounds_and_N_params([0, 0, 0],
+                                                [2, 2])
 
     def test_bad_upper(self):
         # not going to do a fit so data can be empty
         x_data, y_data, e_data = [], [], []
         self.engine = self.get_test_engine(x_data, y_data, e_data)
         with self.assertRaises(ValueError):
-            self.engine.set_guess_and_bounds([1],
-                                             [0, 0],
-                                             [2])
+            self.engine.set_bounds_and_N_params([0, 0],
+                                                [2])
 
-    def test_bad_guess_and_lower(self):
-        # not going to do a fit so data can be empty
-        x_data, y_data, e_data = [], [], []
-        self.engine = self.get_test_engine(x_data, y_data, e_data)
-        with self.assertRaises(ValueError):
-            self.engine.set_guess_and_bounds([1],
-                                             [0],
-                                             [2, 2])
-
-    def test_bad_guess_and_upper(self):
-        # not going to do a fit so data can be empty
-        x_data, y_data, e_data = [], [], []
-        self.engine = self.get_test_engine(x_data, y_data, e_data)
-        with self.assertRaises(ValueError):
-            self.engine.set_guess_and_bounds([1, 1, 1],
-                                             [0, 0],
-                                             [2, 2, 2])
-
-    def test_bad_lower_and_upper(self):
-        # not going to do a fit so data can be empty
-        x_data, y_data, e_data = [], [], []
-        self.engine = self.get_test_engine(x_data, y_data, e_data)
-        with self.assertRaises(ValueError):
-            self.engine.set_guess_and_bounds([1, 1],
-                                             [0],
-                                             [2])
     """
+    The following is to demonstrate that gofit
+    can get better fits than scipy, in certain
+    circumstances.
+    """
+
+    @staticmethod
+    def function(x_data: ndarray, amp: float,
+                 decay: float, offset: float):
+        return amp*np.exp(-x_data*decay)*(x_data - offset)**2
+
+    def test_hard_fit(self):
+        """
+        This fit is intentionally difficult
+        """
+        x_data = np.linspace(0, 5, 200)
+        np.random.seed(1)
+        noise_stdev = 0.1
+        param = [0.8, 0.9, 1.3]
+        y_data = np.random.normal(self.function(x_data, *param),
+                                  noise_stdev)
+        e_data = 0.5*noise_stdev*np.ones(x_data.shape)
+
+        gofit = self.get_test_engine(x_data, y_data, e_data)
+        gofit.set_bounds_and_N_params([-2, -4, -4],
+                                      [2, 4, 4])
+
+        gofit.do_fit(x_data, y_data, e_data, self.function)
+        params, errors = gofit.get_fit_parameters()
+
+        expected_p = [0.777, 0.871, 1.309]
+        expected_e = [0.031, 0.017, 0.021]
+        self.assert_parameters(params, errors, expected_p,
+                               expected_e)
+
+        # to compare with scipy
+        from quasielasticbayes.v2.fitting.scipy_engine import ScipyFitEngine
+        scipy_fit = ScipyFitEngine(x_data, y_data, e_data,
+                                   [-2, -4, -4], [2, 4, 4], [1, 1, 0])
+
+        scipy_fit.do_fit(x_data, y_data, e_data, self.function)
+        params, errors = scipy_fit.get_fit_parameters()
+
+        expected_p = [0.447, 4.00, -1.766]
+        expected_e = [0.672, 0.649, 1.341]
+        self.assert_parameters(params, errors, expected_p,
+                               expected_e)
 
 
 if __name__ == '__main__':
