@@ -52,6 +52,23 @@ class GaussianTest(unittest.TestCase):
         self.assertEqual(bounds[0], [0., -1, 0.])
         self.assertEqual(bounds[1], [np.inf, 1, np.inf])
 
+    def test_set_guess(self):
+        g = Gaussian()
+        self.assertEqual(g.get_guess(), [1.0, 0.0, 0.1])
+        g.set_guess([2.0, 3.0, 0.4])
+        self.assertEqual(g.get_guess(), [2.0, 3.0, 0.4])
+
+    def test_set_bounds(self):
+        g = Gaussian()
+        bounds = g.get_bounds()
+        self.assertEqual(bounds[0], [0., -1, 0.])
+        self.assertEqual(bounds[1], [np.inf, 1, np.inf])
+
+        g.set_bounds([1, 2, 3], [6, 7, 8])
+        bounds = g.get_bounds()
+        self.assertEqual(bounds[0], [1., 2, 3.])
+        self.assertEqual(bounds[1], [6, 7, 8])
+
 
 if __name__ == '__main__':
     unittest.main()

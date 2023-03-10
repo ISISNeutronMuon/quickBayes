@@ -2,6 +2,7 @@ from quasielasticbayes.v2.functions.base import BaseFitFunction
 from quasielasticbayes.v2.functions.qe_function import QEFunction
 from quasielasticbayes.v2.functions.SE import StretchExp
 from numpy import ndarray
+import copy
 from typing import List
 
 
@@ -47,21 +48,46 @@ class QSEFunction(QEFunction):
         # skip peak centre
         return [full_guess[0], full_guess[2], full_guess[3]]
 
-    def get_guess(self, est_FWHM: float) -> List[float]:
+    def get_guess(self) -> List[float]:
         """
         Gets the guess for the fit params
-        :param est_FWHM: estimate for FWHM (tau)
         :result a list of initial values for fit
         """
-        guess = self.BG.get_guess()
+        guess = copy.copy(self.BG.get_guess())
 
-        # want to reduce the guess to remove tied paramaters
-        if len(self.conv._funcs) > 0 and self.elastic:
-            guess += self.conv._funcs[0].get_guess()
+        # want to reduce the guess to remove tied parameters
+        if len(self.conv._funcs) > 0 and self.delta:
+            guess += copy.copy(self.conv._funcs[0].get_guess())
         elif len(self.conv._funcs) > 0:
-            guess += self.conv._funcs[0].get_guess(est_FWHM)
+            guess += copy.copy(self.conv._funcs[0].get_guess())
         if len(self.conv._funcs) > 1:
             for j in range(1, len(self.conv._funcs)):
-                full_guess = self.conv._funcs[j].get_guess(est_FWHM)
+                full_guess = copy.copy(self.conv._funcs[j].get_guess())
                 guess += self._func_guess(full_guess)
         return guess
+
+    def update_first_values(self, to_update: List[float],
+                            guess: List[float]) -> List[float]:
+        """
+        Method for copying the updated values into the first function
+        in the convolution (this determines the value in evaluation.
+        :param to_update: the values to update (due to ties)
+        :param guess: the new guess values for the function being changed
+        :return the updated list
+        """
+        to_update[1] = guess[1]
+        return to_update
+
+    def set_func_guess_FWHM(self, guess: List[float], index=-1) -> None:
+        """
+        Set the  guess values.
+        :param guess: the guess for the function
+        :param index: the index of the function
+        """
+        if self.N_peaks == 0:
+            return
+        values = guess
+        offset = 1 if self.delta else 0
+
+        values[2] = self.conv._funcs[offset].tau(guess[2])
+        super().set_func_guess(values)

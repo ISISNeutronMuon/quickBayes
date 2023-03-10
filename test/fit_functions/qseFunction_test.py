@@ -18,7 +18,7 @@ class QSEFunctionTest(unittest.TestCase):
         for j in range(len(x)):
             self.assertAlmostEqual(y[j], expect[j])
 
-        self.assertEqual(qse.get_guess(0.1), [0., 0.])
+        self.assertEqual(qse.get_guess(), [0., 0.])
 
         bounds = qse.get_bounds()
         self.assertEqual(bounds[0], [-1, -1])
@@ -49,7 +49,7 @@ class QSEFunctionTest(unittest.TestCase):
         y = qse(x, 1.2, 3, .2, .1)
         expect = [-3, 0.0001, 3.080, 6.000, 9.000]
 
-        self.assertEqual(qse.get_guess(0.1), [0., 0., 1., 0.])
+        self.assertEqual(qse.get_guess(), [0., 0., 1., 0.])
 
         bounds = qse.get_bounds()
         self.assertEqual(bounds[0], [-1, -1, 0., -1])
@@ -99,8 +99,8 @@ class QSEFunctionTest(unittest.TestCase):
         for j in range(len(x)):
             self.assertAlmostEqual(y[j], expect[j], 3)
 
-        guess = qse.get_guess(0.1)
-        expect = [0., 0., 1., 0., 0.1, 13.164, 0.7]
+        guess = qse.get_guess()
+        expect = [0., 0., 1., 0., 0.1, 6.582, 0.7]
         self.assertEqual(len(guess), len(expect))
         for k in range(len(expect)):
             self.assertAlmostEqual(guess[k], expect[k], 3)
@@ -152,8 +152,8 @@ class QSEFunctionTest(unittest.TestCase):
         for j in range(len(x)):
             self.assertAlmostEqual(y[j], expect[j], 3)
 
-        expect = [0., 0., 0.1, 0., 13.164, 0.7]
-        guess = qse.get_guess(0.1)
+        expect = [0., 0., 0.1, 0., 6.582, 0.7]
+        guess = qse.get_guess()
         self.assertEqual(len(guess), len(expect))
         for k in range(len(expect)):
             self.assertAlmostEqual(guess[k], expect[k], 3)
@@ -179,6 +179,250 @@ class QSEFunctionTest(unittest.TestCase):
         report = qse.report(report, 1., 2.3, .1, -.1, 10, .7)
         params = qse.read_from_report(report, 1)
         self.assertEqual(params, [1., 2.3, .1, -.1, 10, .7])
+
+    def assertList(self, values, expected):
+        self.assertEqual(len(values), len(expected))
+        for k in range(len(values)):
+            self.assertAlmostEqual(values[k], values[k], 3)
+
+    def test_set_delta_guess(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+        self.assertEqual(ql.get_guess(), [0, 0, 1., 0])
+
+        ql.set_delta_guess([3, 1])
+        self.assertEqual(ql.get_guess(), [0, 0, 3., 1])
+
+    def test_set_delta_guess_fail(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, False, x, x + 1, -6, 6)
+        self.assertEqual(ql.get_guess(), [0, 0])
+
+        ql.set_delta_guess([3, 1])
+        self.assertEqual(ql.get_guess(), [0, 0])
+
+    def test_set_BG_guess(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+        self.assertEqual(ql.get_guess(), [0, 0, 1., 0])
+
+        ql.set_BG_guess([3, 1])
+        self.assertEqual(ql.get_guess(), [3, 1, 1., 0])
+
+    def test_set_func_no_peak(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+        self.assertEqual(ql.get_guess(), [0, 0, 1., 0])
+
+        ql.set_func_guess([3, 2, 1, 4])
+        self.assertEqual(ql.get_guess(), [0, 0, 1., 0])
+
+    def test_set_func_one_peak_no_delta(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, False, x, x + 1, -6, 6)
+        ql.add_single_SE()
+        self.assertList(ql.get_guess(), [0, 0, 0.1, 0, 6.582, 0.7])
+
+        ql.set_func_guess([3, 2, 1, 4])
+        self.assertList(ql.get_guess(), [0, 0, 3, 2, 1, 4])
+
+    def test_set_func_one_peak_and_delta(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+        ql.add_single_SE()
+        self.assertList(ql.get_guess(), [0, 0, 1, 0, 0.1, 6.582, 0.7])
+
+        ql.set_func_guess([3, 2, 1, 4])
+        self.assertList(ql.get_guess(), [0, 0, 1, 2, 3, 1, 4])
+
+    def test_set_func_two_peak_no_delta(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, False, x, x + 1, -6, 6)
+        ql.add_single_SE()
+        ql.add_single_SE()
+        self.assertList(ql.get_guess(), [0, 0, 0.1, 0, 6.582, 0.7,
+                                         0.1, 6.582, 0.7])
+
+        ql.set_func_guess([3, 2, 1, 4])
+        self.assertList(ql.get_guess(), [0, 0, 0.1, 2, 6.582, 0.7, 3, 1, 4])
+
+        ql.set_func_guess([6, 5, -1, -2], 0)
+        self.assertList(ql.get_guess(), [0, 0, 6, 5, -1, -2, 3, 1, 4])
+
+    def test_set_func_two_peak_and_delta(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+        ql.add_single_SE()
+        ql.add_single_SE()
+        self.assertList(ql.get_guess(), [0, 0, 1., 0, 0.1,
+                                         6.582, 0.7, 0.1, 6.582, 0.7])
+
+        ql.set_func_guess([3, 2, 1, 4])
+        self.assertList(ql.get_guess(), [0, 0, 1., 2, 0.1,
+                                         6.582, 0.7, 3, 1, 4])
+
+        ql.set_func_guess([4, 5, -1, -2], 0)
+        self.assertList(ql.get_guess(), [0, 0, 1., 5, 4, -1, -2, 3, 1, 4])
+
+    def test_set_func_guess_FWHM(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+        ql.add_single_SE()
+        self.assertList(ql.get_guess(), [0, 0, 1, 0, 0.1, 6.582, 0.7])
+        ql.set_func_guess_FWHM([3, 2, 0.4, 4])
+        self.assertList(ql.get_guess(), [0, 0, 1, 2, 3, 3.291, 4])
+
+    def test_get_func_guess(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+        ql.add_single_SE()
+        ql.add_single_SE()
+        self.assertList(ql.get_guess(), [0, 0, 1., 0, 0.1,
+                                         6.582, 0.7, 0.1, 6.582, 0.7])
+
+        ql.set_func_guess([3, 2, 1, 4])
+        self.assertList(ql.get_guess(), [0, 0, 1., 2, 0.1,
+                                         6.582, 0.7, 3, 1, 4])
+
+        ql.set_func_guess([4, 5, -1, -2], 0)
+        self.assertList(ql.get_guess(), [0, 0, 1., 5, 4, -1, -2, 3, 1, 4])
+        self.assertList(ql.get_guess(), [0, 0, 1., 5, 4, -1, -2, 3, 1, 4])
+
+        self.assertEqual(ql.get_func_guess(), [3, 5, 1, 4])
+        self.assertEqual(ql.get_func_guess(0), [4, 5, -1, -2])
+
+    def test_set_delta_bounds(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1, 0, -1])
+        self.assertEqual(upper, [1, 1, np.inf, 1])
+
+        ql.set_delta_bounds([-3, -2], [2, 4])
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1, -3, -2])
+        self.assertEqual(upper, [1, 1, 2, 4])
+
+    def test_set_delta_bounds_fail(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, False, x, x + 1, -6, 6)
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1])
+        self.assertEqual(upper, [1, 1])
+
+        ql.set_delta_bounds([-3, -2], [2, 4])
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1])
+        self.assertEqual(upper, [1, 1])
+
+    def test_set_BG_bounds(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1, 0, -1])
+        self.assertEqual(upper, [1, 1, np.inf, 1])
+
+        ql.set_BG_bounds([-3, -2], [2, 4])
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-3, -2, 0, -1])
+        self.assertEqual(upper, [2, 4, np.inf, 1])
+
+    def test_set_func_bounds_no_peak(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1, 0, -1])
+        self.assertEqual(upper, [1, 1, np.inf, 1])
+
+        ql.set_func_bounds([-3, -2, 1], [1, 2, 4])
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1, 0, -1])
+        self.assertEqual(upper, [1, 1, np.inf, 1])
+
+    def test_set_func_bounds_one_peak_no_delta(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, False, x, x + 1, -6, 6)
+        ql.add_single_SE()
+
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1, 0, -1, 0, 0])
+        self.assertEqual(upper, [1, 1, 1, 1, 100, 1])
+
+        ql.set_func_bounds([-3, -2, 1, -4], [3, 2, 4, 5])
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1, -3, -2, 1, -4])
+        self.assertEqual(upper, [1, 1, 3, 2, 4, 5])
+
+    def test_set_func_bounds_one_peak_and_delta(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+        ql.add_single_SE()
+
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1, 0, -1, 0, 0, 0])
+        self.assertEqual(upper, [1, 1, np.inf, 1, 1, 100, 1])
+
+        ql.set_func_bounds([-3, -2, 1, -4], [3, 2, 4, 5])
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1, 0, -2, -3, 1, -4])
+        self.assertEqual(upper, [1, 1, np.inf, 2, 3, 4, 5])
+
+    def test_set_func_bounds_two_peak_no_delta(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, False, x, x + 1, -6, 6)
+        ql.add_single_SE()
+        ql.add_single_SE()
+
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1, 0, -1, 0, 0, 0, 0, 0])
+        self.assertEqual(upper, [1, 1, 1, 1, 100, 1, 1, 100, 1])
+
+        ql.set_func_bounds([-3, -2, 1, -4], [3, 2, 4, 5])
+        lower, upper = ql.get_bounds()
+
+        self.assertEqual(lower, [-1, -1, 0, -2, 0, 0, -3, 1, -4])
+        self.assertEqual(upper, [1, 1, 1, 2, 100, 1, 3, 4, 5])
+
+    def test_set_func_bounds_two_peak_and_delta(self):
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+        ql = QSEFunction(bg, True, x, x + 1, -6, 6)
+        ql.add_single_SE()
+        ql.add_single_SE()
+
+        lower, upper = ql.get_bounds()
+        self.assertEqual(lower, [-1, -1, 0, -1, 0, 0, 0, 0, 0, 0])
+        self.assertEqual(upper, [1, 1, np.inf, 1, 1, 100, 1, 1, 100, 1])
+
+        ql.set_func_bounds([-3, -2, 1, -4], [3, 2, 4, 5])
+        lower, upper = ql.get_bounds()
+
+        self.assertEqual(lower, [-1, -1, 0, -2, 0, 0, 0, -3, 1, -4])
+        self.assertEqual(upper, [1, 1, np.inf, 2, 1, 100, 1, 3, 4, 5])
+
+        ql.set_func_bounds([-5, -6, -7, -8], [5, 6, 7, 8], 0)
+        lower, upper = ql.get_bounds()
+
+        self.assertEqual(lower, [-1, -1, 0, -6, -5, -7, -8, -3, 1, -4])
+        self.assertEqual(upper, [1, 1, np.inf, 6, 5, 7, 8, 3, 4, 5])
 
 
 if __name__ == '__main__':

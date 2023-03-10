@@ -190,6 +190,42 @@ class ConvolutionTest(unittest.TestCase):
         self.assertEqual(lower, [0., -1., 0.0])
         self.assertEqual(upper, [np.inf, 1., np.inf])
 
+    def test_set_guess(self):
+        x = np.linspace(0, 1)
+        c = conv(x, x, 1, 2)
+        g = Gaussian()
+        g2 = Gaussian()
+        c.add_function(g)
+        c.add_function(g2)
+        self.assertEqual(c.get_guess(), [1., 0., 0.1, 1., 0, 0.1])
+
+        c.set_guess([2, 3, 4], 0)
+        self.assertEqual(c.get_guess(), [2., 3., 4, 1., 0, 0.1])
+
+        c.set_guess([6, 5, 8])
+        self.assertEqual(c.get_guess(), [2., 3., 4, 6, 5, 8])
+
+    def test_set_bounds(self):
+        x = np.linspace(0, 1)
+        c = conv(x, x, 1, 2)
+        g = Gaussian()
+        g2 = Gaussian()
+        c.add_function(g)
+        c.add_function(g2)
+        lower, upper = c.get_bounds()
+        self.assertEqual(lower, [0., -1., 0.0, 0, -1, 0])
+        self.assertEqual(upper, [np.inf, 1., np.inf, np.inf, 1, np.inf])
+
+        c.set_bounds([-1, -2, -3], [1, 2, 3], 0)
+        lower, upper = c.get_bounds()
+        self.assertEqual(lower, [-1., -2., -3, 0, -1, 0])
+        self.assertEqual(upper, [1., 2, 3, np.inf, 1, np.inf])
+
+        c.set_bounds([-4, -5, -6], [3, 4, 5])
+        lower, upper = c.get_bounds()
+        self.assertEqual(lower, [-1., -2., -3, -4, -5, -6])
+        self.assertEqual(upper, [1., 2, 3, 3, 4, 5])
+
 
 if __name__ == '__main__':
     unittest.main()

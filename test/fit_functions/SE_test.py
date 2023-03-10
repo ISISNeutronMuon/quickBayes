@@ -83,9 +83,26 @@ class StretchExpTest(unittest.TestCase):
 
     def test_guess(self):
         se = StretchExp()
-        guess = se.get_guess(0.2)
+        guess = se.get_guess()
         expect = [0.1, 0.0, 6.582, 0.7]
         self.assertEqual(len(guess), len(expect))
+        for k in range(len(guess)):
+            self.assertAlmostEqual(guess[k], expect[k], 3)
+
+    def test_guess_set_guess(self):
+        se = StretchExp()
+        guess = se.get_guess()
+        expect = [0.1, 0.0, 6.582, 0.7]
+        self.assertEqual(len(guess), len(expect))
+        for k in range(len(guess)):
+            self.assertAlmostEqual(guess[k], expect[k], 3)
+        se.set_guess([1, 2, 3, 4])
+        self.assertEqual(se.get_guess(), [1, 2, 3, 4])
+
+        se.set_guess_FWHM([.2, .1, .4, .3])
+        expect = [0.2, 0.1, 3.291, 0.3]
+        self.assertEqual(len(guess), len(expect))
+        guess = se.get_guess()
         for k in range(len(guess)):
             self.assertAlmostEqual(guess[k], expect[k], 3)
 

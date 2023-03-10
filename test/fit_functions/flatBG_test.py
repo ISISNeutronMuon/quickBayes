@@ -57,6 +57,24 @@ class FlatBGTest(unittest.TestCase):
         params = bg.read_from_report(report, 0)
         self.assertEqual(params, [3.2])
 
+    def test_set_guess(self):
+        bg = FlatBG()
+        self.assertEqual(bg.get_guess(), [0.])
+
+        bg.set_guess([1.])
+        self.assertEqual(bg.get_guess(), [1.])
+
+    def test_set_bounds(self):
+        bg = FlatBG()
+        lower, upper = bg.get_bounds()
+        self.assertEqual(lower, [-1.])
+        self.assertEqual(upper, [1.])
+
+        bg.set_bounds([0], [2])
+        lower, upper = bg.get_bounds()
+        self.assertEqual(lower, [0.])
+        self.assertEqual(upper, [2.])
+
 
 if __name__ == '__main__':
     unittest.main()

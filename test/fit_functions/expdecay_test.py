@@ -51,6 +51,23 @@ class ExpDecayTest(unittest.TestCase):
         self.assertEqual(bounds[0], [0., 0.001])
         self.assertEqual(bounds[1], [1., 20.])
 
+    def test_set_guess(self):
+        fun = ExpDecay()
+        self.assertEqual(fun.get_guess(), [1.0, 0.1])
+        fun.set_guess([2.0, 0.5])
+        self.assertEqual(fun.get_guess(), [2.0, 0.5])
+
+    def test_set_bounds(self):
+        fun = ExpDecay()
+        bounds = fun.get_bounds()
+        self.assertEqual(bounds[0], [0., 0.001])
+        self.assertEqual(bounds[1], [1., 20.])
+
+        fun.set_bounds([1, 2], [3, 4])
+        bounds = fun.get_bounds()
+        self.assertEqual(bounds[0], [1, 2])
+        self.assertEqual(bounds[1], [3, 4])
+
 
 if __name__ == '__main__':
     unittest.main()

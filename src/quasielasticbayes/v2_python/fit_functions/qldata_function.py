@@ -95,7 +95,8 @@ class QlDataFunction(QEFunction):
                                                   EISF, report_dict)
         return report_dict
 
-    def _func_guess(self, full_guess: List[float]) -> List[float]:
+    @staticmethod
+    def _func_guess(full_guess: List[float]) -> List[float]:
         """
         Get the intial guess values.
         This takes into account the tied
@@ -104,3 +105,16 @@ class QlDataFunction(QEFunction):
         """
         # skip peak centre
         return [full_guess[0], full_guess[2]]
+
+    @staticmethod
+    def update_first_values(to_update: List[float],
+                            guess: List[float]) -> List[float]:
+        """
+        Method for copying the updated values into the first function
+        in the convolution (this determines the value in evaluation).
+        :param to_update: the values to update (due to ties)
+        :param guess: the new guess values for the function being changed
+        :return the updated list
+        """
+        to_update[1] = guess[1]
+        return to_update

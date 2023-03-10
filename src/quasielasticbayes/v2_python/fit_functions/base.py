@@ -15,14 +15,20 @@ class BaseFitFunction(ABC):
     """
     A basic class outline for fit functions
     """
-    def __init__(self, N_params: int, prefix: str):
+    def __init__(self, N_params: int, prefix: str, guess: List[float],
+                 lower: List[float], upper: List[float]):
         """
         Base class for fit function
         :param N_params: number of parameters in function
         :param prefix: prefix for parameters when reporting
+        :param guess: the default guess values for the parameters
+        :param lower: the default lower limits for the parameters
+        :param upper: the default upper limits for the parameters
         """
         self._N_params = N_params
         self._prefix = prefix
+        self.set_guess(guess)
+        self.set_bounds(lower, upper)
         return
 
     def update_prefix(self, new: str) -> None:
@@ -136,18 +142,47 @@ class BaseFitFunction(ABC):
         """
         raise NotImplementedError()
 
-    @abstractmethod
+    def _check_length(self, values: List[float], label: str) -> None:
+        """
+        Runs a check that the input has a value for each of the
+        parameters in the function.
+        :param values: the input values to check
+        :param label: a string to signify what is being checked
+        """
+        if len(values) != self.N_params:
+            raise ValueError(f"The number of {label} parameters {len(values)} "
+                             "do not match the expected "
+                             f" number {self._N_params}.")
+
+    def set_guess(self, guess: List[float]) -> None:
+        """
+        Method to set the guess values
+        :param guess: the new guess values
+        """
+        self._check_length(guess, "guess")
+        self._guess = guess
+
     def get_guess(self) -> List[float]:
         """
         Generates a guess for the fit values
         :return a list of guesses
         """
-        raise NotImplementedError()
+        return self._guess
 
-    @abstractmethod
+    def set_bounds(self, lower: List[float], upper: List[float]) -> None:
+        """
+        Set the lower and upper bounds for the function
+        :param lower: the lower limits for the parameters
+        :param upper: the upper limits for the parameters
+        """
+        self._check_length(lower, "lower")
+        self._check_length(upper, "upper")
+        self._lower = lower
+        self._upper = upper
+
     def get_bounds(self) -> (List[float], List[float]):
         """
         Gets the bounds for the fit
         :retun lists of the lower and upper bounds
         """
-        raise NotImplementedError()
+        return self._lower, self._upper

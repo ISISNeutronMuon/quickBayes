@@ -51,6 +51,23 @@ class LorentzianTest(unittest.TestCase):
         self.assertEqual(bounds[0], [0., -1, 1.e-6])
         self.assertEqual(bounds[1], [1., 1, 1.])
 
+    def test_set_guess(self):
+        lor = Lorentzian()
+        self.assertEqual(lor.get_guess(), [0.01, 0., 0.02])
+        lor.set_guess([1., 2., 3])
+        self.assertEqual(lor.get_guess(), [1, 2., 3])
+
+    def test_set_bounds(self):
+        lor = Lorentzian()
+        bounds = lor.get_bounds()
+        self.assertEqual(bounds[0], [0., -1, 1.e-6])
+        self.assertEqual(bounds[1], [1., 1, 1.])
+
+        lor.set_bounds([-1, -2, -3], [2, 3, 4])
+        bounds = lor.get_bounds()
+        self.assertEqual(bounds[0], [-1, -2, -3])
+        self.assertEqual(bounds[1], [2, 3, 4])
+
 
 if __name__ == '__main__':
     unittest.main()

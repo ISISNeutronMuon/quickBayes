@@ -10,7 +10,8 @@ class Gaussian(BaseFitFunction):
         Create a gaussian function
         :param prefix: prefix for parameter reporting
         """
-        super().__init__(3, prefix)
+        super().__init__(3, prefix, [1., 0, 0.1],
+                         [0., -1., 0.], [np.inf, 1., np.inf])
 
     @property
     def amplitude(self) -> str:
@@ -77,17 +78,3 @@ class Gaussian(BaseFitFunction):
         report_dict = self._add_to_report(self.sigma,
                                           sigma, report_dict)
         return report_dict
-
-    def get_guess(self) -> List[float]:
-        """
-        Get the starting guess for a fit function
-        :return the initial guess
-        """
-        return [1., 0., 0.1]
-
-    def get_bounds(self) -> (List[float], List[float]):
-        """
-        Get the fitting bounds
-        :return lists for lower and upper bounds
-        """
-        return [0., -1., 0.], [np.inf, 1., np.inf]

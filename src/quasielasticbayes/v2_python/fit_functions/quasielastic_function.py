@@ -4,6 +4,7 @@ from quasielasticbayes.v2.functions.base import BaseFitFunction
 from quasielasticbayes.v2.functions.delta import Delta
 from numpy import ndarray
 from typing import Dict, List
+from abc import abstractmethod
 import copy
 
 
@@ -40,13 +41,13 @@ class QEFunction(BaseFitFunction):
         self.BG.add_to_prefix(self.prefix + 'f1')
         self.conv = ConvolutionWithResolution(r_x, r_y, start_x,
                                               end_x, self.prefix + 'f2')
-        self.elastic = elastic_peak
-
         self.delta = elastic_peak
         if elastic_peak:
             delta = Delta('')
             self.conv.add_function(delta)
-        super().__init__(0, self.prefix)
+
+        self._N_params = self.BG.N_params + self.conv.N_params,
+        self._prefix = self.prefix
 
     def update_x_range(self, new_x: ndarray) -> None:
         """
@@ -129,7 +130,7 @@ class QEFunction(BaseFitFunction):
             N_f0 = self.conv._funcs[0].N_params
             params = [*args[N_BG_params:N_BG_params + N_f0]]
             x0 = args[N_BG_params + 1]  # same position for both lor and delta
-            if not self.elastic:
+            if not self.delta:
                 # if not elastic, already done first peak
                 offset = 1
 
@@ -208,6 +209,18 @@ class QEFunction(BaseFitFunction):
         report_dict = self.conv.report(report_dict, *params)
         return report_dict
 
+    @abstractmethod
+    def update_first_values(self, update: List[float],
+                            guess: List[float], index=-1) -> None:
+        """
+        Update the values due to ties.
+        This will depend on the function
+        :param update: the values to update due to ties
+        :param guess: the guess for the function
+        :param index: the index of the function
+        """
+        raise NotImplementedError()
+
     def _func_guess(self, full_guess: List[float]) -> List[float]:
         """
         Extracts the guess for the function
@@ -223,38 +236,137 @@ class QEFunction(BaseFitFunction):
         parameters.
         :return a list of guess parameters for the fit
         """
-        guess = self.BG.get_guess()
-
-        # want to reduce the guess to remove tied paramaters
+        # need to copy to prevent incrementing guess by calling this function
+        guess = copy.copy(self.BG.get_guess())
+        # want to reduce the guess to remove tied parameters
         if len(self.conv._funcs) > 0:
-            guess += self.conv._funcs[0].get_guess()
+            guess += copy.copy(self.conv._funcs[0].get_guess())
             for j in range(1, len(self.conv._funcs)):
-                full_guess = self.conv._funcs[j].get_guess()
+                full_guess = copy.copy(self.conv._funcs[j].get_guess())
                 guess += self._func_guess(full_guess)
         return guess
+
+    def get_func_guess(self, index=-1):
+        if self.N_peaks == 0:
+            return
+        delta_offset = 1 if self.delta and index != -1 else 0
+        guess = self.conv._funcs[index + delta_offset].get_guess()
+        tie_values = self.conv._funcs[0].get_guess()
+        guess = self.update_first_values(guess, tie_values)
+        return guess
+
+    def set_guess(self, guess: List[float]) -> None:
+        """
+        Override the default guess setting.
+        :param guess: the guess
+        """
+        raise RuntimeError("set_guess is not available for this "
+                           "function. Please use: \n"
+                           "- set_BG_guess \n"
+                           "- set_delta_guess \n"
+                           "- set_func_guess")
+
+    def set_BG_guess(self, guess: List[float]) -> None:
+        """
+        Set the background guess values.
+        :param guess: the guess for the BG
+        """
+        self.BG.set_guess(guess)
+
+    def set_delta_guess(self, guess: List[float]) -> None:
+        """
+        Set the delta guess values.
+        :param guess: the guess for the delta function
+        """
+        if self.delta:
+            self.conv._funcs[0].set_guess(guess)
+
+    def set_func_guess(self, guess: List[float], index=-1) -> None:
+        """
+        Set the  guess values.
+        :param guess: the guess for the function
+        :param index: the index of the function
+        """
+        # no func
+        if self._N_peaks == 0:
+            return
+        delta_offset = 1 if self.delta and index != -1 else 0
+
+        self.conv._funcs[index + delta_offset].set_guess(guess)
+        to_update = self.conv._funcs[0].get_guess()
+        to_update = self.update_first_values(to_update, guess)
+        self.conv._funcs[0].set_guess(to_update)
 
     def get_bounds(self) -> (List[float], List[float]):
         """
         Gets the bounds for the parameters.
         :return a list of the lower and upper bounds
         """
+        # need to copy to prevent incrementing bounds by calling this function
         bounds = self.BG.get_bounds()
-        lower = bounds[0]
-        upper = bounds[1]
+        lower = copy.copy(bounds[0])
+        upper = copy.copy(bounds[1])
 
         if len(self.conv._funcs) > 0:
-            # want to reduce the guess to remove tied paramaters
+            # want to reduce the guess to remove tied parameters
             func = self.conv._funcs[0]
             bounds = func.get_bounds()
-            lower += bounds[0]
-            upper += bounds[1]
+            lower += copy.copy(bounds[0])
+            upper += copy.copy(bounds[1])
 
             for j in range(1, len(self.conv._funcs)):
                 f = self.conv._funcs[j]
                 bounds = f.get_bounds()
                 tmp = bounds[0]
-                lower += self._func_guess(tmp)
+                lower += copy.copy(self._func_guess(tmp))
                 tmp = bounds[1]
-                upper += self._func_guess(tmp)
+                upper += copy.copy(self._func_guess(tmp))
 
         return lower, upper
+
+    def set_bounds(self, lower: List[float], upper: List[float]) -> None:
+        """
+        Override the default bounds setting.
+        :param lower: the lower bound values
+        :param upper: the upper bound values
+        """
+        raise RuntimeError("set_guess is not available for this "
+                           "function. Please use: \n"
+                           "- set_BG_bounds \n"
+                           "- set_delta_bounds \n"
+                           "- set_func_bounds")
+
+    def set_BG_bounds(self, lower: List[float], upper: List[float]) -> None:
+        """
+        Set the background bounds values.
+        :param lower: the lower bound values
+        :param upper: the upper bound values
+        """
+        self.BG.set_bounds(lower, upper)
+
+    def set_delta_bounds(self, lower: List[float], upper: List[float]) -> None:
+        """
+        Set the delta bounds values.
+        :param lower: the lower bound values
+        :param upper: the upper bound values
+        """
+        if self.delta:
+            self.conv._funcs[0].set_bounds(lower, upper)
+
+    def set_func_bounds(self, lower: List[float],
+                        upper: List[float], index=-1) -> None:
+        """
+        Set the bounds values.
+        :param lower: the lower bound values
+        :param upper: the upper bound values
+        :param index: the index of the function
+        """
+        if self._N_peaks == 0:
+            return
+        delta_offset = 1 if self.delta and index != -1 else 0
+
+        self.conv._funcs[index + delta_offset].set_bounds(lower, upper)
+        update_lower, update_upper = self.conv._funcs[0].get_bounds()
+        update_lower = self.update_first_values(update_lower, lower)
+        update_upper = self.update_first_values(update_upper, upper)
+        self.conv._funcs[0].set_bounds(update_lower, update_upper)

@@ -9,7 +9,7 @@ class NoBG(BaseFitFunction):
         """
         :param prefix: prefix for function parameters in report
         """
-        super().__init__(0, prefix)
+        super().__init__(0, prefix, [], [], [])
 
     def __call__(self, x: ndarray) -> ndarray:
         """
@@ -40,27 +40,13 @@ class NoBG(BaseFitFunction):
         """
         return report_dict
 
-    def get_guess(self) -> List[float]:
-        """
-        Get the starting guess for a fit function
-        :return the initial guess
-        """
-        return []
-
-    def get_bounds(self) -> (List[float], List[float]):
-        """
-        Get the fitting bounds
-        :return lists for lower and upper bounds
-        """
-        return [], []
-
 
 class FlatBG(BaseFitFunction):
     def __init__(self, prefix: str = ''):
         """
         :param prefix: prefix for function parameters in report
         """
-        super().__init__(1, prefix)
+        super().__init__(1, prefix, [0.], [-1.], [1.])
 
     @property
     def constant(self) -> str:
@@ -99,27 +85,13 @@ class FlatBG(BaseFitFunction):
                                           c, report_dict)
         return report_dict
 
-    def get_guess(self) -> List[float]:
-        """
-        Get the starting guess for a fit function
-        :return the initial guess
-        """
-        return [0.]
-
-    def get_bounds(self) -> (List[float], List[float]):
-        """
-        Get the fitting bounds
-        :return lists for lower and upper bounds
-        """
-        return [-1.], [1.]
-
 
 class LinearBG(BaseFitFunction):
     def __init__(self, prefix: str = ''):
         """
         :param prefix: prefix for function parameters in report
         """
-        super().__init__(2, prefix)
+        super().__init__(2, prefix, [0., 0.], [-1., -1.], [1., 1.])
 
     @property
     def constant(self) -> str:
@@ -166,17 +138,3 @@ class LinearBG(BaseFitFunction):
         report_dict = self._add_to_report(self.constant,
                                           c, report_dict)
         return report_dict
-
-    def get_guess(self) -> List[float]:
-        """
-        Get the starting guess for a fit function
-        :return the initial guess
-        """
-        return [0., 0.]
-
-    def get_bounds(self) -> (List[float], List[float]):
-        """
-        Get the fitting bounds
-        :return lists for lower and upper bounds
-        """
-        return [-1., -1.], [1., 1.]
