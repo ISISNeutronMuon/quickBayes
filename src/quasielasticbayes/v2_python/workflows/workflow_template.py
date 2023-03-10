@@ -1,4 +1,5 @@
 from quasielasticbayes.v2.fitting.scipy_engine import ScipyFitEngine
+from quasielasticbayes.v2.fitting.gofit_engine import GoFitEngine
 from quasielasticbayes.v2.functions.base import BaseFitFunction
 
 from quasielasticbayes.v2.utils.general import update_guess
@@ -91,6 +92,13 @@ class Workflow(object):
         """
         if self._engine.name == 'scipy':
             self.update_scipy_fit_engine(func, params)
+        elif self._engine.name == 'gofit':
+            self.update_gofit_engine(func)
+        else:
+            raise RuntimeError("The fit engine is "
+                               f"{self._engine.name} "
+                               "please use the appropriate "
+                               "upadate method")
         return
 
     @abstractmethod
@@ -218,3 +226,23 @@ class Workflow(object):
         lower, upper = func.get_bounds()
         guess = update_guess(list(params), func)
         self._engine.set_guess_and_bounds(guess, lower, upper)
+
+    def set_gofit_engine(self, samples: int, lower: ndarray,
+                         upper: ndarray) -> None:
+        """
+        Method to set the fit engine to be gofit
+        :param samples: the number of samples to use
+        :param lower: the lower bound for the fit
+        :param upper: the upper bound for the fit
+        """
+        self._check_engine_and_data_set_valid()
+        self._engine = GoFitEngine(self._data['x'], self._data['y'],
+                                   self._data['e'], lower, upper, samples)
+
+    def update_gofit_engine(self, func: BaseFitFunction):
+        """
+        This updates the bounds for gofit engine
+        :param func: the fitting function
+        """
+        lower, upper = func.get_bounds()
+        self._engine.set_bounds_and_N_params(lower, upper)

@@ -115,6 +115,41 @@ class WorkflowTemplateTest(unittest.TestCase):
         self.wf.set_scipy_engine([], [], [])
         self.assertEqual(self.wf.fit_engine.name, 'scipy')
 
+    def test_update_scipy_fit_engine(self):
+        self.assertEqual(self.wf.fit_engine, None)
+        x, y, e = gen_data()
+        self.wf.preprocess_data(x, y, e)
+        self.wf.set_scipy_engine([], [], [])
+        self.assertEqual(self.wf.fit_engine._guess, [])
+        self.assertEqual(self.wf.fit_engine._lower, [])
+        self.assertEqual(self.wf.fit_engine._upper, [])
+
+        bg = FlatBG()
+        self.wf.update_fit_engine(bg, [2])
+        self.assertEqual(self.wf.fit_engine._guess, [2])
+        self.assertEqual(self.wf.fit_engine._lower, [-1])
+        self.assertEqual(self.wf.fit_engine._upper, [1])
+
+    def test_set_gofit_engine(self):
+        self.assertEqual(self.wf.fit_engine, None)
+        x, y, e = gen_data()
+        self.wf.preprocess_data(x, y, e)
+        self.wf.set_gofit_engine(5, [], [])
+        self.assertEqual(self.wf.fit_engine.name, 'gofit')
+
+    def test_update_gofit_engine(self):
+        self.assertEqual(self.wf.fit_engine, None)
+        x, y, e = gen_data()
+        self.wf.preprocess_data(x, y, e)
+        self.wf.set_gofit_engine(5, [], [])
+        self.assertEqual(self.wf.fit_engine._lower, [])
+        self.assertEqual(self.wf.fit_engine._upper, [])
+
+        bg = FlatBG()
+        self.wf.update_fit_engine(bg, [5])
+        self.assertEqual(self.wf.fit_engine._lower, [-1])
+        self.assertEqual(self.wf.fit_engine._upper, [1])
+
 
 if __name__ == '__main__':
     unittest.main()
