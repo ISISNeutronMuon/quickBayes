@@ -42,7 +42,7 @@ class ChiSquared(object):
 class GoFitEngine(FitEngine):
     """
     A gofit multistart fit engine.
-    This will gofit's multistart to
+    This will use gofit's multistart to
     fit data.
     """
 
