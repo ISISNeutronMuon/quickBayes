@@ -12,7 +12,7 @@ from fortran_setup import get_fortran_extensions, FortranExtensionBuilder
 from v2_setup import get_v2_extensions
 
 
-VERSION = "1.0.0a14"
+VERSION = "1.0.0a15"
 PACKAGE_NAME = 'quasielasticbayes'
 
 
