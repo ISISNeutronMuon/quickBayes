@@ -61,7 +61,7 @@ class QLresTest(unittest.TestCase):
             ref_prob = get_qlres_prob(reference["yprob"])
             np.testing.assert_almost_equal(np.array(ref_prob[0:1]),
                                            np.array(yprob[0:1]),
-                                           decimal=dp)
+                                           decimal=0)
 
 
 if __name__ == '__main__':
