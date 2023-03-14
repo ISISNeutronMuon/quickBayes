@@ -1,0 +1,70 @@
+name: Build and upload to PyPI
+
+on:
+  release:
+    types:
+        - published
+
+jobs:
+  build_wheels:
+    name: Build wheels on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        # Note: builds on these are backward compatible
+        # (Linux builds use manylinux Docker containers)
+        # (macOS builds target old versions by default)
+        os: [ubuntu-latest]
+        # os: [ubuntu-latest, windows-latest]
+
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.8.0
+        # to supply options, put them in 'env', like:
+        # env:
+        #   CIBW_SOME_OPTION: value
+        env:
+          # List of platforms to build on
+          CIBW_BUILD: cp38-manylinux_x86_64 cp38-win_amd64
+          #CIBW_BUILD: cp38-macosx_x86_64 cp38-macosx_arm64
+
+          CIBW_BEFORE_ALL_LINUX: >
+             pip install numpy==1.16.*
+             pip install cython>=0.29.32
+             pip install scipy
+          CIBW_BEFORE_BUILD_WINDOWS: >
+            pip install numpy==1.16.*
+            pip install cython>=0.29.32
+            pip install scipy
+
+          # Install test dependencies and run tests
+          CIBW_TEST_REQUIRES: pytest
+          CIBW_TEST_COMMAND: >
+            pytest {project}/test
+      - uses: actions/upload-artifact@v3
+        with:
+          path: ./wheelhouse/*.whl
+
+  upload_pypi:
+    needs: [build_wheels]
+    runs-on: ubuntu-latest
+    # upload to PyPI on every tag starting with 'v'
+    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    # alternatively, to publish when a GitHub Release is created, use the following rule:
+    # if: github.event_name == 'release' && github.event.action == 'published'
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+
+      - uses: pypa/gh-action-pypi-publish@v1.5.0
+        with:
+          user: __token__
+          verbose: True
+          password: ${{ secrets.PYPI_API_TOKEN }}

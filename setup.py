@@ -12,6 +12,7 @@ from fortran_setup import get_fortran_extensions, FortranExtensionBuilder
 from v2_setup import get_v2_extensions
 
 
+VERSION = "1.0.0a15"
 PACKAGE_NAME = 'quasielasticbayes'
 
 
@@ -53,7 +54,7 @@ class build_py(_build_py):
 
 setup(
     name=PACKAGE_NAME,
-    install_requires=['numpy>=1.12'],
+    install_requires=['numpy>=1.12', 'scipy'],
     packages=[PACKAGE_NAME],
     description='A Bayesian fitting package used for '
                 'fitting quasi-elastic neutron scattering data.',
@@ -67,7 +68,7 @@ setup(
     ext_modules=extensions,
     author_email="mantid-help@mantidproject.org",
     url='https://www.mantidproject.org',
-    version="0.1.1",
+    version=VERSION,
     license='BSD',
     package_dir={'': 'src'},  # allows setup to find py and f90 files
     cmdclass={'build_ext': extension_builder,
