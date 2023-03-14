@@ -225,7 +225,6 @@ class FitEngineTemplate(object):
         xf, yf, ef, df, de = self.engine.get_fit_values()
         (expected_y, expected_e, expected_d,
          expected_de) = self.get_basic_fit_values()
-
         self.assert_fit_values(xf, yf, ef, df, de, x_data,
                                expected_y, expected_e,
                                expected_d, expected_de)
@@ -282,13 +281,11 @@ class FitEngineTemplate(object):
         # check latest results
         params, errors = self.engine.get_fit_parameters()
         expected_p, expected_e = self.get_spline_params()
-
         self.assert_parameters(params, errors, expected_p, expected_e)
 
         # check first results -> lower stats
         params, errors = self.engine.get_fit_parameters(0)
         expected_p, expected_e = self.get_low_stat_params()
-
         self.assert_parameters(params, errors, expected_p, expected_e)
 
     def test_spline_data_fits(self) -> None:
@@ -302,7 +299,6 @@ class FitEngineTemplate(object):
 
         # check latest results
         xf, yf, ef, df, de = self.engine.get_fit_values()
-
         (expected_y, expected_e,
          expected_d, expected_de) = self.get_spline_fits()
 
@@ -313,7 +309,6 @@ class FitEngineTemplate(object):
         xf, yf, ef, df, de = self.engine.get_fit_values(0)
         (expected_y, expected_e,
          expected_d, expected_de) = self.get_low_stat_fits()
-
         self.assert_fit_values(xf, yf, ef, df, de, xx, expected_y,
                                expected_e, expected_d, expected_de)
 
