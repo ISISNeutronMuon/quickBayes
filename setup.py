@@ -12,7 +12,7 @@ from fortran_setup import get_fortran_extensions, FortranExtensionBuilder
 from v2_setup import get_v2_extensions
 
 
-VERSION = "1.0.0a15"
+VERSION = "1.0.0a16"
 PACKAGE_NAME = 'quasielasticbayes'
 
 
@@ -54,7 +54,7 @@ class build_py(_build_py):
 
 setup(
     name=PACKAGE_NAME,
-    install_requires=['numpy>=1.12', 'scipy'],
+    install_requires=['numpy>=1.12', 'scipy', 'gofit'],
     packages=[PACKAGE_NAME],
     description='A Bayesian fitting package used for '
                 'fitting quasi-elastic neutron scattering data.',
