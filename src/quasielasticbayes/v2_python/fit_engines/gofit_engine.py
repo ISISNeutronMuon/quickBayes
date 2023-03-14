@@ -10,7 +10,7 @@ engine, because of the way gofit works we need to provide
 a cost function. However, when the cost function is called
 by gofit it is not provided with the original data. Hence,
 we need to construct a cost function class first that has
-the data as a memeber variable.
+the data as a member variable.
 """
 
 

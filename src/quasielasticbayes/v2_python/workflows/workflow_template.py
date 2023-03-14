@@ -98,7 +98,7 @@ class Workflow(object):
             raise RuntimeError("The fit engine is "
                                f"{self._engine.name} "
                                "please use the appropriate "
-                               "upadate method")
+                               "update method")
         return
 
     @abstractmethod
