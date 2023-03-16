@@ -46,6 +46,8 @@ def get_v2_extensions(PACKAGE_NAME):
             [join('fit_functions', 'qldata_function.py')],
         f'{PACKAGE_NAME}.v2.functions.qe_function':
             [join('fit_functions', 'quasielastic_function.py')],
+        f'{PACKAGE_NAME}.v2.functions.SE_fix':
+            [join('fit_functions', 'stretch_exp_fixed.py')],
         f'{PACKAGE_NAME}.v2.functions.SE':
             [join('fit_functions', 'stretch_exp.py')],
         f'{PACKAGE_NAME}.v2.functions.qse_function':

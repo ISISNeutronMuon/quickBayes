@@ -1,0 +1,121 @@
+from quasielasticbayes.v2.functions.base import BaseFitFunction
+from quasielasticbayes.v2.functions.SE import StretchExp
+from numpy import ndarray
+from typing import Dict, List
+
+
+class StretchExpWithFixes(BaseFitFunction):
+    def __init__(self, FWHM: float = 0.2, beta: float = 0.8, prefix: str = ''):
+        """
+        Create a stretched exponenetial function with 2 fixed parameters.
+        This inherits base fit function and not the strectched exp,
+        because we want to set the number of parameters to 2.
+        Otherwise we will need to complicate the code to handle
+        the fixed parameters. Instead we create an
+        instance of the StretchExp function
+        :param FWHM: full width half max value for the fix
+        :param beta: the beta value for the fix
+        :param prefix: the prefix for the parameters
+        """
+        self._func = StretchExp()
+        self.set_beta(beta)
+        self.set_FWHM(FWHM)
+        super().__init__(2, prefix,
+                         [.1, 0.0],
+                         [0., -1.], [1., 1.])
+
+    def set_FWHM(self, FWHM: float):
+        """
+        Update the FWHM fix value
+        :param FWHM: full width half max for fix
+        """
+        self._tau = self._func.tau(FWHM)
+
+    def set_beta(self, beta: float):
+        """
+        Update the beta fix value
+        :param beta: the beta value for fix
+        """
+        self._beta = beta
+
+    @property
+    def get_tau(self):
+        """
+        Get the tau value being used
+        :return the tau value used in fix
+        """
+        return self._tau
+
+    @property
+    def get_beta(self):
+        """
+        Gets the beta value being used
+        :return beta value for fix
+        """
+        return self._beta
+
+    def __call__(self, x: ndarray,
+                 amplitude: float, x0: float) -> ndarray:
+        """
+        Implement the stretched exponential.
+        Need to follow the expected
+        form for scipy
+        :param x: x values for function evaluation
+        :param amplitude: amplitude
+        :param x0: the peak centre
+        :return y values for function evaluation
+        """
+
+        return self._func(x, amplitude, x0, self._tau, self._beta)
+
+    def read_from_report(self, report_dict: Dict[str, List[float]],
+                         index: int = 0) -> List[float]:
+        """
+        Read the parameters from the results dict
+        and sets beta and tau
+        :param report_dict: the dict of results
+        :param index: the index to get results from
+        :return the parameters
+        """
+        self._tau = self._read_report(report_dict, self._func.tau_str, index)
+
+        self.set_beta(self._read_report(report_dict, self._func.beta, index))
+
+        return [self._read_report(report_dict, self._func.amplitude, index),
+                self._read_report(report_dict, self._func.x0, index)]
+
+    def report(self, report_dict: Dict[str, List[float]],
+               a: float, x0: float) -> Dict[str, List[float]]:
+        """
+        report parameters, including the fixed ones.
+        :param report_dic: dict of results
+        :param a: amplitude
+        :param x0: the peak centre
+        :return update results dict
+        """
+        return self._func.report(report_dict, a, x0,
+                                 self._tau, self._beta)
+
+    def report_errors(self, report_dict: Dict[str, List[float]],
+                      errors: ndarray,
+                      params: ndarray) -> Dict[str, List[float]]:
+        """
+        report parameters. The errors are 0 for the
+        fixed parameters.
+        :param report_dic: dict of parameter errors
+        :param errors: the errors for the fit parameters
+        :param params: the fit parameters
+        :return update results dict
+        """
+        report_dict = self._add_to_report(self._func.amplitude,
+                                          errors[0], report_dict)
+        report_dict = self._add_to_report(self._func.x0,
+                                          errors[1], report_dict)
+        report_dict = self._add_to_report(self._func.beta,
+                                          0.0, report_dict)
+        report_dict = self._add_to_report(self._func.tau_str,
+                                          0.0, report_dict)
+        report_dict = self._add_to_report(f"{self._prefix}FWHM",
+                                          0,
+                                          report_dict)
+        return report_dict
