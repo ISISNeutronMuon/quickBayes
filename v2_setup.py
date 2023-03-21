@@ -54,6 +54,9 @@ def get_v2_extensions(PACKAGE_NAME):
             [join('fit_functions', 'qse.py')],
         f'{PACKAGE_NAME}.v2.functions.exp_decay':
             [join('fit_functions', 'exp_decay.py')],
+        f'{PACKAGE_NAME}.v2.functions.qse_fixed':
+            [join('fit_functions', 'qse_fixed.py')],
+
 
         f'{PACKAGE_NAME}.v2.fitting.fit_utils':
             [join('fit_engines', 'fit_utils.py')],

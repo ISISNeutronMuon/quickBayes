@@ -1,10 +1,9 @@
-from quasielasticbayes.v2.functions.base import BaseFitFunction
 from quasielasticbayes.v2.functions.SE import StretchExp
 from numpy import ndarray
 from typing import Dict, List
 
 
-class StretchExpWithFixes(BaseFitFunction):
+class StretchExpWithFixes(StretchExp):
     def __init__(self, FWHM: float = 0.2, beta: float = 0.8, prefix: str = ''):
         """
         Create a stretched exponenetial function with 2 fixed parameters.
@@ -20,16 +19,19 @@ class StretchExpWithFixes(BaseFitFunction):
         self._func = StretchExp()
         self.set_beta(beta)
         self.set_FWHM(FWHM)
-        super().__init__(2, prefix,
-                         [.1, 0.0],
-                         [0., -1.], [1., 1.])
+        super().__init__(prefix)
+        # change stuff for 2 free parameters
+        self._N_params = 2
+        self._guess = self._guess[0:2]
+        self._lower = self._lower[0:2]
+        self._upper = self._upper[0:2]
 
     def set_FWHM(self, FWHM: float):
         """
         Update the FWHM fix value
         :param FWHM: full width half max for fix
         """
-        self._tau = self._func.tau(FWHM)
+        self._tau = self.tau(FWHM)
 
     def set_beta(self, beta: float):
         """
@@ -66,7 +68,7 @@ class StretchExpWithFixes(BaseFitFunction):
         :return y values for function evaluation
         """
 
-        return self._func(x, amplitude, x0, self._tau, self._beta)
+        return super().__call__(x, amplitude, x0, self.get_tau, self.get_beta)
 
     def read_from_report(self, report_dict: Dict[str, List[float]],
                          index: int = 0) -> List[float]:
@@ -77,12 +79,18 @@ class StretchExpWithFixes(BaseFitFunction):
         :param index: the index to get results from
         :return the parameters
         """
-        self._tau = self._read_report(report_dict, self._func.tau_str, index)
+        self._tau = self._read_report(report_dict, self.tau_str, index)
 
-        self.set_beta(self._read_report(report_dict, self._func.beta, index))
+        self.set_beta(self._read_report(report_dict, self.beta, index))
 
-        return [self._read_report(report_dict, self._func.amplitude, index),
-                self._read_report(report_dict, self._func.x0, index)]
+        return [self._read_report(report_dict, self.amplitude, index),
+                self._read_report(report_dict, self.x0, index)]
+
+    def set_guess_FWHM(self, value: List[float]) -> None:
+        """
+        This is an inheritred function that will not work
+        """
+        return
 
     def report(self, report_dict: Dict[str, List[float]],
                a: float, x0: float) -> Dict[str, List[float]]:
@@ -93,8 +101,8 @@ class StretchExpWithFixes(BaseFitFunction):
         :param x0: the peak centre
         :return update results dict
         """
-        return self._func.report(report_dict, a, x0,
-                                 self._tau, self._beta)
+        return super().report(report_dict, a, x0,
+                                 self.get_tau, self.get_beta)
 
     def report_errors(self, report_dict: Dict[str, List[float]],
                       errors: ndarray,
@@ -107,13 +115,13 @@ class StretchExpWithFixes(BaseFitFunction):
         :param params: the fit parameters
         :return update results dict
         """
-        report_dict = self._add_to_report(self._func.amplitude,
+        report_dict = self._add_to_report(self.amplitude,
                                           errors[0], report_dict)
-        report_dict = self._add_to_report(self._func.x0,
+        report_dict = self._add_to_report(self.x0,
                                           errors[1], report_dict)
-        report_dict = self._add_to_report(self._func.beta,
+        report_dict = self._add_to_report(self.beta,
                                           0.0, report_dict)
-        report_dict = self._add_to_report(self._func.tau_str,
+        report_dict = self._add_to_report(self.tau_str,
                                           0.0, report_dict)
         report_dict = self._add_to_report(f"{self._prefix}FWHM",
                                           0,
