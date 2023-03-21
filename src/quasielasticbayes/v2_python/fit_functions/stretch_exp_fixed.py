@@ -102,7 +102,7 @@ class StretchExpWithFixes(StretchExp):
         :return update results dict
         """
         return super().report(report_dict, a, x0,
-                                 self.get_tau, self.get_beta)
+                              self.get_tau, self.get_beta)
 
     def report_errors(self, report_dict: Dict[str, List[float]],
                       errors: ndarray,
