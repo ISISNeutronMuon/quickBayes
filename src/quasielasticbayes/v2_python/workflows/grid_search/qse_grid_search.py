@@ -45,5 +45,5 @@ class QSEGridSearch(GridSearchTemplate):
         return func
 
     @staticmethod
-    def N():
+    def N(func):
         return 1

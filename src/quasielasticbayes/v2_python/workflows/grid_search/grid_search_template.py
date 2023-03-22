@@ -100,7 +100,7 @@ class GridSearchTemplate(Workflow):
         self._grid = norm
 
     @abstractmethod
-    def N(self):
+    def N(self, func):
         raise NotImplementedError()
 
     def execute(self, func, results):
@@ -124,8 +124,9 @@ class GridSearchTemplate(Workflow):
                 params, _ = self._engine.get_fit_parameters()
 
                 results = func.report(results, *params)
+                num = self.N(func)
                 self._grid[j][i] = self.get_z_value(len(x_data),
-                                                    self.N,
+                                                    num,
                                                     scale)
                 counter += 1
                 print(f'\rPercentage complete: {100*counter/N:2f}')
