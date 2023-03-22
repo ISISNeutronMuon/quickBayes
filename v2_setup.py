@@ -86,6 +86,16 @@ def get_v2_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.v2.workflow.MuonExpDecay':
             [join('workflows', 'muon_exp_decay_main.py')],
 
+        f'{PACKAGE_NAME}.v2.workflow.grid_template':
+            [join('workflows', 'grid_search',
+                  'grid_search_template.py')],
+        f'{PACKAGE_NAME}.v2.workflow.qse_search':
+            [join('workflows', 'grid_search',
+                  'qse_grid_search.py')],
+
+
+
+
         f'{PACKAGE_NAME}.v2.utils.general':
             [join('utils', 'general.py')],
         f'{PACKAGE_NAME}.v2.utils.spline':
