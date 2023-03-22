@@ -35,15 +35,15 @@ class QSEGridSearch(GridSearchTemplate):
         return new_x, ry
 
     @staticmethod
-    def set_x_value(self, func, value):
+    def set_x_value(func, value):
         func.set_beta(value)
         return func
 
     @staticmethod
-    def set_y_value(self, func, value):
+    def set_y_value(func, value):
         func.set_FWHM(value)
         return func
 
     @staticmethod
-    def N(self):
+    def N():
         return 1

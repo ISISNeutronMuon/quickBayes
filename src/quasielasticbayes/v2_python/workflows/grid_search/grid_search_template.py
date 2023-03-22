@@ -123,7 +123,7 @@ class GridSearchTemplate(Workflow):
                 self._engine.do_fit(x_data, y_data, e_data, func)
                 params, _ = self._engine.get_fit_parameters()
 
-                results = func.report(results, params)
+                results = func.report(results, *params)
                 self._grid[j][i] = self.get_z_value(len(x_data),
                                                     self.N,
                                                     scale)
