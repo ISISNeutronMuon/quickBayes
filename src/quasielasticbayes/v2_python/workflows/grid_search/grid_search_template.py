@@ -75,8 +75,8 @@ class GridSearchTemplate(Workflow):
 
     def get_slices(self):
         indicies = np.where(self._grid == self._grid.max())
-        x_slice = self._grid[indicies[0], :]
-        y_slice = self._grid[:, indicies[1]]
+        x_slice = self._grid[indicies[0], :][0]
+        y_slice = [vec[0] for vec in self._grid[:, indicies[1]]]
         return x_slice, y_slice
 
     @abstractmethod
@@ -94,10 +94,9 @@ class GridSearchTemplate(Workflow):
                              N_peaks, scale)
 
     def normalise_grid(self):
-        norm = np.min(self._grid)/self._grid
-        norm -= np.min(self._grid)
-        norm /= np.max(self._grid)
-        self._grid = norm
+        self._grid = np.min(self._grid)/self._grid
+        self._grid -= np.min(self._grid)
+        self._grid /= np.max(self._grid)
 
     @abstractmethod
     def N(self, func):
@@ -109,7 +108,7 @@ class GridSearchTemplate(Workflow):
         e_data = self._data['e']
         scale = np.max(y_data)*(np.max(x_data) - np.min(x_data))
 
-        self.generate_mesh()
+        X, Y = self.generate_mesh()
 
         N = len(self.get_x_axis.values)*len(self.get_y_axis.values)
         counter = 0
@@ -125,9 +124,10 @@ class GridSearchTemplate(Workflow):
 
                 results = func.report(results, *params)
                 num = self.N(func)
-                self._grid[j][i] = self.get_z_value(len(x_data),
-                                                    num,
-                                                    scale)
+                self._grid[j][i] = get_z_value(len(x_data),
+                                               num,
+                                               scale)
                 counter += 1
                 print(f'\rPercentage complete: {100*counter/N:2f}')
         self.normalise_grid()
+        return X, Y
