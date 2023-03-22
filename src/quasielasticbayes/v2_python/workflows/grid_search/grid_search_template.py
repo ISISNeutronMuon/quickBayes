@@ -124,9 +124,9 @@ class GridSearchTemplate(Workflow):
 
                 results = func.report(results, *params)
                 num = self.N(func)
-                self._grid[j][i] = get_z_value(len(x_data),
-                                               num,
-                                               scale)
+                self._grid[j][i] = self.get_z_value(len(x_data),
+                                                    num,
+                                                    scale)
                 counter += 1
                 print(f'\rPercentage complete: {100*counter/N:2f}')
         self.normalise_grid()
