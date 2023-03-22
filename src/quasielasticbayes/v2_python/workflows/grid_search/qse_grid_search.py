@@ -1,4 +1,4 @@
-from quasielasticbayes.v2.workflow.grid_search import GridSearchTemplate
+from quasielasticbayes.v2.workflow.grid_template import GridSearchTemplate
 # from quasielasticbayes.v2.functions.qse_fixed import QSEFunction
 from quasielasticbayes.v2.utils.spline import spline
 from numpy import ndarray
