@@ -1,4 +1,4 @@
-from quasielasticbayes.v2.workflow.template import Workflow
+from quasielasticbayes.v2.workflow.template import WorkflowTemplate
 from quasielasticbayes.v2.log_likelihood import loglikelihood
 
 from numpy import ndarray
@@ -26,7 +26,7 @@ class Axis(object):
         return self._vals
 
 
-class GridSearchTemplate(Workflow):
+class GridSearchTemplate(WorkflowTemplate):
     def __init__(self, results: Dict[str, ndarray],
                  results_errors: Dict[str, ndarray]):
         """
@@ -39,15 +39,15 @@ class GridSearchTemplate(Workflow):
         self._y_axis = None
         self._grid = None
 
-    def set_x_axis(self, start, end, N):
-        self._x_axis = Axis(start, end, N)
+    def set_x_axis(self, start, end, N, label):
+        self._x_axis = Axis(start, end, N, label)
 
     @property
     def get_x_axis(self):
         return self._x_axis
 
-    def set_y_axis(self, start, end, N):
-        self._y_axis = Axis(start, end, N)
+    def set_y_axis(self, start, end, N, label):
+        self._y_axis = Axis(start, end, N, label)
 
     @property
     def get_y_axis(self):
@@ -55,9 +55,9 @@ class GridSearchTemplate(Workflow):
 
     def generate_mesh(self):
         if self._x_axis is None or self._y_axis is None:
-            raise RuntimeError("The x and/or y axis has"
-                               " not been set. Please use "
-                               "set_x_axis and set_y_axis.")
+            raise ValueError("The x and/or y axis has"
+                             " not been set. Please use "
+                             "set_x_axis and set_y_axis.")
 
         X, Y = np.meshgrid(self._x_axis.values,
                            self._y_axis.values)
@@ -103,6 +103,8 @@ class GridSearchTemplate(Workflow):
         raise NotImplementedError()
 
     def execute(self, func, results):
+        if self._engine is None:
+            raise ValueError("please set a fit engine")
         x_data = self._data['x']
         y_data = self._data['y']
         e_data = self._data['e']

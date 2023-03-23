@@ -79,12 +79,19 @@ def get_v2_extensions(PACKAGE_NAME):
 
         f'{PACKAGE_NAME}.v2.workflow.template':
             [join('workflows', 'workflow_template.py')],
+
+        f'{PACKAGE_NAME}.v2.workflow.model_template':
+            [join('workflows', 'model_selection',
+                  'model_template.py')],
         f'{PACKAGE_NAME}.v2.workflow.QlData':
-            [join('workflows', 'qldata_main.py')],
+            [join('workflows', 'model_selection',
+                  'qldata_main.py')],
         f'{PACKAGE_NAME}.v2.workflow.QSE':
-            [join('workflows', 'qse_main.py')],
+            [join('workflows', 'model_selection',
+                  'qse_main.py')],
         f'{PACKAGE_NAME}.v2.workflow.MuonExpDecay':
-            [join('workflows', 'muon_exp_decay_main.py')],
+            [join('workflows', 'model_selection',
+                  'muon_exp_decay_main.py')],
 
         f'{PACKAGE_NAME}.v2.workflow.grid_template':
             [join('workflows', 'grid_search',

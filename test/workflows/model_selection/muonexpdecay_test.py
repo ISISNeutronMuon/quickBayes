@@ -3,7 +3,7 @@ from quasielasticbayes.v2.workflow.MuonExpDecay import muon_expdecay_main
 import numpy as np
 import os.path
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'data')
 DATA_DIR = os.path.join(DATA_DIR, 'muon')
 
 

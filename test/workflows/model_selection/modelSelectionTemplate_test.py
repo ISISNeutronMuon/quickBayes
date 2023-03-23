@@ -1,5 +1,5 @@
 import unittest
-from quasielasticbayes.v2.workflow.template import Workflow
+from quasielasticbayes.v2.workflow.model_template import ModelSelectionWorkflow
 from quasielasticbayes.v2.functions.BG import FlatBG
 from quasielasticbayes.v2.functions.exp_decay import ExpDecay
 from quasielasticbayes.v2.functions.composite import CompositeFunction
@@ -16,7 +16,7 @@ def gen_data():
     return x, y, e
 
 
-class SimpleWorkflow(Workflow):
+class SimpleWorkflow(ModelSelectionWorkflow):
     @staticmethod
     def _update_function(func):
         """

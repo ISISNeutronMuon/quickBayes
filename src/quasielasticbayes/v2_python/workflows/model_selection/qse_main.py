@@ -1,17 +1,18 @@
-from quasielasticbayes.v2.functions.qldata_function import QlDataFunction
+from quasielasticbayes.v2.functions.qse_function import QSEFunction
 from quasielasticbayes.v2.utils.spline import spline
 from quasielasticbayes.v2.utils.general import get_background_function
-from quasielasticbayes.v2.workflow.template import Workflow
+from quasielasticbayes.v2.workflow.model_template import ModelSelectionWorkflow
 from quasielasticbayes.v2.functions.base import BaseFitFunction
+
 
 from numpy import ndarray
 import numpy as np
 from typing import Dict, List
 
 
-class QLData(Workflow):
+class QlStretchedExp(ModelSelectionWorkflow):
     """
-    A class for the quasielastic lorentzian workflow
+    A class for the quasielastic stretched exponential workflow
     """
     def preprocess_data(self, x_data: ndarray,
                         y_data: ndarray, e_data: ndarray,
@@ -42,26 +43,51 @@ class QLData(Workflow):
     @staticmethod
     def _update_function(func: BaseFitFunction) -> BaseFitFunction:
         """
-        This method adds a single lorentzian to the fitting function
-        :param func: the fitting function that needs modifying
+        Adds a single stretched exponential to the fitting function.
+        :param func: the fitting function that needs modifing
         :return the modified fitting function
         """
-        func.add_single_lorentzian()
+        func.add_single_SE()
         return func
 
+    def update_scipy_fit_engine(self, func: BaseFitFunction, params: ndarray):
+        """
+        This updates the bounds and guess for scipy
+        fit engine.
+        :param func: the fitting function
+        :param params: the fitting parameters
+        """
 
-def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
-                 BG_type: str, start_x: float, end_x: float,
-                 elastic: bool,
-                 results: Dict[str, ndarray],
-                 results_errors: Dict[str, ndarray],
-                 init_params: List[float] = None) -> (Dict[str, ndarray],
-                                                      Dict[str, ndarray],
-                                                      ndarray,
-                                                      List[ndarray],
-                                                      List[ndarray]):
+        lower, upper = func.get_bounds()
+        # get estimate for FWHM -> tau
+        new_x = self._data['x']
+        y_max = np.max(self._data['y'])
+        tmp = np.where(self._data['y'] > y_max/2.)
+        est_FWHM = new_x[tmp[0][-1]] - new_x[tmp[0][0]]
+        guess = []
+        if len(params) == len(upper):
+            guess = params
+        else:
+            guess = func.get_func_guess()
+            guess[2] = est_FWHM
+            func.set_func_guess_FWHM(guess)
+            guess = func.get_guess()
+        self._engine.set_guess_and_bounds(guess, lower, upper)
+
+
+def qse_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
+                  BG_type: str, start_x: float, end_x: float,
+                  elastic: bool,
+                  results: Dict[str, ndarray],
+                  results_errors: Dict[str, ndarray],
+                  init_params: List[float] = None) -> (Dict[str, ndarray],
+                                                       Dict[str, ndarray],
+                                                       ndarray,
+                                                       List[ndarray],
+                                                       List[ndarray]):
     """
-    Method for wrapping the qldata workflow.
+    The main function for calculating QSEdata.
+    This uses the stretch exponential workflow
     :param sample: dict containing the sample x, y and e data (keys = x, y, e)
     :param res: dict containing the resolution x, y data (keys = x, y)
     :param BG_type: the type of BG ("none", "flat", "linear")
@@ -69,27 +95,29 @@ def ql_data_main(sample: Dict[str, ndarray], res: Dict[str, ndarray],
     :param end_x: the end x for the calculation
     :param elastic: if to include the elastic peak
     :param results: dict of results
-    :param results_errors: dict of errors for results
-    :param init_params: initial values, if None a guess will be made
-    :result dict of the fit parameters, their errors, the x range used, list of
-    fit values and their errors.
+    :param results_errors: the dict of parameter errors
+    :param init_params: initial values, if None (default) a guess will be made
+    :result dict of the fit parameters, their errors, the x range used, list
+    of fit values and their errors.
     """
-
     # setup workflow
-    workflow = QLData(results, results_errors)
+    workflow = QlStretchedExp(results, results_errors)
     new_x, ry = workflow.preprocess_data(sample['x'], sample['y'],
                                          sample['e'],
                                          start_x, end_x, res)
 
-    max_num_peaks = 3
+    max_num_peaks = 1
 
     # setup fit function
     BG = get_background_function(BG_type)
-    func = QlDataFunction(BG, elastic, new_x, ry, start_x, end_x)
+    func = QSEFunction(BG, elastic, new_x, ry, start_x, end_x)
     lower, upper = func.get_bounds()
+    """
+    if the parameters have come in from another calculation bounds won't match
+    because it will be missing the stretched exp terms
+    """
 
     params = init_params if init_params is not None else func.get_guess()
-    # just want a guess the same length as lower, it is not used
     workflow.set_scipy_engine(func.get_guess(), lower, upper)
 
     # do the calculation

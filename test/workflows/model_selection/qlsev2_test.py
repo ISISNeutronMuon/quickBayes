@@ -5,7 +5,7 @@ from quasielasticbayes.v2.workflow.QSE import qse_data_main
 import numpy as np
 import os.path
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'data')
 
 
 """
