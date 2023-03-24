@@ -2,6 +2,7 @@ from quasielasticbayes.v2.workflow.grid_template import GridSearchTemplate
 from quasielasticbayes.v2.functions.qse_fixed import QSEFixFunction
 from quasielasticbayes.v2.utils.spline import spline
 from numpy import ndarray
+from typing import Dict
 import numpy as np
 
 
