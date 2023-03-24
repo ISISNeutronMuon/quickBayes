@@ -1,52 +1,10 @@
 import unittest
 from quasielasticbayes.v2.workflow.grid_template import GridSearchTemplate
-from quasielasticbayes.v2.functions.BG import LinearBG, FlatBG
+from quasielasticbayes.v2.functions.BG import FlatBG
 from quasielasticbayes.v2.functions.exp_decay import ExpDecay
-from quasielasticbayes.v2.functions.composite import CompositeFunction
-import numpy as np
-
-
-class FixedBG(LinearBG):
-    def __init__(self, prefix=''):
-        super().__init__(prefix)
-        self._N_params = 0
-        self._guess = []
-        self._lower = []
-        self._upper = []
-        self._c = 0
-        self._m = 0
-
-    def set_c(self, val):
-        self._c = val
-
-    def set_m(self, val):
-        self._m = val
-
-    def report(self, result):
-        return super().report(result, self._m, self._c)
-
-    def __call__(self, x):
-        return super().__call__(x, self._m, self._c)
-
-
-class FixedComposite(CompositeFunction):
-    def set_c(self, val):
-        # assume first entry is always fixed func
-        self._funcs[0].set_c(val)
-
-    def set_m(self, val):
-        # assume first entry is always fixed func
-        self._funcs[0].set_m(val)
-
-
-def gen_data():
-    x = np.linspace(1, 4, 100)
-    np.random.seed(1)
-    noise_stdev = 0.1
-    y = np.random.normal(0.5 + 0.2*x +
-                         1.2*np.exp(-2*x), noise_stdev)
-    e = 0.5*noise_stdev*np.ones(x.shape)
-    return x, y, e
+from quasielasticbayes.test_helpers.workflows import (gen_grid_search_data,
+                                                      FixedBG,
+                                                      FixedComposite)
 
 
 class SimpleWorkflow(GridSearchTemplate):
@@ -121,7 +79,7 @@ class GridSearchTemplateTest(unittest.TestCase):
 
     def test_preprocess_data(self):
         # same
-        x, y, e = gen_data()
+        x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
         self.assertEqual(len(self.wf._data), 3)
         self.assertEqual(len(self.wf._data['x']), len(x))
@@ -136,7 +94,7 @@ class GridSearchTemplateTest(unittest.TestCase):
         # indirectly tests normalise_grid and get_z_value
 
         # setup workflow + generate data
-        x, y, e = gen_data()
+        x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_x_axis(0, 1, 2, 'x')
         self.wf.set_y_axis(1, 2, 2, 'y')
@@ -158,7 +116,7 @@ class GridSearchTemplateTest(unittest.TestCase):
 
     def test_get_slices(self):
         # setup workflow + generate data
-        x, y, e = gen_data()
+        x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_x_axis(0, 1, 2, 'x')
         self.wf.set_y_axis(1, 2, 2, 'y')
@@ -187,7 +145,7 @@ class GridSearchTemplateTest(unittest.TestCase):
             self.wf.set_scipy_engine([0], [-9], [9])
 
     def test_execute_no_engine(self):
-        x, y, e = gen_data()
+        x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_x_axis(0, 1, 2, 'x')
         self.wf.set_y_axis(1, 2, 2, 'y')
@@ -195,21 +153,21 @@ class GridSearchTemplateTest(unittest.TestCase):
             _, _ = self.wf.execute(self.func)
 
     def test_execute_no_x_axis(self):
-        x, y, e = gen_data()
+        x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_y_axis(1, 2, 2, 'y')
         with self.assertRaises(ValueError):
             _, _ = self.wf.execute(self.func)
 
     def test_execute_no_y_axis(self):
-        x, y, e = gen_data()
+        x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_x_axis(0, 1, 2, 'x')
         with self.assertRaises(ValueError):
             _, _ = self.wf.execute(self.func)
 
     def test_add_second_engine_errors(self):
-        x, y, e = gen_data()
+        x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_x_axis(0, 1, 2, 'x')
         self.wf.set_y_axis(1, 2, 2, 'y')
@@ -220,7 +178,7 @@ class GridSearchTemplateTest(unittest.TestCase):
     def test_set_scipy_engine(self):
         # same
         self.assertEqual(self.wf.fit_engine, None)
-        x, y, e = gen_data()
+        x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_scipy_engine([], [], [])
         self.assertEqual(self.wf.fit_engine.name, 'scipy')
@@ -228,7 +186,7 @@ class GridSearchTemplateTest(unittest.TestCase):
     def test_update_scipy_fit_engine(self):
         # same
         self.assertEqual(self.wf.fit_engine, None)
-        x, y, e = gen_data()
+        x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_scipy_engine([], [], [])
         self.assertEqual(self.wf.fit_engine._guess, [])
@@ -244,7 +202,7 @@ class GridSearchTemplateTest(unittest.TestCase):
     def test_set_gofit_engine(self):
         # same
         self.assertEqual(self.wf.fit_engine, None)
-        x, y, e = gen_data()
+        x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_gofit_engine(5, [], [])
         self.assertEqual(self.wf.fit_engine.name, 'gofit')
@@ -252,7 +210,7 @@ class GridSearchTemplateTest(unittest.TestCase):
     def test_update_gofit_engine(self):
         # same
         self.assertEqual(self.wf.fit_engine, None)
-        x, y, e = gen_data()
+        x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_gofit_engine(5, [], [])
         self.assertEqual(self.wf.fit_engine._lower, [])

@@ -3,17 +3,7 @@ from quasielasticbayes.v2.workflow.model_template import ModelSelectionWorkflow
 from quasielasticbayes.v2.functions.BG import FlatBG
 from quasielasticbayes.v2.functions.exp_decay import ExpDecay
 from quasielasticbayes.v2.functions.composite import CompositeFunction
-import numpy as np
-
-
-def gen_data():
-    x = np.linspace(1, 4, 100)
-    np.random.seed(1)
-    noise_stdev = 0.1
-    y = np.random.normal(0.5 +
-                         1.2*np.exp(-2*x), noise_stdev)
-    e = 0.5*noise_stdev*np.ones(x.shape)
-    return x, y, e
+from quasielasticbayes.test_helpers.workflows import gen_model_selection_data
 
 
 class SimpleWorkflow(ModelSelectionWorkflow):
@@ -38,7 +28,7 @@ class WorkflowTemplateTest(unittest.TestCase):
         self.wf = SimpleWorkflow(results, errors)
 
     def test_preprocess_data(self):
-        x, y, e = gen_data()
+        x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
         self.assertEqual(len(self.wf._data), 3)
         self.assertEqual(len(self.wf._data['x']), len(x))
@@ -67,7 +57,7 @@ class WorkflowTemplateTest(unittest.TestCase):
         self.assertEqual(errors, {})
 
         # setup workflow + generate data
-        x, y, e = gen_data()
+        x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_scipy_engine([0], [-9], [9])
         _ = self.wf.execute(1, self.func)
@@ -96,13 +86,13 @@ class WorkflowTemplateTest(unittest.TestCase):
             self.wf.set_scipy_engine([0], [-9], [9])
 
     def test_execute_no_engine(self):
-        x, y, e = gen_data()
+        x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
         with self.assertRaises(ValueError):
             _ = self.wf.execute(1, self.func)
 
     def test_add_second_engine_errors(self):
-        x, y, e = gen_data()
+        x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_scipy_engine([0], [-9], [9])
         with self.assertRaises(RuntimeError):
@@ -110,14 +100,14 @@ class WorkflowTemplateTest(unittest.TestCase):
 
     def test_set_scipy_engine(self):
         self.assertEqual(self.wf.fit_engine, None)
-        x, y, e = gen_data()
+        x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_scipy_engine([], [], [])
         self.assertEqual(self.wf.fit_engine.name, 'scipy')
 
     def test_update_scipy_fit_engine(self):
         self.assertEqual(self.wf.fit_engine, None)
-        x, y, e = gen_data()
+        x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_scipy_engine([], [], [])
         self.assertEqual(self.wf.fit_engine._guess, [])
@@ -132,14 +122,14 @@ class WorkflowTemplateTest(unittest.TestCase):
 
     def test_set_gofit_engine(self):
         self.assertEqual(self.wf.fit_engine, None)
-        x, y, e = gen_data()
+        x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_gofit_engine(5, [], [])
         self.assertEqual(self.wf.fit_engine.name, 'gofit')
 
     def test_update_gofit_engine(self):
         self.assertEqual(self.wf.fit_engine, None)
-        x, y, e = gen_data()
+        x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_gofit_engine(5, [], [])
         self.assertEqual(self.wf.fit_engine._lower, [])

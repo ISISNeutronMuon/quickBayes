@@ -73,6 +73,9 @@ def get_v2_extensions(PACKAGE_NAME):
             [join('test_helpers', 'fitting_data.py')],
         f'{PACKAGE_NAME}.test_helpers.template_scipy_fit':
             [join('test_helpers', 'template_scipy_fit_test.py')],
+        f'{PACKAGE_NAME}.test_helpers.workflows':
+            [join('test_helpers', 'workflow_helper.py')],
+
 
         f'{PACKAGE_NAME}.v2.log_likelihood':
             ['log_likelihood.py'],
@@ -99,9 +102,6 @@ def get_v2_extensions(PACKAGE_NAME):
         f'{PACKAGE_NAME}.v2.workflow.qse_search':
             [join('workflows', 'grid_search',
                   'qse_grid_search.py')],
-
-
-
 
         f'{PACKAGE_NAME}.v2.utils.general':
             [join('utils', 'general.py')],
