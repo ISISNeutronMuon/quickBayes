@@ -1,13 +1,35 @@
 from quasielasticbayes.v2.workflow.grid_template import GridSearchTemplate
-# from quasielasticbayes.v2.functions.qse_fixed import QSEFunction
+from quasielasticbayes.v2.functions.qse_fixed import QSEFixFunction
 from quasielasticbayes.v2.utils.spline import spline
 from numpy import ndarray
 import numpy as np
-from typing import Dict
 
 
 class QSEGridSearch(GridSearchTemplate):
+    """
+    A workflow for doing a grid search of quasielastic
+    data to fit a stretch exponential for different
+    (fixed) beta and FWHM values.
 
+    The properties are:
+    - fit_engine
+    - get_grid
+    - get_x_axis
+    - get_y_axis
+    - N
+
+    To add a fit engine:
+    - set_scipy_engine (scipy curve fit, recomended)
+    - set_gofit_engine (gofit)
+
+    Other methods:
+    - preprocess_data
+    - update_fit_engine
+    - update_function (call this one not the overwritten one)
+    - execute
+    - set_x_axis
+    - set_y_axis
+    """
     def preprocess_data(self, x_data: ndarray,
                         y_data: ndarray, e_data: ndarray,
                         start_x: float, end_x: float,
@@ -16,6 +38,7 @@ class QSEGridSearch(GridSearchTemplate):
         The preprocessing needed for the data.
         It splines the sample and resolution data
         to the same uniform grid.
+        This is designed for a fixed stretched exp.
         :param x_data: the sample x data to fit to
         :param y_data: the sample y data to fit to
         :param e_data: the sample errors for the y data
@@ -35,15 +58,36 @@ class QSEGridSearch(GridSearchTemplate):
         return new_x, ry
 
     @staticmethod
-    def set_x_value(func, value):
+    def _set_x_value(func: QSEFixFunction,
+                     value: float) -> QSEFixFunction:
+        """
+        Sets the beta value for the fit
+        function (x axis)
+        :param func: the stretch exp with fixes function
+        :param value: the value to fix beta to
+        :return the updated fit function
+        """
         func.set_beta(value)
         return func
 
     @staticmethod
-    def set_y_value(func, value):
+    def _set_y_value(func: QSEFixFunction,
+                     value: float) -> QSEFixFunction:
+        """
+        Sets the FWHM (tau) value for the fit
+        function (y axis)
+        :param func: the stretch exp with fixes function
+        :param value: the value to fix FWHM (tau) to
+        :return the updated fit function
+        """
         func.set_FWHM(value)
         return func
 
     @staticmethod
-    def N(func):
-        return 1
+    def N(func: QSEFixFunction) -> int:
+        """
+        Get the number of features from fit
+        :param func: the fitting function
+        :return the number of features
+        """
+        return func._N_peaks

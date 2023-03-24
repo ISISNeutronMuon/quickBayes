@@ -5,7 +5,6 @@ from quasielasticbayes.v2.functions.base import BaseFitFunction
 from quasielasticbayes.v2.utils.general import update_guess
 
 from numpy import ndarray
-from typing import Dict
 from abc import abstractmethod
 
 
@@ -27,19 +26,13 @@ class WorkflowTemplate(object):
     - preprocess_data
     - update_fit_engine
     - update_function (call this one not the overwritten one)
-    - report
     - execute
     """
-    def __init__(self, results: Dict[str, ndarray],
-                 results_errors: Dict[str, ndarray]):
+    def __init__(self):
         """
         Set the results and error dicts for reporting
-        :param results: dict of parameter values
-        :param results_errors: dict of parameter errors
         """
         self._engine = None
-        self._results_dict = results
-        self._errors_dict = results_errors
         self._data = None
 
     @property

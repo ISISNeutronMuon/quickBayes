@@ -60,14 +60,12 @@ class SimpleWorkflow(GridSearchTemplate):
         return func
 
     @staticmethod
-    def set_x_value(func, value):
-        print(func, value)
+    def _set_x_value(func, value):
         func.set_c(value)
         return func
 
     @staticmethod
-    def set_y_value(func, value):
-        print(func)
+    def _set_y_value(func, value):
         func.set_m(value)
         return func
 
@@ -82,9 +80,7 @@ class GridSearchTemplateTest(unittest.TestCase):
         self.func = FixedComposite()
         lin = FixedBG()
         self.func.add_function(lin)
-        results = {}
-        errors = {}
-        self.wf = SimpleWorkflow(results, errors)
+        self.wf = SimpleWorkflow()
 
     def test_set_x_axis(self):
         self.wf.set_x_axis(1, 3, 5, 'test')
@@ -111,7 +107,7 @@ class GridSearchTemplateTest(unittest.TestCase):
     def test_grid(self):
         self.wf.set_x_axis(0, 1, 2, 'x')
         self.wf.set_y_axis(1, 2, 2, 'y')
-        X, Y = self.wf.generate_mesh()
+        X, Y = self.wf._generate_grid()
         grid = self.wf.get_grid
 
         expect_x = [[0, 1], [0, 1]]
@@ -146,8 +142,7 @@ class GridSearchTemplateTest(unittest.TestCase):
         self.wf.set_y_axis(1, 2, 2, 'y')
         self.func.add_function(ExpDecay())
         self.wf.set_scipy_engine([0, 0], [-9, -9], [9, 9])
-        results = {}
-        X, Y = self.wf.execute(self.func, results)
+        X, Y = self.wf.execute(self.func)
 
         grid = self.wf.get_grid
         expect_z = [[0.449, 1], [0, 0.115]]
@@ -169,8 +164,7 @@ class GridSearchTemplateTest(unittest.TestCase):
         self.wf.set_y_axis(1, 2, 2, 'y')
         self.func.add_function(ExpDecay())
         self.wf.set_scipy_engine([0, 0], [-9, -9], [9, 9])
-        results = {}
-        _, _ = self.wf.execute(self.func, results)
+        _, _ = self.wf.execute(self.func)
 
         x, y = self.wf.get_slices()
         expect_x = [0.449, 1]
@@ -198,21 +192,21 @@ class GridSearchTemplateTest(unittest.TestCase):
         self.wf.set_x_axis(0, 1, 2, 'x')
         self.wf.set_y_axis(1, 2, 2, 'y')
         with self.assertRaises(ValueError):
-            _, _ = self.wf.execute(self.func, {})
+            _, _ = self.wf.execute(self.func)
 
     def test_execute_no_x_axis(self):
         x, y, e = gen_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_y_axis(1, 2, 2, 'y')
         with self.assertRaises(ValueError):
-            _, _ = self.wf.execute(self.func, {})
+            _, _ = self.wf.execute(self.func)
 
     def test_execute_no_y_axis(self):
         x, y, e = gen_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_x_axis(0, 1, 2, 'x')
         with self.assertRaises(ValueError):
-            _, _ = self.wf.execute(self.func, {})
+            _, _ = self.wf.execute(self.func)
 
     def test_add_second_engine_errors(self):
         x, y, e = gen_data()

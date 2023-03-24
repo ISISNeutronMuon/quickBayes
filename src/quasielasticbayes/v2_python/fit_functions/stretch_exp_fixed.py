@@ -7,11 +7,6 @@ class StretchExpWithFixes(StretchExp):
     def __init__(self, FWHM: float = 0.2, beta: float = 0.8, prefix: str = ''):
         """
         Create a stretched exponenetial function with 2 fixed parameters.
-        This inherits base fit function and not the strectched exp,
-        because we want to set the number of parameters to 2.
-        Otherwise we will need to complicate the code to handle
-        the fixed parameters. Instead we create an
-        instance of the StretchExp function
         :param FWHM: full width half max value for the fix
         :param beta: the beta value for the fix
         :param prefix: the prefix for the parameters
@@ -26,14 +21,14 @@ class StretchExpWithFixes(StretchExp):
         self._lower = self._lower[0:2]
         self._upper = self._upper[0:2]
 
-    def set_FWHM(self, FWHM: float):
+    def set_FWHM(self, FWHM: float) -> None:
         """
         Update the FWHM fix value
         :param FWHM: full width half max for fix
         """
         self._tau = self.tau(FWHM)
 
-    def set_beta(self, beta: float):
+    def set_beta(self, beta: float) -> None:
         """
         Update the beta fix value
         :param beta: the beta value for fix
@@ -41,15 +36,16 @@ class StretchExpWithFixes(StretchExp):
         self._beta = beta
 
     @property
-    def get_tau(self):
+    def get_tau(self) -> float:
         """
-        Get the tau value being used
+        Get the tau value being used.
+        tau is related to the FWHM.
         :return the tau value used in fix
         """
         return self._tau
 
     @property
-    def get_beta(self):
+    def get_beta(self) -> float:
         """
         Gets the beta value being used
         :return beta value for fix
@@ -67,7 +63,6 @@ class StretchExpWithFixes(StretchExp):
         :param x0: the peak centre
         :return y values for function evaluation
         """
-
         return super().__call__(x, amplitude, x0, self.get_tau, self.get_beta)
 
     def read_from_report(self, report_dict: Dict[str, List[float]],
@@ -80,7 +75,6 @@ class StretchExpWithFixes(StretchExp):
         :return the parameters
         """
         self._tau = self._read_report(report_dict, self.tau_str, index)
-
         self.set_beta(self._read_report(report_dict, self.beta, index))
 
         return [self._read_report(report_dict, self.amplitude, index),
@@ -88,9 +82,10 @@ class StretchExpWithFixes(StretchExp):
 
     def set_guess_FWHM(self, value: List[float]) -> None:
         """
-        This is an inheritred function that will not work
+        This is an inheritred function that will not do anything
+        :param value: value to set
         """
-        return
+        raise RuntimeError("this method does not work with fix")
 
     def report(self, report_dict: Dict[str, List[float]],
                a: float, x0: float) -> Dict[str, List[float]]:

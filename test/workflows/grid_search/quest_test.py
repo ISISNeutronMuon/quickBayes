@@ -14,10 +14,7 @@ class QuestTest(unittest.TestCase):
         sx, sy, se = np.load(os.path.join(DATA_DIR, 'sample_data_red.npy'))
         rx, ry, re = np.load(os.path.join(DATA_DIR, 'qse_res.npy'),
                              allow_pickle=True)
-
         resolution = {'x': rx, 'y': ry}
-        results = {}
-        errors = {}
 
         # set values
         start_x = -0.5
@@ -32,7 +29,7 @@ class QuestTest(unittest.TestCase):
         FWHM_end = 0.056
 
         # create workflow
-        search = QSEGridSearch(results, errors)
+        search = QSEGridSearch()
         new_x, ry = search.preprocess_data(sx, sy, se, start_x, end_x,
                                            resolution)
         search.set_x_axis(beta_start, beta_end, N_beta, 'beta')
@@ -46,7 +43,7 @@ class QuestTest(unittest.TestCase):
 
         # do search
         search.set_scipy_engine(func.get_guess(), *func.get_bounds())
-        X, Y = search.execute(func, results)
+        X, Y = search.execute(func)
         grid = search.get_grid
 
         # just check max value and indicies

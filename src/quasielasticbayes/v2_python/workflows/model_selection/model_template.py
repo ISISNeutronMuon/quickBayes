@@ -35,6 +35,17 @@ class ModelSelectionWorkflow(WorkflowTemplate):
     - execute
     """
 
+    def __init__(self, results: Dict[str, ndarray],
+                 results_errors: Dict[str, ndarray]):
+        """
+        Set the results and error dicts for reporting
+        :param results: dict of parameter values
+        :param results_errors: dict of parameter errors
+        """
+        self._results_dict = results
+        self._errors_dict = results_errors
+        super().__init__()
+
     @property
     def get_parameters_and_errors(self) -> (Dict[str, float],
                                             Dict[str, float]):

@@ -30,7 +30,11 @@ class QSEFixFunction(QSEFunction):
         self.add_single_function(self._se[-1])
 
     def _get_func_from_report(self, args: List[float]) -> List[float]:
-        # skip the peak centre
+        """
+        extracts the relevant info from report (excluding fixes)
+        :param args: the full list of arguments.
+        :return the arguments, skipping the peak centre
+        """
         return [args[0]]
 
     def _func_guess(self, full_guess: List[float]) -> List[float]:
