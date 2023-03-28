@@ -140,14 +140,14 @@ class GridSearchTemplate(WorkflowTemplate):
 
         X, Y = np.meshgrid(self._x_axis.values,
                            self._y_axis.values)
-        self._grid = self._empty_mesh(X, Y)
+        self._grid = self._empty_mesh(X)
         return X, Y
 
     @staticmethod
-    def _empty_mesh(X: ndarray, Y: ndarray) -> None:
+    def _empty_mesh(X: ndarray) -> None:
         """
         Creates a grid of the correct size with zeros
-        :param X: one the meshgrid outputs
+        :param X: one of the meshgrid outputs
         """
         return np.zeros(X.shape)
 

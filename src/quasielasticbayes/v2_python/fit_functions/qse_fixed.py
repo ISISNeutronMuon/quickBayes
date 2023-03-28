@@ -29,7 +29,8 @@ class QSEFixFunction(QSEFunction):
         self._se.append(StretchExpWithFixes())
         self.add_single_function(self._se[-1])
 
-    def _get_func_from_report(self, args: List[float]) -> List[float]:
+    @staticmethod
+    def _get_func_from_report(args: List[float]) -> List[float]:
         """
         extracts the relevant info from report (excluding fixes)
         :param args: the full list of arguments.
@@ -37,7 +38,8 @@ class QSEFixFunction(QSEFunction):
         """
         return [args[0]]
 
-    def _func_guess(self, full_guess: List[float]) -> List[float]:
+    @staticmethod
+    def _func_guess(full_guess: List[float]) -> List[float]:
         """
         Get the intial guess values.
         This takes into account the tied
@@ -51,8 +53,9 @@ class QSEFixFunction(QSEFunction):
         """
         sets the beta value for the fix
         :param beta: the beta value to fix to
+        :param index: the index of the se
         """
-        if self._se == []:
+        if not self._se:
             return
         self._se[index].set_beta(beta)
 
@@ -60,6 +63,7 @@ class QSEFixFunction(QSEFunction):
         """
         sets the FWHM value for the fix
         :param FWHM: the FWHM value to fix to
+        :param index: the index of the se
         """
         if self._se == []:
             return
