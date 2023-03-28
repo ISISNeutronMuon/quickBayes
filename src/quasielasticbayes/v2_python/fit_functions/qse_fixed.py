@@ -65,11 +65,12 @@ class QSEFixFunction(QSEFunction):
         :param FWHM: the FWHM value to fix to
         :param index: the index of the se
         """
-        if self._se == []:
+        if not self._se:
             return
         self._se[index].set_FWHM(FWHM)
 
-    def _add_params(self, offset: int, x0: float,
+    @staticmethod
+    def _add_params(offset: int, x0: float,
                     args: List[float]) -> List[float]:
         """
         Gets the amplitude and peak centre
