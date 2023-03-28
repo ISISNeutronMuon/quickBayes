@@ -11,7 +11,7 @@ class StretchExpWithFixesTest(unittest.TestCase):
     function, but with some fixed parameters
     we will test the values by using the original
     function. Hence, we are assuming that the
-    values of the function are sufficently
+    values of the function are sufficiently
     tested by the StretchExp tests.
     Allowing us to focus on the fixes.
     """

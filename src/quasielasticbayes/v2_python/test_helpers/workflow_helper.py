@@ -34,7 +34,7 @@ def gen_grid_search_data():
 
 
 """
-Fitting function, need some defintions
+Fitting function, need some definitions
 of fitting functions with fixes for
 testing grid search.
 These are minimal fitting functions

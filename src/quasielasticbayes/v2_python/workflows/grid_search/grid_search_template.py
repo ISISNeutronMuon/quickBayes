@@ -68,7 +68,7 @@ class GridSearchTemplate(WorkflowTemplate):
     - get_y_axis
 
     To add a fit engine:
-    - set_scipy_engine (scipy curve fit, recomended)
+    - set_scipy_engine (scipy curve fit, recommended)
     - set_gofit_engine (gofit)
 
     Other methods:
@@ -165,9 +165,9 @@ class GridSearchTemplate(WorkflowTemplate):
         the peak grid value is in both slices.
         :return the x and y data slices
         """
-        indicies = np.where(self._grid == self._grid.max())
-        x_slice = self._grid[indicies[0], :][0]
-        y_slice = [vec[0] for vec in self._grid[:, indicies[1]]]
+        indices = np.where(self._grid == self._grid.max())
+        x_slice = self._grid[indices[0], :][0]
+        y_slice = [vec[0] for vec in self._grid[:, inidces[1]]]
         return x_slice, np.array(y_slice)
 
     @abstractmethod

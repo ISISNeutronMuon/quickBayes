@@ -61,7 +61,7 @@ class ModelSelectionWorkflow(WorkflowTemplate):
         This method updates the fitting function when the number of
         features has been incremented.
         It will be unique to the workflow.
-        :param func: the fitting function that needs modifing
+        :param func: the fitting function that needs modifying
         :return the modified fitting function
         """
         raise NotImplementedError()

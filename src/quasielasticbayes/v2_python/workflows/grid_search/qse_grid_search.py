@@ -20,7 +20,7 @@ class QSEGridSearch(GridSearchTemplate):
     - N
 
     To add a fit engine:
-    - set_scipy_engine (scipy curve fit, recomended)
+    - set_scipy_engine (scipy curve fit, recommended)
     - set_gofit_engine (gofit)
 
     Other methods:
@@ -91,4 +91,4 @@ class QSEGridSearch(GridSearchTemplate):
         :param func: the fitting function
         :return the number of features
         """
-        return func._N_peaks
+        return func.N_peaks()

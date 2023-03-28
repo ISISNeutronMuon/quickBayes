@@ -46,9 +46,9 @@ class QuestTest(unittest.TestCase):
         X, Y = search.execute(func)
         grid = search.get_grid
 
-        # just check max value and indicies
+        # just check max value and indices
         max_val = np.max(grid)
-        indicies = np.where(grid == max_val)
+        indices = np.where(grid == max_val)
 
         self.assertEqual(max_val, 1.)
         self.assertEqual(indicies[0][0], 3)

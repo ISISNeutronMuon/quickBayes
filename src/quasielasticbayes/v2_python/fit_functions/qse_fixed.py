@@ -41,7 +41,7 @@ class QSEFixFunction(QSEFunction):
     @staticmethod
     def _func_guess(full_guess: List[float]) -> List[float]:
         """
-        Get the intial guess values.
+        Get the initial guess values.
         This takes into account the tied
         parameters.
         :return a list of guess parameters for the fit
