@@ -14,7 +14,8 @@ def get_OS():
     parser = argparse.ArgumentParser()
     parser.add_argument("OS",
                         help="the OS for the yml file"
-                        " (windows, windows-latest, ubuntu, ubuntu-latest",
+                        " (windows, windows-latest, ubuntu, ubuntu-latest,"
+                        " mac, macOS-latest)",
                         type=str)
     args = parser.parse_args()
 
@@ -37,6 +38,9 @@ def get_OS_info(OS):
     elif OS == 'ubuntu' or OS == 'ubuntu-latest':
         yml_dict = for_linux(default_yml)
         file_name = f'{yml_dict["name"]}-linux.yml'
+    elif OS == 'mac' or OS == 'macOS-latest':
+        yml_dict = for_linux(default_yml)
+        file_name = f'{yml_dict["name"]}-mac.yml'
     elif OS in exp:
         print("WARNING: This is experimental and may not work")
         yml_dict = for_mac(default_yml)
@@ -89,7 +93,6 @@ def for_linux(yml_dict):
     :param yml_dict: the input yml_dict to edit
     :return the updated yml_dict
     """   # need to compile fortran
-    yml_dict['dependencies']['gfortran'] = '>=2.2'
     return yml_dict
 
 
@@ -99,9 +102,6 @@ def for_mac(yml_dict):
     :param yml_dict: the input yml_dict to edit
     :return the updated yml_dict
     """
-    yml_dict['dependencies']['gfortran_osx-64'] = ''
-    yml_dict['dependencies']['clang'] = ''
-    yml_dict['dependencies']['aws-sdk-cpp'] = ''
     return yml_dict
 
 
