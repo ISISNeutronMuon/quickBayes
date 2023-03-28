@@ -167,7 +167,7 @@ class GridSearchTemplate(WorkflowTemplate):
         """
         indices = np.where(self._grid == self._grid.max())
         x_slice = self._grid[indices[0], :][0]
-        y_slice = [vec[0] for vec in self._grid[:, inidces[1]]]
+        y_slice = [vec[0] for vec in self._grid[:, indices[1]]]
         return x_slice, np.array(y_slice)
 
     @abstractmethod

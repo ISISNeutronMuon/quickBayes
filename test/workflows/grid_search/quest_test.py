@@ -51,8 +51,8 @@ class QuestTest(unittest.TestCase):
         indices = np.where(grid == max_val)
 
         self.assertEqual(max_val, 1.)
-        self.assertEqual(indicies[0][0], 3)
-        self.assertEqual(indicies[1][0], 2)
+        self.assertEqual(indices[0][0], 3)
+        self.assertEqual(indices[1][0], 2)
 
         beta_slice, FWHM_slice = search.get_slices()
         expected_beta = [0.781, 0.971, 1.0, 0.904, 0.685]
