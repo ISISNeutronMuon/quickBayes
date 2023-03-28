@@ -91,4 +91,4 @@ class QSEGridSearch(GridSearchTemplate):
         :param func: the fitting function
         :return the number of features
         """
-        return func.N_peaks()
+        return func.N_peaks
