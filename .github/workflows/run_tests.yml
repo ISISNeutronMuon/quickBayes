@@ -13,7 +13,7 @@ jobs:
   run_tests:
     strategy:
       matrix:
-           os: [windows-latest, ubuntu-latest, macOS-latest]
+           os: [windows-latest, ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -33,8 +33,6 @@ jobs:
         shell: bash -l {0}
         run:  |
              python tools/create_conda_yml.py ${{ matrix.os }}
-
-
       - name: Setup Mambaforge windows
         if: matrix.os == 'windows-latest'
         uses: conda-incubator/setup-miniconda@v2.1.1
@@ -57,31 +55,34 @@ jobs:
           auto-activate-base: false
           use-mamba: true
 
-      - name: Setup Mambaforge linux
-        if: matrix.os == 'macOS-latest'
-        uses: conda-incubator/setup-miniconda@v2.1.1
-        with:
-          miniforge-version: latest
-          miniforge-variant: Mambaforge
-          activate-environment: quasielasticbayes-dev
-          environment-file: quasielasticbayes-dev-mac.yml
-          auto-activate-base: false
-          use-mamba: true
+      - name: extract
+        if: matrix.os == 'windows-latest'
+        run: 7z x tools/vendored/mingw/MinGW64-4-6-1.7z
 
+      - name: install fortran
+        if: matrix.os == 'windows-latest'
+        shell: bash -l {0}
+        run:  |
+             if [[ ${{ matrix.os }} == "windows-latest" ]]; then
+                 ls *
+                 echo "MinGW64/bin" >> $GITHUB_PATH
+             fi
       - name: check install
         shell: bash -l {0}
         run:  |
+             which gfortran
              mamba env list
              python --version; conda list ; pip list
-
       - name: compile
         shell: bash -l {0}
         run:  |
             conda activate quasielasticbayes-dev
             python -m pip install .
-
       - name: run tests
         timeout-minutes: 10
         shell: bash -l {0}
         run:  |
+             python -c "help('modules')"
+             python -c "print('done')"
+             python -c "help('quasielasticbayes')"
              python -m pytest
