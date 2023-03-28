@@ -2,13 +2,13 @@ from quasielasticbayes.v2.functions.composite import CompositeFunction
 from quasielasticbayes.v2.functions.exp_decay import ExpDecay
 from quasielasticbayes.v2.utils.general import get_background_function
 from quasielasticbayes.v2.utils.crop_data import crop
-from quasielasticbayes.v2.workflow.template import Workflow
+from quasielasticbayes.v2.workflow.model_template import ModelSelectionWorkflow
 from quasielasticbayes.v2.functions.base import BaseFitFunction
 from numpy import ndarray
 from typing import Dict, List
 
 
-class MuonExpDecay(Workflow):
+class MuonExpDecay(ModelSelectionWorkflow):
     """
     A class for the muon exponential decay workflow
     """

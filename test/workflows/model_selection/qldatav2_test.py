@@ -5,7 +5,7 @@ from quasielasticbayes.v2.functions.BG import LinearBG
 import numpy as np
 import os.path
 
-DATA_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
+DATA_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'data')
 
 
 """

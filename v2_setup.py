@@ -46,12 +46,17 @@ def get_v2_extensions(PACKAGE_NAME):
             [join('fit_functions', 'qldata_function.py')],
         f'{PACKAGE_NAME}.v2.functions.qe_function':
             [join('fit_functions', 'quasielastic_function.py')],
+        f'{PACKAGE_NAME}.v2.functions.SE_fix':
+            [join('fit_functions', 'stretch_exp_fixed.py')],
         f'{PACKAGE_NAME}.v2.functions.SE':
             [join('fit_functions', 'stretch_exp.py')],
         f'{PACKAGE_NAME}.v2.functions.qse_function':
             [join('fit_functions', 'qse.py')],
         f'{PACKAGE_NAME}.v2.functions.exp_decay':
             [join('fit_functions', 'exp_decay.py')],
+        f'{PACKAGE_NAME}.v2.functions.qse_fixed':
+            [join('fit_functions', 'qse_fixed.py')],
+
 
         f'{PACKAGE_NAME}.v2.fitting.fit_utils':
             [join('fit_engines', 'fit_utils.py')],
@@ -68,18 +73,35 @@ def get_v2_extensions(PACKAGE_NAME):
             [join('test_helpers', 'fitting_data.py')],
         f'{PACKAGE_NAME}.test_helpers.template_scipy_fit':
             [join('test_helpers', 'template_scipy_fit_test.py')],
+        f'{PACKAGE_NAME}.test_helpers.workflows':
+            [join('test_helpers', 'workflow_helper.py')],
+
 
         f'{PACKAGE_NAME}.v2.log_likelihood':
             ['log_likelihood.py'],
 
         f'{PACKAGE_NAME}.v2.workflow.template':
             [join('workflows', 'workflow_template.py')],
+
+        f'{PACKAGE_NAME}.v2.workflow.model_template':
+            [join('workflows', 'model_selection',
+                  'model_template.py')],
         f'{PACKAGE_NAME}.v2.workflow.QlData':
-            [join('workflows', 'qldata_main.py')],
+            [join('workflows', 'model_selection',
+                  'qldata_main.py')],
         f'{PACKAGE_NAME}.v2.workflow.QSE':
-            [join('workflows', 'qse_main.py')],
+            [join('workflows', 'model_selection',
+                  'qse_main.py')],
         f'{PACKAGE_NAME}.v2.workflow.MuonExpDecay':
-            [join('workflows', 'muon_exp_decay_main.py')],
+            [join('workflows', 'model_selection',
+                  'muon_exp_decay_main.py')],
+
+        f'{PACKAGE_NAME}.v2.workflow.grid_template':
+            [join('workflows', 'grid_search',
+                  'grid_search_template.py')],
+        f'{PACKAGE_NAME}.v2.workflow.qse_search':
+            [join('workflows', 'grid_search',
+                  'qse_grid_search.py')],
 
         f'{PACKAGE_NAME}.v2.utils.general':
             [join('utils', 'general.py')],
