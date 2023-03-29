@@ -1,10 +1,10 @@
 import unittest
 from unittest import mock
-from quasielasticbayes.v2.log_likelihood import loglikelihood
+from quickBayes.log_likelihood import loglikelihood
 
 
 class LoglikelihoodTest(unittest.TestCase):
-    @mock.patch("quasielasticbayes.v2.log_likelihood.log10_hessian_det")
+    @mock.patch("quickBayes.log_likelihood.log10_hessian_det")
     def test_1_peak(self, mock_log_hess):
         x_size = 2231
         mock_log_hess.return_value = 38.852
@@ -15,7 +15,7 @@ class LoglikelihoodTest(unittest.TestCase):
         result = loglikelihood(x_size, chi2, covar, N_peaks, beta)
         self.assertAlmostEqual(result, -654.679, 3)
 
-    @mock.patch("quasielasticbayes.v2.log_likelihood.log10_hessian_det")
+    @mock.patch("quickBayes.log_likelihood.log10_hessian_det")
     def test_2_peaks(self, mock_log_hess):
         x_size = 2231
         mock_log_hess.return_value = 36.496
@@ -27,7 +27,7 @@ class LoglikelihoodTest(unittest.TestCase):
         result = loglikelihood(x_size, chi2, covar, N_peaks, beta)
         self.assertAlmostEqual(result, -338.437, 3)
 
-    @mock.patch("quasielasticbayes.v2.log_likelihood.log10_hessian_det")
+    @mock.patch("quickBayes.log_likelihood.log10_hessian_det")
     def test_3_peaks(self, mock_log_hess):
         x_size = 2231
         mock_log_hess.return_value = 36.253
@@ -39,7 +39,7 @@ class LoglikelihoodTest(unittest.TestCase):
         result = loglikelihood(x_size, chi2, covar, N_peaks, beta)
         self.assertAlmostEqual(result, -336.033, 3)
 
-    @mock.patch("quasielasticbayes.v2.log_likelihood.log10_hessian_det")
+    @mock.patch("quickBayes.log_likelihood.log10_hessian_det")
     def test_over_optimized(self, mock_log_hess):
         x_size = 2231
         mock_log_hess.return_value = 36.253
@@ -51,7 +51,7 @@ class LoglikelihoodTest(unittest.TestCase):
         result = loglikelihood(x_size, chi2, covar, N_peaks, beta)
         self.assertAlmostEqual(result, -2131, 0)
 
-    @mock.patch("quasielasticbayes.v2.log_likelihood.log10_hessian_det")
+    @mock.patch("quickBayes.log_likelihood.log10_hessian_det")
     def test_over_optimized_negative(self, mock_log_hess):
         x_size = 2231
         mock_log_hess.return_value = 36.253

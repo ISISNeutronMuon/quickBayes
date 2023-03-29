@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.functions.BG import LinearBG
-from quasielasticbayes.v2.fitting.fit_utils import (log10_hessian_det,
+from quickBayes.functions.BG import LinearBG
+from quickBayes.fitting.fit_utils import (log10_hessian_det,
                                                     chi_squared,
                                                     param_errors,
                                                     derivative,

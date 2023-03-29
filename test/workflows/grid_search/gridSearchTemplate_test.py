@@ -1,8 +1,8 @@
 import unittest
-from quasielasticbayes.v2.workflow.grid_template import GridSearchTemplate
-from quasielasticbayes.v2.functions.BG import FlatBG
-from quasielasticbayes.v2.functions.exp_decay import ExpDecay
-from quasielasticbayes.test_helpers.workflows import (gen_grid_search_data,
+from quickBayes.workflow.grid_template import GridSearchTemplate
+from quickBayes.functions.BG import FlatBG
+from quickBayes.functions.exp_decay import ExpDecay
+from quickBayes.test_helpers.workflows import (gen_grid_search_data,
                                                       FixedBG,
                                                       FixedComposite)
 

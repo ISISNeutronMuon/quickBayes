@@ -3,6 +3,12 @@ from distutils.core import Extension
 from os.path import join
 from typing import Sequence
 from Cython.Build import cythonize
+from src.quickBayes.fit_functions.make import get_fit_functions
+from src.quickBayes.fit_engines.make import get_fit_engines
+from src.quickBayes.test_helpers.make import get_test_helpers
+from src.quickBayes.workflows.make import get_workflows
+from src.quickBayes.utils.make import get_utils
+from src.quickBayes.make import get_misc
 
 
 def create_extension(fq_name: str,
@@ -28,90 +34,14 @@ def source_paths(dirname: str, filenames: Sequence[str]) -> Sequence[str]:
 
 def get_v2_extensions(PACKAGE_NAME):
     module_source_map = {
-        f'{PACKAGE_NAME}.v2.functions.base':
-            [join('fit_functions', 'base.py')],
-        f'{PACKAGE_NAME}.v2.functions.BG':
-            [join('fit_functions', 'BG.py')],
-        f'{PACKAGE_NAME}.v2.functions.delta':
-            [join('fit_functions', 'delta_function.py')],
-        f'{PACKAGE_NAME}.v2.functions.lorentz':
-            [join('fit_functions', 'lorentz.py')],
-        f'{PACKAGE_NAME}.v2.functions.gaussian':
-            [join('fit_functions', 'gaussian.py')],
-        f'{PACKAGE_NAME}.v2.functions.composite':
-            [join('fit_functions', 'composite_fun.py')],
-        f'{PACKAGE_NAME}.v2.functions.convolution':
-            [join('fit_functions', 'conv_with_res.py')],
-        f'{PACKAGE_NAME}.v2.functions.qldata_function':
-            [join('fit_functions', 'qldata_function.py')],
-        f'{PACKAGE_NAME}.v2.functions.qe_function':
-            [join('fit_functions', 'quasielastic_function.py')],
-        f'{PACKAGE_NAME}.v2.functions.SE_fix':
-            [join('fit_functions', 'stretch_exp_fixed.py')],
-        f'{PACKAGE_NAME}.v2.functions.SE':
-            [join('fit_functions', 'stretch_exp.py')],
-        f'{PACKAGE_NAME}.v2.functions.qse_function':
-            [join('fit_functions', 'qse.py')],
-        f'{PACKAGE_NAME}.v2.functions.exp_decay':
-            [join('fit_functions', 'exp_decay.py')],
-        f'{PACKAGE_NAME}.v2.functions.qse_fixed':
-            [join('fit_functions', 'qse_fixed.py')],
-
-
-        f'{PACKAGE_NAME}.v2.fitting.fit_utils':
-            [join('fit_engines', 'fit_utils.py')],
-        f'{PACKAGE_NAME}.v2.fitting.fit_engine':
-            [join('fit_engines', 'fit_engine.py')],
-        f'{PACKAGE_NAME}.v2.fitting.scipy_engine':
-            [join('fit_engines', 'scipy_fit_engine.py')],
-        f'{PACKAGE_NAME}.v2.fitting.gofit_engine':
-            [join('fit_engines', 'gofit_engine.py')],
-
-        f'{PACKAGE_NAME}.test_helpers.template_fit_test':
-            [join('test_helpers', 'template_test_fit.py')],
-        f'{PACKAGE_NAME}.test_helpers.fitting_data':
-            [join('test_helpers', 'fitting_data.py')],
-        f'{PACKAGE_NAME}.test_helpers.template_scipy_fit':
-            [join('test_helpers', 'template_scipy_fit_test.py')],
-        f'{PACKAGE_NAME}.test_helpers.workflows':
-            [join('test_helpers', 'workflow_helper.py')],
-
-
-        f'{PACKAGE_NAME}.v2.log_likelihood':
-            ['log_likelihood.py'],
-
-        f'{PACKAGE_NAME}.v2.workflow.template':
-            [join('workflows', 'workflow_template.py')],
-
-        f'{PACKAGE_NAME}.v2.workflow.model_template':
-            [join('workflows', 'model_selection',
-                  'model_template.py')],
-        f'{PACKAGE_NAME}.v2.workflow.QlData':
-            [join('workflows', 'model_selection',
-                  'qldata_main.py')],
-        f'{PACKAGE_NAME}.v2.workflow.QSE':
-            [join('workflows', 'model_selection',
-                  'qse_main.py')],
-        f'{PACKAGE_NAME}.v2.workflow.MuonExpDecay':
-            [join('workflows', 'model_selection',
-                  'muon_exp_decay_main.py')],
-
-        f'{PACKAGE_NAME}.v2.workflow.grid_template':
-            [join('workflows', 'grid_search',
-                  'grid_search_template.py')],
-        f'{PACKAGE_NAME}.v2.workflow.qse_search':
-            [join('workflows', 'grid_search',
-                  'qse_grid_search.py')],
-
-        f'{PACKAGE_NAME}.v2.utils.general':
-            [join('utils', 'general.py')],
-        f'{PACKAGE_NAME}.v2.utils.spline':
-            [join('utils', 'spline.py')],
-        f'{PACKAGE_NAME}.v2.utils.crop_data':
-            [join('utils', 'crop_data.py')]
-
-            }
+                         **get_fit_functions(PACKAGE_NAME),
+                         **get_fit_engines(PACKAGE_NAME),
+                         **get_misc(PACKAGE_NAME),
+                         **get_test_helpers(PACKAGE_NAME),
+                         **get_utils(PACKAGE_NAME),
+                         **get_workflows(PACKAGE_NAME),
+                         }
     path = join('src', PACKAGE_NAME)
     return cythonize([create_extension(name,
-                      source_paths(str(join(path, 'v2_python')), sources)) for
+                      source_paths(str(path), sources)) for
                       name, sources in module_source_map.items()])

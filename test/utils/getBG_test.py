@@ -1,5 +1,5 @@
 import unittest
-from quasielasticbayes.v2.utils.general import get_background_function
+from quickBayes.utils.general import get_background_function
 
 
 class GetBGTest(unittest.TestCase):

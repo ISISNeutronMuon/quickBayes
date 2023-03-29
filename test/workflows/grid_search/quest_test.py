@@ -1,7 +1,7 @@
 import unittest
-from quasielasticbayes.v2.functions.qse_fixed import QSEFixFunction
-from quasielasticbayes.v2.functions.BG import LinearBG
-from quasielasticbayes.v2.workflow.qse_search import QSEGridSearch
+from quickBayes.functions.qse_fixed import QSEFixFunction
+from quickBayes.functions.BG import LinearBG
+from quickBayes.workflow.qse_search import QSEGridSearch
 import numpy as np
 import os.path
 

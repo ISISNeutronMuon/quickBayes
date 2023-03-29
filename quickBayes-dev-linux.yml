@@ -1,0 +1,14 @@
+name: quickBayes-dev
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python =3.8.*
+  - numpy =1.16.*
+  - scipy
+  - pytest
+  - pre-commit >=2.15
+  - pip:
+    - cython
+    - gofit

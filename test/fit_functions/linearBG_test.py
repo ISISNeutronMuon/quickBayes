@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.functions.BG import LinearBG
+from quickBayes.functions.BG import LinearBG
 
 
 class LinearBGTest(unittest.TestCase):

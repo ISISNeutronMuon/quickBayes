@@ -1,10 +1,10 @@
 import unittest
 from numpy import ndarray
 import numpy as np
-from quasielasticbayes.v2.functions.gaussian import Gaussian
-from quasielasticbayes.v2.functions.convolution import (
+from quickBayes.functions.gaussian import Gaussian
+from quickBayes.functions.convolution import (
         ConvolutionWithResolution as conv)
-from quasielasticbayes.v2.utils.crop_data import crop
+from quickBayes.utils.crop_data import crop
 
 
 def analytic(x: ndarray, amp: float, mu: float, sig: float,

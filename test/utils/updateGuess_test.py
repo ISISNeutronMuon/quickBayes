@@ -1,7 +1,7 @@
 import unittest
-from quasielasticbayes.v2.utils.general import update_guess
-from quasielasticbayes.v2.functions.BG import LinearBG
-from quasielasticbayes.v2.functions.BG import NoBG
+from quickBayes.utils.general import update_guess
+from quickBayes.functions.BG import LinearBG
+from quickBayes.functions.BG import NoBG
 
 
 class UpdateGuessTest(unittest.TestCase):

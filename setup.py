@@ -2,8 +2,8 @@ from numpy.distutils.core import setup
 from v2_setup import get_v2_extensions
 
 
-VERSION = "1.0.0a21"
-PACKAGE_NAME = 'quasielasticbayes'
+VERSION = "1.0.0b1"
+PACKAGE_NAME = 'quickBayes'
 
 
 extensions = (get_v2_extensions(PACKAGE_NAME))

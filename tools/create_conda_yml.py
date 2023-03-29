@@ -69,7 +69,7 @@ def create_default():
     pip_dict = {"cython": "",
                 "gofit": ""}
 
-    default_yml['name'] = "quasielasticbayes-dev"
+    default_yml['name'] = "quickBayes-dev"
     default_yml['channels'] = 'conda-forge'
     default_yml['dependencies'] = {'python': '=3.8.*',
                                    'numpy': '=1.16.*',

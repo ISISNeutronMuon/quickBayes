@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.utils.crop_data import crop
+from quickBayes.utils.crop_data import crop
 
 
 class CropTest(unittest.TestCase):
