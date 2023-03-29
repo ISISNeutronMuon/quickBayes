@@ -1,4 +1,4 @@
-from quasielasticbayes.fitting.fit_utils import log10_hessian_det
+from quickBayes.fitting.fit_utils import log10_hessian_det
 from numpy import ndarray
 import numpy as np
 from math import exp, log10
