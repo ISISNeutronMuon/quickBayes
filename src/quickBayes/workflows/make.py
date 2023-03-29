@@ -1,5 +1,6 @@
 from os.path import join
 from src.quickBayes.workflows.grid_search.make import get_grid_search
+from src.quickBayes.workflows.model_search.make import get_model_search
 
 
 """
@@ -16,5 +17,6 @@ def get_workflows(PACKAGE_NAME):
             [join('workflows', 'workflow_template.py')],
             }
     return {**module_source_map,
-            **get_grid_search(PACKAGE_NAME)
+            **get_grid_search(PACKAGE_NAME),
+            **get_model_search(PACKAGE_NAME)
             }

@@ -2,12 +2,12 @@ import unittest
 import numpy as np
 from quickBayes.functions.BG import LinearBG
 from quickBayes.fitting.fit_utils import (log10_hessian_det,
-                                                    chi_squared,
-                                                    param_errors,
-                                                    derivative,
-                                                    fit_errors,
-                                                    var,
-                                                    res)
+                                          chi_squared,
+                                          param_errors,
+                                          derivative,
+                                          fit_errors,
+                                          var,
+                                          res)
 
 
 class FitUtilsTest(unittest.TestCase):

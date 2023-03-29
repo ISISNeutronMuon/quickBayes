@@ -3,8 +3,8 @@ from quickBayes.workflow.grid_template import GridSearchTemplate
 from quickBayes.functions.BG import FlatBG
 from quickBayes.functions.exp_decay import ExpDecay
 from quickBayes.test_helpers.workflows import (gen_grid_search_data,
-                                                      FixedBG,
-                                                      FixedComposite)
+                                               FixedBG,
+                                               FixedComposite)
 
 
 class SimpleWorkflow(GridSearchTemplate):

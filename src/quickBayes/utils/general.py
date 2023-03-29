@@ -1,7 +1,7 @@
 from quickBayes.functions.base import BaseFitFunction
 from quickBayes.functions.BG import (LinearBG,
-                                               FlatBG,
-                                               NoBG)
+                                     FlatBG,
+                                     NoBG)
 from typing import List
 
 

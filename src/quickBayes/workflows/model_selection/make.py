@@ -9,7 +9,7 @@ the package
 """
 
 
-def get_fit_functions(PACKAGE_NAME):
+def get_model_selection(PACKAGE_NAME):
     module_source_map = {
         f'{PACKAGE_NAME}.workflow.model_template':
             [join('workflows', 'model_selection',

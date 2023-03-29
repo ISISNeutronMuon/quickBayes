@@ -3,10 +3,10 @@ from typing import Callable
 from abc import abstractmethod
 import numpy as np
 from quickBayes.fitting.fit_utils import (chi_squared,
-                                                    param_errors,
-                                                    derivative,
-                                                    fit_errors,
-                                                    var, res)
+                                          param_errors,
+                                          derivative,
+                                          fit_errors,
+                                          var, res)
 from quickBayes.utils.spline import spline
 
 
