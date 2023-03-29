@@ -106,7 +106,7 @@ class proTest(unittest.TestCase):
             times.append(run_muon())
         times = np.array(times)
         print("\n muon", np.mean(times), np.std(times))
-        self.assertEqual(1, 2)
+        # self.assertEqual(1, 2)
 
     def test_qldata(self):
         times = []
@@ -114,7 +114,8 @@ class proTest(unittest.TestCase):
             times.append(run_qldata())
         times = np.array(times)
         print("\n qldata", np.mean(times), np.std(times))
-        self.assertEqual(1, 2)
+
+        # self.assertEqual(1, 2)
 
     def test_qlse(self):
         times = []
@@ -122,7 +123,7 @@ class proTest(unittest.TestCase):
             times.append(run_qse())
         times = np.array(times)
         print("\n qse", np.mean(times), np.std(times))
-        self.assertEqual(1, 2)
+        # self.assertEqual(1, 2)
 
     def test_quest(self):
         times = []
@@ -130,7 +131,7 @@ class proTest(unittest.TestCase):
             times.append(run_quest())
         times = np.array(times)
         print("\n quest", np.mean(times), np.std(times))
-        self.assertEqual(1, 2)
+        # self.assertEqual(1, 2)
 
 
 if __name__ == '__main__':
