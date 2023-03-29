@@ -39,8 +39,8 @@ jobs:
         with:
           miniforge-version: latest
           miniforge-variant: Mambaforge
-          activate-environment: quasielasticbayes-dev
-          environment-file: quasielasticbayes-dev-win.yml
+          activate-environment: quickBayes-dev
+          environment-file: quickBayes-dev-win.yml
           auto-activate-base: false
           use-mamba: true
 
@@ -50,8 +50,8 @@ jobs:
         with:
           miniforge-version: latest
           miniforge-variant: Mambaforge
-          activate-environment: quasielasticbayes-dev
-          environment-file: quasielasticbayes-dev-linux.yml
+          activate-environment: quickBayes-dev
+          environment-file: quickBayes-dev-linux.yml
           auto-activate-base: false
           use-mamba: true
 
@@ -63,7 +63,7 @@ jobs:
       - name: compile
         shell: bash -l {0}
         run:  |
-            conda activate quasielasticbayes-dev
+            conda activate quickBayes-dev
             python -m pip install .
       - name: run tests
         timeout-minutes: 30
