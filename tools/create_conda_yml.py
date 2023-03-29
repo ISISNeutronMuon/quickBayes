@@ -64,7 +64,9 @@ def create_default():
     """
     default_yml = {}
 
-    pip_dict = {"cython": ">=0.29.32 # stops conda getting the wrong version",
+    # pip_dict = {"cython":
+    # ">=0.29.32 # stops conda getting the wrong version",
+    pip_dict = {"cython": "",
                 "gofit": ""}
 
     default_yml['name'] = "quasielasticbayes-dev"

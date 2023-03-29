@@ -113,5 +113,5 @@ def get_v2_extensions(PACKAGE_NAME):
             }
     path = join('src', PACKAGE_NAME)
     return cythonize([create_extension(name,
-                     source_paths(str(join(path, 'v2_python')), sources)) for
-                     name, sources in module_source_map.items()])
+                      source_paths(str(join(path, 'v2_python')), sources)) for
+                      name, sources in module_source_map.items()])
