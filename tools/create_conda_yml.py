@@ -3,9 +3,8 @@ import sys
 from conda_dict_to_yml import write_conda_yml_from_dict
 
 
-supported = ["windows", "ubuntu", "windows-latest", "ubuntu-latest",
-             "mac", "macOS-latest"]
-exp = []
+supported = ["windows", "ubuntu", "windows-latest", "ubuntu-latest"]
+exp = ["mac", "macOS-latest"]
 
 
 def get_OS():
@@ -20,9 +19,9 @@ def get_OS():
                         type=str)
     args = parser.parse_args()
 
-    print(args.OS)
     if args.OS not in supported and args.OS not in exp:
-        raise ValueError(str(args.OS) + " is not a supported OS.")
+        raise ValueError(f"{args.OS} is not a supported OS.")
+    print(args.OS)
     return args.OS
 
 
@@ -33,16 +32,19 @@ def get_OS_info(OS):
     :Return a dict of contents for the yml file and file name
     """
     default_yml = create_default()
-    print("MOOOOO", OS)
     if OS == 'windows' or OS == "windows-latest":
         yml_dict = for_windows(default_yml)
         file_name = f'{yml_dict["name"]}-win.yml'
     elif OS == 'ubuntu' or OS == 'ubuntu-latest':
         yml_dict = for_linux(default_yml)
         file_name = f'{yml_dict["name"]}-linux.yml'
-    #elif OS == 'mac' or OS == 'macOS-latest':
-    #    yml_dict = for_mac(default_yml)
-    #    file_name = f'{yml_dict["name"]}-mac.yml'
+    elif OS == 'mac' or OS == 'macOS-latest':
+        yml_dict = for_linux(default_yml)
+        file_name = f'{yml_dict["name"]}-mac.yml'
+    elif OS in exp:
+        print("WARNING: This is experimental and may not work")
+        yml_dict = for_mac(default_yml)
+        file_name = f'{yml_dict["name"]}-mac.yml'
 
     return yml_dict, file_name
 
@@ -62,6 +64,8 @@ def create_default():
     """
     default_yml = {}
 
+    # pip_dict = {"cython":
+    # ">=0.29.32 # stops conda getting the wrong version",
     pip_dict = {"cython": "",
                 "gofit": ""}
 
@@ -90,7 +94,7 @@ def for_linux(yml_dict):
     Edits the yml_dict to have ubuntu options
     :param yml_dict: the input yml_dict to edit
     :return the updated yml_dict
-    """
+    """   # need to compile fortran
     return yml_dict
 
 
