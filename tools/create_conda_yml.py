@@ -33,16 +33,17 @@ def get_OS_info(OS):
     :Return a dict of contents for the yml file and file name
     """
     default_yml = create_default()
-    if OS == 'windows' or OS == 'windows-latest':
+    if OS == 'mac' or OS == 'macOS-latest':
+        yml_dict = for_mac(default_yml)
+        file_name = f'{yml_dict["name"]}-mac.yml'
+
+
+    elif OS == 'windows' or OS == 'windows-latest':
         yml_dict = for_windows(default_yml)
         file_name = f'{yml_dict["name"]}-win.yml'
     elif OS == 'ubuntu' or OS == 'ubuntu-latest':
         yml_dict = for_linux(default_yml)
         file_name = f'{yml_dict["name"]}-linux.yml'
-    elif OS == 'mac' or OS == 'macOS-latest':
-        yml_dict = for_mac(default_yml)
-        file_name = f'{yml_dict["name"]}-mac.yml'
-
     return yml_dict, file_name
 
 
