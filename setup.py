@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 from tools.setup_helper import get_extensions
 
 
-VERSION = "1.0.0b1"
+VERSION = "1.0.0b2"
 PACKAGE_NAME = 'quickBayes'
 
 
@@ -12,6 +12,7 @@ extensions = get_extensions(PACKAGE_NAME)
 
 setup(
     name=PACKAGE_NAME,
+    requires=['numpy'],
     install_requires=['numpy>=1.12', 'scipy', 'gofit'],
     packages=find_packages(where='src'),
     description='A Bayesian fitting package used for '

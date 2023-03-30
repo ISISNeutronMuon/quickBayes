@@ -68,4 +68,4 @@ jobs:
         with:
           user: __token__
           verbose: True
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          password: ${{ secrets.PYPI_API_TOKEN_QUICKBAYES }}

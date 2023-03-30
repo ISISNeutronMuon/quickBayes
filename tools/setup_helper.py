@@ -1,5 +1,5 @@
-import numpy
 from distutils.core import Extension
+import numpy
 from os.path import join
 from typing import Sequence, Dict
 from Cython.Build import cythonize
