@@ -35,9 +35,7 @@ def get_OS_info(OS):
     default_yml = create_default()
     if OS == 'mac' or OS == 'macOS-latest':
         yml_dict = for_mac(default_yml)
-        file_name = f'{yml_dict["name"]}-mac.yml'
-
-
+        file_name = str(yml_dict["name"])+'-mac.yml'
     elif OS == 'windows' or OS == 'windows-latest':
         yml_dict = for_windows(default_yml)
         file_name = f'{yml_dict["name"]}-win.yml'
