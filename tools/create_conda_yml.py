@@ -20,9 +20,9 @@ def get_OS():
                         type=str)
     args = parser.parse_args()
 
+    print(args.OS)
     if args.OS not in supported and args.OS not in exp:
         raise ValueError(f"{args.OS} is not a supported OS.")
-    print(args.OS)
     return args.OS
 
 
