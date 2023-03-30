@@ -3,9 +3,9 @@ import sys
 from conda_dict_to_yml import write_conda_yml_from_dict
 
 
-supported = ["windows", "ubuntu", "windows-latest", "ubuntu-latest",
-             "mac", "macOS-latest"]
-exp = ["mac", "macOS-latest"]
+supported = ['windows', 'ubuntu', 'windows-latest', 'ubuntu-latest',
+             'mac', 'macOS-latest']
+exp = ['mac', 'macOS-latest']
 
 
 def get_OS():
@@ -13,15 +13,15 @@ def get_OS():
     get the OS from the command line arg
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument("OS",
-                        help="the OS for the yml file"
-                        " (windows, windows-latest, ubuntu, ubuntu-latest,"
-                        " mac, macOS-latest)",
+    parser.add_argument('OS',
+                        help='the OS for the yml file'
+                        ' (windows, windows-latest, ubuntu, ubuntu-latest,'
+                        ' mac, macOS-latest',
                         type=str)
     args = parser.parse_args()
 
     if args.OS not in supported and args.OS not in exp:
-        raise ValueError(str(args.OS) + " is not a supported OS.")
+        raise ValueError(str(args.OS) + ' is not a supported OS.')
     print(args.OS)
     return args.OS
 
@@ -33,17 +33,13 @@ def get_OS_info(OS):
     :Return a dict of contents for the yml file and file name
     """
     default_yml = create_default()
-    if OS == 'windows' or OS == "windows-latest":
+    if OS == 'windows' or OS == 'windows-latest':
         yml_dict = for_windows(default_yml)
         file_name = f'{yml_dict["name"]}-win.yml'
     elif OS == 'ubuntu' or OS == 'ubuntu-latest':
         yml_dict = for_linux(default_yml)
         file_name = f'{yml_dict["name"]}-linux.yml'
     elif OS == 'mac' or OS == 'macOS-latest':
-        yml_dict = for_linux(default_yml)
-        file_name = f'{yml_dict["name"]}-mac.yml'
-    elif OS in exp:
-        print("WARNING: This is experimental and may not work")
         yml_dict = for_mac(default_yml)
         file_name = f'{yml_dict["name"]}-mac.yml'
 
@@ -67,10 +63,10 @@ def create_default():
 
     # pip_dict = {"cython":
     # ">=0.29.32 # stops conda getting the wrong version",
-    pip_dict = {"cython": "",
-                "gofit": ""}
+    pip_dict = {'cython': '',
+                'gofit': ''""}
 
-    default_yml['name'] = "quickBayes-dev"
+    default_yml['name'] = 'quickBayes-dev'
     default_yml['channels'] = 'conda-forge'
     default_yml['dependencies'] = {'python': '=3.8.*',
                                    'numpy': '=1.16.*',
@@ -95,7 +91,7 @@ def for_linux(yml_dict):
     Edits the yml_dict to have ubuntu options
     :param yml_dict: the input yml_dict to edit
     :return the updated yml_dict
-    """   # need to compile fortran
+    """
     return yml_dict
 
 
@@ -112,7 +108,7 @@ if __name__ == "__main__":
     try:
         OS = get_OS()
         yml_dict, file_name = get_OS_info(OS)
-        with open(file_name, "w") as outfile:
+        with open(file_name, 'w') as outfile:
             write_conda_yml_from_dict(yml_dict, outfile)
 
     except ValueError:
