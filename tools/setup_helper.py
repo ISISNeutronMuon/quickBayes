@@ -1,14 +1,31 @@
 import numpy
 from distutils.core import Extension
 from os.path import join
-from typing import Sequence
+from typing import Sequence, Dict
 from Cython.Build import cythonize
-from src.quickBayes.fit_functions.make import get_fit_functions
-from src.quickBayes.fit_engines.make import get_fit_engines
-from src.quickBayes.test_helpers.make import get_test_helpers
-from src.quickBayes.workflows.make import get_workflows
-from src.quickBayes.utils.make import get_utils
-from src.quickBayes.make import get_misc
+from pathlib import Path
+
+
+def read_makefiles(package_name: str) -> Dict[str, str]:
+    """
+    Automatically locates all of the makefiles in src
+    and reads the contents.
+    :param package_name: the name of the package
+    :return a dict of the python imports and file locations
+    """
+    makefile_data = []
+    module_source_map = {}
+    for path in Path('src').glob('**/*makefile.txt'):
+        with open(path, 'r') as file:
+            lines = file.readlines()
+            for line in lines:
+                makefile_data.append(line)
+
+    for line in makefile_data:
+        py_path, file_path = line.split(':')
+        file_path = str(eval(file_path))
+        module_source_map[f'{package_name}.{py_path}'] = [file_path]
+    return module_source_map
 
 
 def create_extension(fq_name: str,
@@ -32,16 +49,9 @@ def source_paths(dirname: str, filenames: Sequence[str]) -> Sequence[str]:
     return [join(dirname, filename) for filename in filenames]
 
 
-def get_v2_extensions(PACKAGE_NAME):
-    module_source_map = {
-                         **get_fit_functions(PACKAGE_NAME),
-                         **get_fit_engines(PACKAGE_NAME),
-                         **get_misc(PACKAGE_NAME),
-                         **get_test_helpers(PACKAGE_NAME),
-                         **get_utils(PACKAGE_NAME),
-                         **get_workflows(PACKAGE_NAME),
-                         }
-    path = join('src', PACKAGE_NAME)
+def get_extensions(package_name):
+    module_source_map = read_makefiles(package_name)
+    path = join('src', package_name)
     return cythonize([create_extension(name,
                       source_paths(str(path), sources)) for
                       name, sources in module_source_map.items()])

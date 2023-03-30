@@ -1,31 +1,35 @@
-from numpy.distutils.core import setup
-from v2_setup import get_v2_extensions
+# from numpy.distutils.core import setup
+from setuptools import find_packages, setup
+from tools.setup_helper import get_extensions
 
 
 VERSION = "1.0.0b1"
 PACKAGE_NAME = 'quickBayes'
 
 
-extensions = (get_v2_extensions(PACKAGE_NAME))
+extensions = get_extensions(PACKAGE_NAME)
 
 
 setup(
     name=PACKAGE_NAME,
     install_requires=['numpy>=1.12', 'scipy', 'gofit'],
-    packages=[PACKAGE_NAME],
+    packages=find_packages(where='src'),
     description='A Bayesian fitting package used for '
-                'fitting quasi-elastic neutron scattering data.',
-    long_description='This package wraps fortran Bayesian '
-                     'fitting libraries using f2py. '
+                'model selection and grid searchs of fits '
+                'for neutron and muon data.',
+    long_description='This package provides code for a Bayesian '
+                     'workflow. The two options are '
+                     'model selection and grid search. '
+                     'This package replaces quasielasticbayes. '
                      'An application of this package is '
                      'to fit quasi-elastic '
                      'neutron scattering data in Mantid '
                      '(https://www.mantidproject.org)',
-    author='Mantid Team',
+    author='Anthony Lim',
     ext_modules=extensions,
-    author_email="mantid-help@mantidproject.org",
+    author_email="anthony.lim@stfc.ac.uk",
     url='https://www.mantidproject.org',
     version=VERSION,
     license='BSD',
-    package_dir={'': 'src'},  # allows setup to find py and f90 files
+    package_dir={'': 'src'}
 )
