@@ -41,6 +41,7 @@ jobs:
             pip install cython>=0.29.32
             pip install scipy
           CIBW_BEFORE_ALL_MACOS: >
+            brew install Python
             brew install numpy
             pip install cython>=0.29.32
             pip install scipy
