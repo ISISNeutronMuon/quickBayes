@@ -3,9 +3,16 @@ import sys
 from conda_dict_to_yml import write_conda_yml_from_dict
 
 
+"""
+f strings have not been used as the mac github action
+does not recognise them and complains about
+syntax errors.
+"""
+
+
 supported = ['windows', 'ubuntu', 'windows-latest', 'ubuntu-latest',
              'mac', 'macOS-latest']
-exp = ['mac', 'macOS-latest']
+exp = []
 
 
 def get_OS():

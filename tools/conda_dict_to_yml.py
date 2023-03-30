@@ -3,6 +3,10 @@ Written a custom passer to write yml file
 the default did not have nice formatting
 and didn't allow for nice managment of
 dependencies
+
+f strings have not been used as the mac github action
+does not recognise them and complains about
+syntax errors.
 """
 
 
@@ -15,7 +19,7 @@ def record_name(yml, outfile):
     :param yml: a dict containing the desired contents of the yml file
     :param outfile: the file the data will be written to
     """
-    outfile.write('name: '+str(yml['name'])+' \n \n')
+    outfile.write('name: ' + str(yml['name']) + ' \n \n')
 
 
 def record_channels(yml, outfile):
@@ -25,7 +29,7 @@ def record_channels(yml, outfile):
     :param outfile: the file the data will be written to
     """
     outfile.write('channels: \n')
-    outfile.write(str(INDENT)+' - '+str(yml['channels'])+' \n \n')
+    outfile.write(str(INDENT) + ' - ' + str(yml['channels']) + ' \n \n')
 
 
 def record_pip(pip_dict, outfile):
@@ -37,7 +41,8 @@ def record_pip(pip_dict, outfile):
 
     for package in pip_dict.keys():
         big_indent = INDENT + INDENT + INDENT
-        outfile.write(str(big_indent)+' - '+str(package)+' '+str(pip_dict[package])+' \n')
+        outfile.write(str(big_indent) + ' - ' + str(package) +
+                      ' ' + str(pip_dict[package]) + ' \n')
 
 
 def record_dependencies(yml, outfile):
@@ -52,10 +57,11 @@ def record_dependencies(yml, outfile):
     deps = yml['dependencies']
     for package in deps.keys():
         if package == 'pip':
-            outfile.write(str(INDENT)+' - pip: \n')
+            outfile.write(str(INDENT) + ' - pip: \n')
             record_pip(deps['pip'], outfile)
         else:
-            outfile.write(str(INDENT)+' - '+str(package)+' '+str(deps[package])+' \n')
+            outfile.write(str(INDENT) + ' - ' + str(package) +
+                          ' ' + str(deps[package]) + ' \n')
 
 
 def write_conda_yml_from_dict(yml, outfile):
