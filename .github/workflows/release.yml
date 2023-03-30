@@ -14,7 +14,7 @@ jobs:
         # Note: builds on these are backward compatible
         # (Linux builds use manylinux Docker containers)
         # (macOS builds target old versions by default)
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
 
@@ -40,6 +40,11 @@ jobs:
             pip install numpy==1.16.*
             pip install cython>=0.29.32
             pip install scipy
+          CIBW_BEFORE_ALL_MACOS: >
+            pip install numpy==1.16.*
+            pip install cython>=0.29.32
+            pip install scipy
+
 
           # Install test dependencies and run tests
           CIBW_TEST_REQUIRES: pytest
