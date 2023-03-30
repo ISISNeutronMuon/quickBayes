@@ -64,8 +64,6 @@ def create_default():
     """
     default_yml = {}
 
-    # pip_dict = {"cython":
-    # ">=0.29.32 # stops conda getting the wrong version",
     pip_dict = {"cython": "",
                 "gofit": ""}
 
@@ -94,7 +92,7 @@ def for_linux(yml_dict):
     Edits the yml_dict to have ubuntu options
     :param yml_dict: the input yml_dict to edit
     :return the updated yml_dict
-    """   # need to compile fortran
+    """
     return yml_dict
 
 
