@@ -1,0 +1,2 @@
+workflow.grid_template: join('workflows', 'grid_search', 'grid_search_template.py')
+workflow.qse_search: join('workflows', 'grid_search', 'qse_grid_search.py')
