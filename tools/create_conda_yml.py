@@ -33,6 +33,7 @@ def get_OS_info(OS):
     :Return a dict of contents for the yml file and file name
     """
     default_yml = create_default()
+    print("MOOOOO", OS)
     if OS == 'windows' or OS == "windows-latest":
         yml_dict = for_windows(default_yml)
         file_name = f'{yml_dict["name"]}-win.yml'
