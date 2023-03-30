@@ -3,7 +3,8 @@ import sys
 from conda_dict_to_yml import write_conda_yml_from_dict
 
 
-supported = ["windows", "ubuntu", "windows-latest", "ubuntu-latest"]
+supported = ["windows", "ubuntu", "windows-latest", "ubuntu-latest",
+             "mac", "macOS-latest"]
 exp = ["mac", "macOS-latest"]
 
 
