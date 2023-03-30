@@ -22,7 +22,7 @@ def get_OS():
 
     print(args.OS)
     if args.OS not in supported and args.OS not in exp:
-        raise ValueError(f"{args.OS} is not a supported OS.")
+        raise ValueError(str(args.OS) + " is not a supported OS.")
     return args.OS
 
 
