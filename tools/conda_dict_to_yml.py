@@ -6,7 +6,7 @@ dependencies
 """
 
 
-INDENT = " "
+INDENT = ' '
 
 
 def record_name(yml, outfile):
@@ -15,7 +15,7 @@ def record_name(yml, outfile):
     :param yml: a dict containing the desired contents of the yml file
     :param outfile: the file the data will be written to
     """
-    outfile.write(f"name: {yml['name']} \n \n")
+    outfile.write('name: '+str(yml['name'])+' \n \n')
 
 
 def record_channels(yml, outfile):
@@ -24,8 +24,8 @@ def record_channels(yml, outfile):
     :param yml: a dict containing the desired contents of the yml file
     :param outfile: the file the data will be written to
     """
-    outfile.write("channels: \n")
-    outfile.write(f"{INDENT} - {yml['channels']} \n \n")
+    outfile.write('channels: \n')
+    outfile.write(str(INDENT)+' - '+str(yml['channels'])+' \n \n')
 
 
 def record_pip(pip_dict, outfile):
@@ -37,7 +37,7 @@ def record_pip(pip_dict, outfile):
 
     for package in pip_dict.keys():
         big_indent = INDENT + INDENT + INDENT
-        outfile.write(f'{big_indent} - {package} {pip_dict[package]} \n')
+        outfile.write(str(big_indent)+' - '+str(package)+' '+str(pip_dict[package])+' \n')
 
 
 def record_dependencies(yml, outfile):
@@ -47,15 +47,15 @@ def record_dependencies(yml, outfile):
     :param outfile: the file the data will be written to
     """
 
-    outfile.write("dependencies: \n")
+    outfile.write('dependencies: \n')
 
     deps = yml['dependencies']
     for package in deps.keys():
         if package == 'pip':
-            outfile.write(f'{INDENT} - pip: \n')
+            outfile.write(str(INDENT)+' - pip: \n')
             record_pip(deps['pip'], outfile)
         else:
-            outfile.write(f'{INDENT} - {package} {deps[package]} \n')
+            outfile.write(str(INDENT)+' - '+str(package)+' '+str(deps[package])+' \n')
 
 
 def write_conda_yml_from_dict(yml, outfile):
