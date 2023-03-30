@@ -40,10 +40,6 @@ def get_OS_info(OS):
         yml_dict = for_linux(default_yml)
         file_name = f'{yml_dict["name"]}-linux.yml'
     elif OS == 'mac' or OS == 'macOS-latest':
-        yml_dict = for_linux(default_yml)
-        file_name = f'{yml_dict["name"]}-mac.yml'
-    elif OS in exp:
-        print("WARNING: This is experimental and may not work")
         yml_dict = for_mac(default_yml)
         file_name = f'{yml_dict["name"]}-mac.yml'
 
