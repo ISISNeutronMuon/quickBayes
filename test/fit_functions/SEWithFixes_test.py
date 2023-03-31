@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.functions.SE import StretchExp
-from quasielasticbayes.v2.functions.SE_fix import StretchExpWithFixes
+from quickBayes.functions.SE import StretchExp
+from quickBayes.functions.SE_fix import StretchExpWithFixes
 
 
 class StretchExpWithFixesTest(unittest.TestCase):

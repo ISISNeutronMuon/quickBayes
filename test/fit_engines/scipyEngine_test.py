@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.fitting.scipy_engine import ScipyFitEngine
-from quasielasticbayes.test_helpers.template_scipy_fit import ScipyFitTemplate
+from quickBayes.fitting.scipy_engine import ScipyFitEngine
+from quickBayes.test_helpers.template_scipy_fit import ScipyFitTemplate
 
 
 class ScipyFitEngineTest(ScipyFitTemplate, unittest.TestCase):

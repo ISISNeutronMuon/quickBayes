@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.functions.lorentz import Lorentzian
-from quasielasticbayes.v2.functions.BG import LinearBG
-from quasielasticbayes.v2.functions.qldata_function import QlDataFunction
+from quickBayes.functions.lorentz import Lorentzian
+from quickBayes.functions.BG import LinearBG
+from quickBayes.functions.qldata_function import QlDataFunction
 
 
 class QLDataFunctionTest(unittest.TestCase):

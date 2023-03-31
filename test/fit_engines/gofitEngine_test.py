@@ -1,8 +1,8 @@
 import unittest
 from numpy import ndarray
 import numpy as np
-from quasielasticbayes.v2.fitting.gofit_engine import GoFitEngine
-from quasielasticbayes.test_helpers.template_fit_test import FitEngineTemplate
+from quickBayes.fitting.gofit_engine import GoFitEngine
+from quickBayes.test_helpers.template_fit_test import FitEngineTemplate
 
 
 class GoFitEngineTest(FitEngineTemplate, unittest.TestCase):
@@ -148,7 +148,7 @@ class GoFitEngineTest(FitEngineTemplate, unittest.TestCase):
                                expected_e)
 
         # to compare with scipy
-        from quasielasticbayes.v2.fitting.scipy_engine import ScipyFitEngine
+        from quickBayes.fitting.scipy_engine import ScipyFitEngine
         scipy_fit = ScipyFitEngine(x_data, y_data, e_data,
                                    [-2, -4, -4], [2, 4, 4], [1, 1, 0])
 

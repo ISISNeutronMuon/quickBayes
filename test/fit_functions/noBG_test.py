@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.functions.BG import NoBG
+from quickBayes.functions.BG import NoBG
 
 
 class NoBGTest(unittest.TestCase):

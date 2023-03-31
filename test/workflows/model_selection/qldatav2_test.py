@@ -1,7 +1,7 @@
 import unittest
-from quasielasticbayes.v2.workflow.QlData import ql_data_main
-from quasielasticbayes.v2.functions.qldata_function import QlDataFunction
-from quasielasticbayes.v2.functions.BG import LinearBG
+from quickBayes.workflow.QlData import ql_data_main
+from quickBayes.functions.qldata_function import QlDataFunction
+from quickBayes.functions.BG import LinearBG
 import numpy as np
 import os.path
 

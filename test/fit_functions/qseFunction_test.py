@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.functions.BG import LinearBG
-from quasielasticbayes.v2.functions.SE import StretchExp
-from quasielasticbayes.v2.functions.qse_function import QSEFunction
+from quickBayes.functions.BG import LinearBG
+from quickBayes.functions.SE import StretchExp
+from quickBayes.functions.qse_function import QSEFunction
 
 
 class QSEFunctionTest(unittest.TestCase):

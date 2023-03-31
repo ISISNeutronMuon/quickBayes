@@ -14,8 +14,7 @@ jobs:
         # Note: builds on these are backward compatible
         # (Linux builds use manylinux Docker containers)
         # (macOS builds target old versions by default)
-        os: [ubuntu-latest]
-        # os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest]
 
     steps:
 
@@ -67,4 +66,4 @@ jobs:
         with:
           user: __token__
           verbose: True
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          password: ${{ secrets.PYPI_API_TOKEN_QUICKBAYES }}

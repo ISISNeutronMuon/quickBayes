@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quasielasticbayes.v2.functions.exp_decay import ExpDecay
+from quickBayes.functions.exp_decay import ExpDecay
 
 
 class ExpDecayTest(unittest.TestCase):

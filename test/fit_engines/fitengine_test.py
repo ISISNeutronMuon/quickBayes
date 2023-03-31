@@ -2,8 +2,8 @@ import unittest
 from numpy import ndarray
 from typing import Callable
 from scipy.optimize import curve_fit
-from quasielasticbayes.v2.fitting.fit_engine import FitEngine
-from quasielasticbayes.test_helpers.template_scipy_fit import ScipyFitTemplate
+from quickBayes.fitting.fit_engine import FitEngine
+from quickBayes.test_helpers.template_scipy_fit import ScipyFitTemplate
 
 
 class SimpleTestEngine(FitEngine):
