@@ -16,7 +16,7 @@ setup(
     install_requires=['numpy>=1.12', 'scipy', 'gofit'],
     packages=find_packages(where='src'),
     description='A Bayesian fitting package used for '
-                'model selection and grid searchs of fits '
+                'model selection and grid searches of fits '
                 'for neutron and muon data.',
     long_description='This package provides code for a Bayesian '
                      'workflow. The two options are '
