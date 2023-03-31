@@ -44,6 +44,7 @@ def create_extension(fq_name: str,
 def source_paths(dirname: str, filenames: Sequence[str]) -> Sequence[str]:
     """
     :param dirname: A relative path to the list of source files
+    :param filenames: the names of the source files
     :return: A list of relative paths to the given sources in the directory
     """
     return [join(dirname, filename) for filename in filenames]
