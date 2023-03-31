@@ -1,5 +1,5 @@
 # from numpy.distutils.core import setup
-from setuptools import find_packages, setup
+from setuptools import find_packages, setup, dist
 from tools.setup_helper import get_extensions
 
 
@@ -8,6 +8,9 @@ PACKAGE_NAME = 'quickBayes'
 
 
 extensions = get_extensions(PACKAGE_NAME)
+
+
+dist.Distribution().fetch_build_eggs(['numpy>=1.12'])
 
 
 setup(
