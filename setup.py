@@ -2,7 +2,7 @@
 from setuptools import find_packages, setup, dist
 
 
-dist.Distribution().fetch_build_eggs(['numpy>=1.12'])
+dist.Distribution().fetch_build_eggs(['numpy>=1.12', 'Cython>=0.29.32'])
 
 
 from tools.setup_helper import get_extensions
