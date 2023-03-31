@@ -37,7 +37,8 @@ jobs:
           # CIBW_BEFORE_BUILD_WINDOWS: >
           #   pip install numpy==1.16.*
          CIBW_BEFORE_ALL_MACOS: >
-           brew install numpy Cython>=0.29.32
+           brew install numpy
+           brew install Cython>=0.29.32
           CIBW_BEFORE_ALL: >
              pip install numpy
              pip install cython>=0.29.32
