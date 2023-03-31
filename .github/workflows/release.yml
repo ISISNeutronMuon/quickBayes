@@ -37,11 +37,7 @@ jobs:
           CIBW_BEFORE_BUILD_WINDOWS: >
              pip install numpy==1.16.*
           CIBW_BEFORE_ALL_MACOS: |
-                  curl https://files.pythonhosted.org/packages/3a/be/650f9c091ef71cb01d735775d554e068752d3ff63d7943b26316dc401749/numpy-1.21.2.zip > numpy.tar.gz
-                  tar -xzvf numpy.tar.gz
-                  cd numpy-1.21.2
-                  python setup.py install
-                  cd ..
+              pip install numpy
           CIBW_BEFORE_ALL: >
              pip install cython>=0.29.32
              pip install scipy
