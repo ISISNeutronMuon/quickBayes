@@ -23,8 +23,7 @@ def get_OS():
     parser.add_argument('OS',
                         help='the OS for the yml file'
                         ' (windows, windows-latest, ubuntu, ubuntu-latest,'
-                        ' mac, macOS-latest',
-                        type=str)
+                        ' mac, macOS-latest', type=str)
     args = parser.parse_args()
 
     if args.OS not in supported and args.OS not in exp:
@@ -67,8 +66,6 @@ def create_default():
     """
     default_yml = {}
 
-    # pip_dict = {"cython":
-    # ">=0.29.32 # stops conda getting the wrong version",
     pip_dict = {'cython': '',
                 'gofit': ''""}
 
