@@ -1,13 +1,9 @@
 # from numpy.distutils.core import setup
 from setuptools import find_packages, setup, dist
-
-
-dist.Distribution().fetch_build_eggs(['numpy>=1.12', 'Cython>=0.29.32'])
-
-
 from tools.setup_helper import get_extensions
 
 
+# dist.Distribution().fetch_build_eggs(['numpy>=1.12', 'Cython>=0.29.32'])
 VERSION = "1.0.0b4"
 PACKAGE_NAME = 'quickBayes'
 
