@@ -11,11 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        # Note: builds on these are backward compatible
-        # (Linux builds use manylinux Docker containers)
-        # (macOS builds target old versions by default)
-        os: [ubuntu-latest, windows-latest]
-
+        os: [ubuntu-latest, windows-latest, macOS-latest]
     steps:
 
       - uses: actions/checkout@v3
@@ -24,22 +20,12 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.8.0
-        # to supply options, put them in 'env', like:
-        # env:
-        #   CIBW_SOME_OPTION: value
         env:
           # List of platforms to build on
-          CIBW_BUILD: cp38-manylinux_x86_64 cp38-win_amd64
-          #CIBW_BUILD: cp38-macosx_x86_64 cp38-macosx_arm64
+          CIBW_BUILD: cp38-manylinux_x86_64 cp38-win_amd64 cp38-macosx_x86_64 cp38-macosx_arm64
 
-          CIBW_BEFORE_ALL_LINUX: >
-             pip install numpy==1.16.*
-             pip install cython>=0.29.32
-             pip install scipy
-          CIBW_BEFORE_BUILD_WINDOWS: >
-            pip install numpy==1.16.*
-            pip install cython>=0.29.32
-            pip install scipy
+          CIBW_BEFORE_BUILD: >
+             pip install numpy cython>=0.29.32 scipy
 
           # Install test dependencies and run tests
           CIBW_TEST_REQUIRES: pytest

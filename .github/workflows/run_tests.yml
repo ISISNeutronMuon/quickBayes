@@ -13,7 +13,7 @@ jobs:
   run_tests:
     strategy:
       matrix:
-           os: [windows-latest, ubuntu-latest]
+           os: [windows-latest, ubuntu-latest, macOS-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -32,6 +32,7 @@ jobs:
       - name: create_yml_file
         shell: bash -l {0}
         run:  |
+             echo ${{ matrix.os }}
              python tools/create_conda_yml.py ${{ matrix.os }}
       - name: Setup Mambaforge windows
         if: matrix.os == 'windows-latest'
@@ -54,7 +55,18 @@ jobs:
           environment-file: quickBayes-dev-linux.yml
           auto-activate-base: false
           use-mamba: true
-
+          
+      - name: Setup Mambaforge mac
+        if: matrix.os == 'macOS-latest'
+        uses: conda-incubator/setup-miniconda@v2.1.1
+        with:
+          miniforge-version: latest
+          miniforge-variant: Mambaforge
+          activate-environment: quickBayes-dev
+          environment-file: quickBayes-dev-mac.yml
+          auto-activate-base: false
+          use-mamba: true
+          
       - name: check install
         shell: bash -l {0}
         run:  |
