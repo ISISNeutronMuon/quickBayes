@@ -28,7 +28,7 @@ In your terminal (Gitbash on Windows) you will now be able to run pre-commit che
 
 This project uses a minimal conda environment for development called `quickBayes-dev` (you can use another name if you prefer):
 
-To create the environment run the command from the root directory of the project:
+To create the environment run this command from the root directory of the project:
 
 ```sh
 > mamba env create -f quickBayes-dev-<OS>.yml
