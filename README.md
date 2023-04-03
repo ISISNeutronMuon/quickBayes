@@ -58,7 +58,7 @@ You should now be able to run the tests:
 ## Building for PyPi
 
 If this is your first time interacting with PyPi then please see [here](https://packaging.python.org/en/latest/tutorials/packaging-projects/#uploading-the-distribution-archives) for instructions of how to setup accounts and API tokens.
-The package will automatically be uploaded when a relase is created in github, see [here](https://cibuildwheel.readthedocs.io/en/stable/options/) for the details.
+The package will automatically be uploaded when a release is created in Github, see [here](https://cibuildwheel.readthedocs.io/en/stable/options/) for the details.
 
 ### Linux Notes
 
