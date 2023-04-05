@@ -35,9 +35,9 @@ def loglikelihood(x_len: ndarray, chi2: float, covar: ndarray,
     :param N_peaks: the number of peaks
     :param beta: the scale factor, A_max*(x_max - x_min) eq. 4.17
     :return the loglikelihood
-
     """
 
+    log_hess_det = log10_hessian_det(covar)
     """
     If the fit is overparameterised the loglikelihood
     will artifically be low. This is because the equation
@@ -49,7 +49,6 @@ def loglikelihood(x_len: ndarray, chi2: float, covar: ndarray,
     We will therefore add a penality to the loglikelihood
     via the hessian.
     """
-    log_hess_det = log10_hessian_det(covar)
     if np.max(np.abs(covar)) > 1:
         log_hess_det = 100*np.abs(log_hess_det)
 
