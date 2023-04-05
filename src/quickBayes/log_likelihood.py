@@ -35,6 +35,7 @@ def loglikelihood(x_len: ndarray, chi2: float, covar: ndarray,
     :param N_peaks: the number of peaks
     :param beta: the scale factor, A_max*(x_max - x_min) eq. 4.17
     :return the loglikelihood
+
     """
 
     """
