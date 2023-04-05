@@ -1,7 +1,3 @@
 pip
-numpy==1.16.*
-scipy
-cython
-gofit
 # install quickBayes
 -e .
