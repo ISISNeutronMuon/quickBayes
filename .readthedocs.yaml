@@ -5,7 +5,9 @@ build:
   tools:
     python: '3.8'
 
-requirements_file: docs/requirements.txt
+python:
+  install:
+  - requirements: docs/requirements.txt
 
 sphinx:
   fail_on_warning: true
