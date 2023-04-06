@@ -14,7 +14,7 @@ def loglikelihood(x_len: ndarray, chi2: float, covar: ndarray,
     by D. S. Sivia
     equation 4.20 page 88:
     P(M|{D_k},I) prop \\frac{N! (4\\pi)^N}{\\beta^N\\sqrt(\\det(H))}\\exp{(-\\frac{\\chi^2}{2})}  # noqa E501
-    where \\beta = (x_{max}-x_{min})A_{max}, H is the Hessian matrix
+    where :math:`\beta = (x_{max}-x_{min})A_{max}`, H is the Hessian matrix
     We want this as a logliklihood, so take \\log_{10} and use:
     - \\log_{10}(\\exp{\\alpha}) = \\ln(\\exp{\\alpha})\\log_{10}(\\exp{1})
     \\log_{10}(\\exp({\\alpha}) = \\alpha\\log_{10}(\\exp{1})
