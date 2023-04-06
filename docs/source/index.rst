@@ -13,10 +13,13 @@ Contents
    :maxdepth: 2
    :caption: Contents:
 
-   usage
-   api
+   Introduction <intro>
+   loglikelihood
    Fitting <fitting/index>
    Workflows <workflows/index>
+   Tutorial <tutorial/index>
+   usage
+   api
 
 Indices and tables
 ==================
