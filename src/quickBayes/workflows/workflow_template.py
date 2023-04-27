@@ -34,6 +34,16 @@ class WorkflowTemplate(object):
         """
         self._engine = None
         self._data = None
+        self._raw = None
+
+    @property
+    def get_raw(self):
+        """
+        Returns the original data
+        (i.e. the data fits are interpolated to match)
+        :return a dict of the raw data
+        """
+        return self._raw
 
     @property
     def fit_engine(self):
@@ -52,12 +62,14 @@ class WorkflowTemplate(object):
         This can be overwritten in a derived class to
         include extra processing (e.g. cropping or
         interpolating the data).
+        The data and raw data are assumed to be the same here
         :param x_data: the x data to fit to
         :param y_data: the y data to fit to
         :param e_data: the errors for the y data
         :param *args: additional arguments that might be needed
         """
         self._data = {'x': x_data, 'y': y_data, 'e': e_data}
+        self._raw = {'x': x_data, 'y': y_data, 'e': e_data}
 
     def update_fit_engine(self, func: BaseFitFunction, params: ndarray,
                           *args: float) -> None:
@@ -111,8 +123,8 @@ class WorkflowTemplate(object):
         :param upper: the upper bound for the fit
         """
         self._check_engine_and_data_set_valid()
-        self._engine = ScipyFitEngine(self._data['x'], self._data['y'],
-                                      self._data['e'], lower, upper,
+        self._engine = ScipyFitEngine(self._raw['x'], self._raw['y'],
+                                      self._raw['e'], lower, upper,
                                       guess)
 
     def update_scipy_fit_engine(self, func: BaseFitFunction, params: ndarray):
@@ -134,8 +146,8 @@ class WorkflowTemplate(object):
         :param upper: the upper bound for the fit
         """
         self._check_engine_and_data_set_valid()
-        self._engine = GoFitEngine(self._data['x'], self._data['y'],
-                                   self._data['e'], lower, upper, samples)
+        self._engine = GoFitEngine(self._raw['x'], self._raw['y'],
+                                   self._raw['e'], lower, upper, samples)
 
     def update_gofit_engine(self, func: BaseFitFunction):
         """

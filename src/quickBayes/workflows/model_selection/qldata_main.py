@@ -3,6 +3,8 @@ from quickBayes.utils.spline import spline
 from quickBayes.utils.general import get_background_function
 from quickBayes.workflow.model_template import ModelSelectionWorkflow
 from quickBayes.functions.base import BaseFitFunction
+from quickBayes.utils.crop_data import crop
+
 
 from numpy import ndarray
 import numpy as np
@@ -36,6 +38,11 @@ class QLData(ModelSelectionWorkflow):
         se = spline(x_data, e_data, new_x)
         ry = spline(res['x'], res['y'], new_x)
         super().preprocess_data(new_x, sy, se)
+
+        # Set the raw data
+        raw_x, raw_y, raw_e = crop(x_data, y_data, e_data,
+                                   start_x, end_x)
+        self._raw = {'x': raw_x, 'y': raw_y, 'e': raw_e}
 
         return new_x, ry
 
