@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 from tools.setup_helper import get_extensions
 
 
-VERSION = "1.0.0b6"
+VERSION = "1.0.0b7"
 PACKAGE_NAME = 'quickBayes'
 
 

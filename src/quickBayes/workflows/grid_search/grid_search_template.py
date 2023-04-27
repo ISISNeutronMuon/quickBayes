@@ -237,7 +237,7 @@ class GridSearchTemplate(WorkflowTemplate):
 
         X, Y = self._generate_grid()
 
-        N = len(self.get_x_axis.values)*len(self.get_y_axis.values)
+        # N = len(self.get_x_axis.values)*len(self.get_y_axis.values)
         counter = 0
 
         for i, xx in enumerate(self.get_x_axis.values):
@@ -254,6 +254,6 @@ class GridSearchTemplate(WorkflowTemplate):
                                                      num,
                                                      scale)
                 counter += 1
-                print(f'\rPercentage complete: {100*counter/N:2f}')
+                # print(f'\rPercentage complete: {100*counter/N:2f}')
         self._normalise_grid()
         return X, Y
