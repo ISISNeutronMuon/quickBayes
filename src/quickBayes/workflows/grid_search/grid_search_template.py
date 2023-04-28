@@ -253,6 +253,7 @@ class GridSearchTemplate(WorkflowTemplate):
                 self._grid[j][i] = self._get_z_value(len(x_data),
                                                      num,
                                                      scale)
+                self.update_fit_engine(func, params)
                 counter += 1
                 # print(f'\rPercentage complete: {100*counter/N:2f}')
         self._normalise_grid()
