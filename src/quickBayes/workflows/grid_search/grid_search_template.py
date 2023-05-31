@@ -239,7 +239,7 @@ class GridSearchTemplate(WorkflowTemplate):
 
         # N = len(self.get_x_axis.values)*len(self.get_y_axis.values)
         counter = 0
-
+        self.fix_bounds(True)
         for i, xx in enumerate(self.get_x_axis.values):
             func = self._set_x_value(func, xx)
             params = func.get_guess()

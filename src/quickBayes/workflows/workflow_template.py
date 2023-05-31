@@ -27,6 +27,7 @@ class WorkflowTemplate(object):
     - update_fit_engine
     - update_function (call this one not the overwritten one)
     - execute
+    - fix_bounds
     """
     def __init__(self):
         """
@@ -35,6 +36,7 @@ class WorkflowTemplate(object):
         self._engine = None
         self._data = None
         self._raw = None
+        self._fix_bounds = False
 
     @property
     def get_raw(self):
@@ -127,13 +129,26 @@ class WorkflowTemplate(object):
                                       self._raw['e'], lower, upper,
                                       guess)
 
+    def fix_bounds(self, state: bool) -> None:
+        """
+        A method to preserve the bounds when updating the
+        fitting function. This is for when we just want to
+        change the fitting parameters to a previous guess.
+        Default is False
+        :param state: if to fix the bounds
+        """
+        self._fix_bounds = state
+
     def update_scipy_fit_engine(self, func: BaseFitFunction, params: ndarray):
         """
         This updates the bounds and guess for scipy fit engine
         :param func: the fitting function
         :param params: the fitting parameters
         """
-        lower, upper = func.get_bounds()
+        if self._fix_bounds:
+            lower, upper = self._engine._lower, self._engine._upper
+        else:
+            lower, upper = func.get_bounds()
         guess = update_guess(list(params), func)
         self._engine.set_guess_and_bounds(guess, lower, upper)
 

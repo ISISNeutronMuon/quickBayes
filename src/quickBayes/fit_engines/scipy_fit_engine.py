@@ -59,11 +59,14 @@ class ScipyFitEngine(FitEngine):
         :param e_data: the error data to fit
         :return the fit parameters
         """
+        print("guess", self._guess)
+        print("bounds", self._lower, self._upper)
         params, covar = curve_fit(func, x_data, y_data, self._guess,
                                   sigma=e_data, absolute_sigma=True,
                                   maxfev=self._max_iterations,
                                   bounds=(self._lower, self._upper))
         self._covars.append(covar)
+        print("params", params)
         return params
 
     def calculate_covar(self, x_data: ndarray, y_data: ndarray,
