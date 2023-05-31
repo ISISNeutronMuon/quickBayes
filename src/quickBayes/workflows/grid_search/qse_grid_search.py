@@ -30,7 +30,6 @@ class QSEGridSearch(GridSearchTemplate):
     - execute
     - set_x_axis
     - set_y_axis
-    - fix_bounds
     """
     def preprocess_data(self, x_data: ndarray,
                         y_data: ndarray, e_data: ndarray,

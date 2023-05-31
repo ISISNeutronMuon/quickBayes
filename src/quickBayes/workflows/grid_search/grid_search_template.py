@@ -79,7 +79,6 @@ class GridSearchTemplate(WorkflowTemplate):
     - set_x_axis
     - set_y_axis
     - N
-    - fix_bounds
     """
     def __init__(self):
         """

@@ -31,13 +31,37 @@ class WorkflowTemplateTest(unittest.TestCase):
         x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
         self.assertEqual(len(self.wf._data), 3)
+
+        self.assertEqual(len(self.wf._raw['x']), len(x))
+        self.assertEqual(len(self.wf._raw['y']), len(y))
+        self.assertEqual(len(self.wf._raw['e']), len(e))
+
         self.assertEqual(len(self.wf._data['x']), len(x))
         self.assertEqual(len(self.wf._data['y']), len(y))
         self.assertEqual(len(self.wf._data['e']), len(e))
         for j in range(len(x)):
+            self.assertEqual(self.wf._raw['x'][j], x[j])
+            self.assertEqual(self.wf._raw['y'][j], y[j])
+            self.assertEqual(self.wf._raw['e'][j], e[j])
+
             self.assertEqual(self.wf._data['x'][j], x[j])
             self.assertEqual(self.wf._data['y'][j], y[j])
             self.assertEqual(self.wf._data['e'][j], e[j])
+
+    def test_get_raw_data(self):
+        x, y, e = gen_model_selection_data()
+        self.wf.preprocess_data(x, y, e)
+        self.assertEqual(len(self.wf._data), 3)
+
+        rx, ry, re = self.wf.get_raw
+        self.assertEqual(len(rx), len(x))
+        self.assertEqual(len(ry), len(y))
+        self.assertEqual(len(re), len(e))
+
+        for j in range(len(x)):
+            self.assertEqual(rx[j], x[j])
+            self.assertEqual(ry[j], y[j])
+            self.assertEqual(re[j], e[j])
 
     def test_update_function(self):
         """
