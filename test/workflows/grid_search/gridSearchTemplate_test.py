@@ -188,16 +188,16 @@ class GridSearchTemplateTest(unittest.TestCase):
         self.assertEqual(self.wf.fit_engine, None)
         x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
-        self.wf.set_scipy_engine([], [], [])
-        self.assertEqual(self.wf.fit_engine._guess, [])
-        self.assertEqual(self.wf.fit_engine._lower, [])
-        self.assertEqual(self.wf.fit_engine._upper, [])
+        self.wf.set_scipy_engine([1.], [-4], [4])
+        self.assertEqual(self.wf.fit_engine._guess, [1.])
+        self.assertEqual(self.wf.fit_engine._lower, [-4])
+        self.assertEqual(self.wf.fit_engine._upper, [4])
 
         bg = FlatBG()
         self.wf.update_fit_engine(bg, [2])
-        self.assertEqual(self.wf.fit_engine._guess, [2])
-        self.assertEqual(self.wf.fit_engine._lower, [-1])
-        self.assertEqual(self.wf.fit_engine._upper, [1])
+        self.assertEqual(self.wf.fit_engine._guess, [2.])
+        self.assertEqual(self.wf.fit_engine._lower, [-4])
+        self.assertEqual(self.wf.fit_engine._upper, [4])
 
     def test_set_gofit_engine(self):
         # same
