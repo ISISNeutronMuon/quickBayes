@@ -1,5 +1,5 @@
 import unittest
-from quickBayes.workflow.QlData import ql_data_main
+from quickBayes.workflow.QlData import ql_data_main, QLData
 from quickBayes.functions.qldata_function import QlDataFunction
 from quickBayes.functions.BG import LinearBG
 import numpy as np
@@ -13,7 +13,36 @@ Paramater result are from Mantid v6.5 on Windows
 """
 
 
-class QlDataV2Test(unittest.TestCase):
+class QlDataTest(unittest.TestCase):
+
+    def test_raw(self):
+        sx = [0, 1, 3, 5, 6.9]
+        sy = [1, 2, .2, .4, .1]
+        se = [.1, .2, .3, .4, .5]
+
+        sample = {'x': sx, 'y': sy, 'e': se}
+        res = {'x': sx, 'y': sy}
+
+        results = {}
+        errors = {}
+        workflow = QLData(results, errors)
+        new_x, ry = workflow.preprocess_data(sample['x'], sample['y'],
+                                             sample['e'],
+                                             0., 7., res)
+        expect_x = [0, 1.17, 2.33, 3.5, 4.67, 5.83, 7]
+        self.assertEqual(len(new_x), len(expect_x))
+        for k in range(len(new_x)):
+            self.assertAlmostEqual(new_x[k], expect_x[k], 2)
+
+        raw = workflow.get_raw
+        self.assertEqual(len(raw['x']), len(sx))
+        self.assertEqual(len(raw['y']), len(sy))
+        self.assertEqual(len(raw['e']), len(se))
+        for k in range(len(sx)):
+            self.assertEqual(raw['x'][k], sx[k])
+            self.assertEqual(raw['y'][k], sy[k])
+            self.assertEqual(raw['e'][k], se[k])
+
     def test_one(self):
         sx, sy, se = np.load(os.path.join(DATA_DIR, 'sample_data_red.npy'))
         rx, ry, re = np.load(os.path.join(DATA_DIR, 'resolution_data_red.npy'))

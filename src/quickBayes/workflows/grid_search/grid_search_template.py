@@ -221,6 +221,16 @@ class GridSearchTemplate(WorkflowTemplate):
         """
         raise NotImplementedError()
 
+    def _get_bounds(self, func: BaseFitFunction) -> (ndarray, ndarray):
+        """
+        Get the bounds for the fit engine
+        For a grid search we want the original
+        bounds
+        :param func: the fit function
+        :returns the lower and upper bounds
+        """
+        return self._engine._lower, self._engine._upper
+
     def execute(self, func: BaseFitFunction) -> (ndarray, ndarray):
         """
         Does the grid search. Needs the x and y axis to be set.
@@ -236,10 +246,6 @@ class GridSearchTemplate(WorkflowTemplate):
         scale = np.max(y_data)*(np.max(x_data) - np.min(x_data))
 
         X, Y = self._generate_grid()
-
-        N = len(self.get_x_axis.values)*len(self.get_y_axis.values)
-        counter = 0
-
         for i, xx in enumerate(self.get_x_axis.values):
             func = self._set_x_value(func, xx)
             params = func.get_guess()
@@ -253,7 +259,6 @@ class GridSearchTemplate(WorkflowTemplate):
                 self._grid[j][i] = self._get_z_value(len(x_data),
                                                      num,
                                                      scale)
-                counter += 1
-                print(f'\rPercentage complete: {100*counter/N:2f}')
+                self.update_fit_engine(func, params)
         self._normalise_grid()
         return X, Y
