@@ -48,5 +48,6 @@ jobs:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.5.0
-
+      - name: Publish package distribution to PYPI
+        uses: pypa/gh-action-pypi-publish@v1.5.0
+        verbose: True
