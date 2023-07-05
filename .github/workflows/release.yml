@@ -40,7 +40,7 @@ jobs:
   upload_pypi:
     needs: [build_wheels]
     runs-on: ubuntu-latest
-    premissions:
+    permissions:
       id-token: write
     steps:
       - uses: actions/download-artifact@v3
