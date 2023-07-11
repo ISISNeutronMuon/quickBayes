@@ -21,8 +21,8 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.8.0
         env:
-          # List of platforms to build on
-          CIBW_BUILD: cp38-manylinux_x86_64 cp38-win_amd64 cp38-macosx_x86_64 cp38-macosx_arm64
+          # List of platforms to build on (incl. Python version)
+          CIBW_BUILD: cp3{8,9,10}-manylinux_x86_64 cp3{8,9,10}-win_amd64 cp3{8,9,10}-macosx_x86_64 cp38-macosx_arm64
 
           CIBW_BEFORE_BUILD: >
              pip install numpy cython>=0.29.32 scipy
@@ -38,18 +38,19 @@ jobs:
   upload_pypi:
     needs: [build_wheels]
     runs-on: ubuntu-latest
-    # upload to PyPI on every tag starting with 'v'
-    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    # alternatively, to publish when a GitHub Release is created, use the following rule:
-    # if: github.event_name == 'release' && github.event.action == 'published'
+    permissions:
+      id-token: write
     steps:
+      - name: mint API token
+        id: mint
+        uses: tschm/token-mint-action@v1.0.2
+
       - uses: actions/download-artifact@v3
         with:
           name: artifact
           path: dist
 
-      - uses: pypa/gh-action-pypi-publish@v1.5.0
+      - name: Publish package distribution to PYPI
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
-          verbose: True
-          password: ${{ secrets.PYPI_API_TOKEN_QUICKBAYES }}
+          password: ${{ steps.mint.outputs.api-token }}
