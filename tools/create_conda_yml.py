@@ -76,6 +76,7 @@ def create_default():
                                    'scipy': '',
                                    'pytest': '',
                                    'pre-commit': '>=2.15',
+                                   'joblib': '',
                                    'pip': pip_dict}
     return default_yml
 
