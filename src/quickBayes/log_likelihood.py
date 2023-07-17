@@ -44,7 +44,7 @@ def loglikelihood(x_len: ndarray, chi2: float, covar: ndarray,
     We will therefore add a penality to the loglikelihood
     via the hessian.
     """
-log_hess_det = log10_hessian_det(covar)
+    log_hess_det = log10_hessian_det(covar)
     if np.max(np.abs(covar)) > 1:
         log_hess_det = 100*np.abs(log_hess_det)
 
