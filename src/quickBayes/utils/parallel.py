@@ -1,8 +1,10 @@
 import multiprocessing
 from joblib import Parallel, delayed
+from collections.abc import Callable
 
 
-def parallel(items: list, function, N: int = multiprocessing.cpu_count()):
+def parallel(items: list, function: Callable,
+             N: int = multiprocessing.cpu_count()):
     """
     This is a wrapper of the joblib Parallel function.
     It will run the function over multiple cores and then return the result.
