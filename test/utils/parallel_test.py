@@ -23,12 +23,12 @@ def function(j):
      new_x, fits, fit_e) = qse_data_main(sample, resolution,
                                          "linear", -0.4, 0.4, True,
                                          results, errors)
-    return results
+    return results, j
 
 
 class ParallelTest(unittest.TestCase):
 
-    def test_parallel(self):
+    def test_parallelSpeed(self):
 
         start = time.time()
         a = []
@@ -37,10 +37,23 @@ class ParallelTest(unittest.TestCase):
         serial = time.time() - start
 
         start = time.time()
-        _ = parallel(6, function)
+        _ = parallel(list(range(6)), function)
         parallel_time = time.time() - start
 
         self.assertLess(parallel_time, serial)
+
+    def test_parallelResults(self):
+
+        data = parallel(list(range(2)), function)
+        first = data[0][0]
+        second = data[1][0]
+        self.assertEqual(first.keys(), second.keys())
+        for key in first.keys():
+            self.assertEqual(first[key], second[key])
+
+        # check the j's
+        self.assertEqual(data[0][1], 0)
+        self.assertEqual(data[1][1], 1)
 
 
 if __name__ == '__main__':
