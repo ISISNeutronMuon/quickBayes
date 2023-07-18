@@ -31,7 +31,7 @@ jobs:
              pip install numpy cython==0.29.32 scipy joblib
 
           # Install test dependencies and run tests
-          CIBW_TEST_REQUIRES: pytest
+          CIBW_TEST_REQUIRES: pytest joblib
           CIBW_TEST_COMMAND: >
             pytest {project}/test
       - uses: actions/upload-artifact@v3
