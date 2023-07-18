@@ -79,7 +79,7 @@ def create_default(version):
     """
     default_yml = {}
 
-    pip_dict = {'cython': '=0.29.*',
+    pip_dict = {'cython': '==0.29.*',
                 'gofit': ''}
 
     default_yml['name'] = 'quickBayes-dev'
