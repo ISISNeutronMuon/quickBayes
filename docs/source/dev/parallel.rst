@@ -86,5 +86,5 @@ The :code:`parallel` function can even be used with a method from a class.
    result = test.parallel_function(inputs, const)
    print(result)
 
-It is important to note that the method call is to a wrapper of themethod function we want to run in parallel.
+It is important to note that the method call is to a wrapper of the method function we want to run in parallel.
 
