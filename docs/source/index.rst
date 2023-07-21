@@ -18,6 +18,7 @@ Contents
    Fitting <fitting/index>
    Workflows <workflows/index>
    Tutorial <tutorial/index>
+   Developer docs <dev/index>
    usage
    api
 
