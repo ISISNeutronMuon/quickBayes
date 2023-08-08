@@ -1,5 +1,6 @@
 import unittest
 import numpy as np
+from quickBayes.functions.SE import StretchExp
 from quickBayes.functions.lorentz import Lorentzian
 from quickBayes.functions.BG import LinearBG
 from quickBayes.functions.composite import CompositeFunction
@@ -100,6 +101,23 @@ class CompositeFunctionTest(unittest.TestCase):
         self.assertEqual(out["f2.Gamma"], [7])
         self.assertEqual(out["old"], [1])
         self.assertEqual(len(out.keys()), 7)
+
+    def test_custom_report_errors(self):
+        """
+        stretch exp calculates the error for FWHM,
+        test that this is used when its part of
+        a composite function.
+        """
+        se = StretchExp()
+        c = CompositeFunction()
+        c.add_function(se)
+
+        params = [1.97e-1, -1.43e-3, 2.10e1, 7.73e-1]
+        sigma = [3.e-4, 5.e-5, 5.e-2, 1.7e-3]
+
+        errors = c.report_errors({}, sigma, params)
+
+        self.assertAlmostEqual(errors['f1.FWHM'][0], 0.00015, 5)
 
     def test_read(self):
         report = {"old": [1]}

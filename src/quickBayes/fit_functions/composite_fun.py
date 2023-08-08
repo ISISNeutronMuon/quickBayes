@@ -94,6 +94,28 @@ class CompositeFunction(BaseFitFunction):
             report_dict = func.report(report_dict, *fun_args[j])
         return report_dict
 
+    def report_errors(self, report_dict: Dict[str, List[float]],
+                      errors: ndarray,
+                      params: ndarray) -> Dict[str, List[float]]:
+        """
+        report parameters
+        :param report_dic: dict of parameter errors
+        :param errors: the errors for the fit parameters
+        :param params: the fit parameters
+        :return update results dict
+        """
+        if len(errors) != self.N_params or len(params) != self.N_params:
+            raise ValueError(f"Expected {self.N_params} args, "
+                             f"got {len(params)} and {len(errors)}")
+
+        fun_args = self.split_args(params)
+        error_args = self.split_args(errors)
+        for j, func in enumerate(self._funcs):
+            report_dict = func.report_errors(report_dict,
+                                             error_args[j],
+                                             fun_args[j])
+        return report_dict
+
     def get_guess(self) -> List[float]:
         """
         Get the starting guess for a fit function
