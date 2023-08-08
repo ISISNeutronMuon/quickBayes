@@ -9,6 +9,7 @@ dependencies:
   - scipy
   - pytest
   - pre-commit >=2.15
+  - joblib
   - pip:
-    - cython
+    - cython ==0.29.*
     - gofit

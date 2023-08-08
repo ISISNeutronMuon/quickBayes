@@ -24,5 +24,3 @@ to get:
     \sum_{j=1}{N}\log(j) + N\log(4\pi) - 0.5\chi^2\log(\exp(1))
     - N\log(\beta) - 0.5\log(\det(H))
 
-
-
