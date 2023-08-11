@@ -209,6 +209,28 @@ class QEFunction(BaseFitFunction):
         report_dict = self.conv.report(report_dict, *params)
         return report_dict
 
+    def report_errors(self, report_dict: Dict[str, List[float]],
+                      errors: ndarray,
+                      params: ndarray) -> Dict[str, List[float]]:
+        """
+        report parameters
+        :param report_dic: dict of parameter errors
+        :param errors: the errors for the fit parameters
+        :param params: the fit parameters
+        :return update results dict
+        """
+        if len(errors) != self.N_params or len(params) != self.N_params:
+            raise ValueError(f"Expected {self.N_params} args, "
+                             f"got {len(params)} and {len(errors)}")
+        report_dict = self.BG.report_errors(report_dict,
+                                            errors[:self.BG.N_params],
+                                            params[:self.BG.N_params])
+
+        params = self._get_params(params)
+        errors = self._get_params(errors)
+        report_dict = self.conv.report_errors(report_dict, errors, params)
+        return report_dict
+
     @abstractmethod
     def update_first_values(self, update: List[float],
                             guess: List[float], index=-1) -> None:

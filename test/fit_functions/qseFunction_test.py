@@ -120,6 +120,30 @@ class QSEFunctionTest(unittest.TestCase):
         self.assertAlmostEqual(report["N1:f2.f2.FWHM"][0], 0.219, 3)
         self.assertEqual(report["N1:f2.f2.beta"], [7])
 
+    def test_report_errors(self):
+        """
+        stretch exp calculates the error for FWHM,
+        test that this is used when its part of
+        a quasielastic function.
+        """
+
+        x = np.linspace(-5, 5, 5)
+        bg = LinearBG()
+
+        se = StretchExp()
+        y = se(x, 1., 0.01, 11, .7)
+
+        qse = QSEFunction(bg, True, x, y, -6, 6)
+        qse.add_single_SE()
+
+        y = qse(x, .02, 1, .2, .1, 1, 10., 0.5)
+
+        params = [0., 0., 0.911, 0.972, 2.345, 2.10e1, 7.73e-1]
+        sigma = [0., 0., 1.2e-2, 3.e-4, 5.e-5, 5.e-2, 1.7e-3]
+
+        errors = qse.report_errors({}, sigma, params)
+        self.assertAlmostEqual(errors['N1:f2.f2.FWHM'][0], 0.00015, 5)
+
     def test_read_bg_and_delta_and_1se(self):
         x = np.linspace(0, 5, 6)
         bg = LinearBG()
