@@ -85,8 +85,9 @@ class QlDataFunction(QEFunction):
                 k = j + 1
                 N_qe = self.conv._funcs[k].N_params
                 # params has values for delta + lorentz
-                qe_amp = params[j*N_qe + N_e]
-                sigma_qe_amp = errors[j*N_qe + N_e]
+                qe_index = j*(N_qe - 1) + N_e #  -1 due to shared param
+                qe_amp = params[qe_index]
+                sigma_qe_amp = errors[qe_index]
                 EISF = sqrt(((qe_amp**2)*(sigma_e_amp**2) +
                              (sigma_qe_amp**2)*(e_amp**2))/pow(e_amp +
                                                                qe_amp, 4))
