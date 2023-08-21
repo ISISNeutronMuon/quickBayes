@@ -102,7 +102,7 @@ class QlDataTest(unittest.TestCase):
 
         self.assertAlmostEqual(errors['N3:f2.f2.EISF'][0], 0.4, 1)
         self.assertAlmostEqual(errors['N3:f2.f3.EISF'][0], 0.116, 2)
-        self.assertAlmostEqual(errors['N3:f2.f4.EISF'][0], 0.3, 1)
+        self.assertAlmostEqual(errors['N3:f2.f4.EISF'][0], 0.03, 2)
 
     def test_two(self):
         """
