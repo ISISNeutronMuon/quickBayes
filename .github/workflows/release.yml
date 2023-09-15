@@ -43,16 +43,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: 'choose Python version'
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
       - name: Build sdist
         run: pipx run build --sdist
 
       - uses: actions/upload-artifact@v3
         with:
           path: dist/*.tar.gz
+        env:
+          # List of platforms to build on (incl. Python version)
+          CIBW_BUILD: cp310-manylinux_x86_64
+
+          CIBW_BEFORE_BUILD: >
+             pip install numpy cython==0.29.32 scipy joblib
 
   upload_pypi:
     needs: [build_wheels, build_sdist]
