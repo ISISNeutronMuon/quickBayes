@@ -44,7 +44,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build sdist
-        run: pipx run build --sdist
+        run: |
+          pipx install numpy
+          pipx run build --sdist
 
       - uses: actions/upload-artifact@v3
         with:
