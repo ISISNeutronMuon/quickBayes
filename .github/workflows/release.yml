@@ -31,7 +31,7 @@ jobs:
              pip install numpy cython==0.29.32 scipy joblib
 
           # Install test dependencies and run tests
-          CIBW_TEST_REQUIRES: pytest joblib numpy
+          CIBW_TEST_REQUIRES: pytest joblib
           CIBW_TEST_COMMAND: >
             pytest {project}/test
       - uses: actions/upload-artifact@v3
@@ -41,6 +41,10 @@ jobs:
   build_sdist:
     name: Build source distribution
     runs-on: ubuntu-latest
+        env:
+          CIBW_BEFORE_BUILD: >
+             pip install numpy cython==0.29.32 scipy joblib
+
     steps:
       - uses: actions/checkout@v3
 
