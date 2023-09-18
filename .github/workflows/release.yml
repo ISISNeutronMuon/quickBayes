@@ -39,7 +39,7 @@ jobs:
           path: ./wheelhouse/*.whl
 
   build_sdist:
-    - name: Build source distribution
+      name: Build source distribution
       runs-on: ubuntu-latest
       steps:
          - uses: actions/checkout@v3
