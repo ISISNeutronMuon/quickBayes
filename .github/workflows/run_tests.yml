@@ -32,53 +32,30 @@ jobs:
       - name: create_yml_file
         shell: bash -l {0}
         run:  |
-             echo ${{ matrix.os }} ${{matrix.python_version}}
-             python tools/create_conda_yml.py ${{ matrix.os }} ${{matrix.python_version}}
-      - name: Setup Mambaforge windows
-        if: matrix.os == 'windows-latest'
+          echo ${{ matrix.os }} ${{matrix.python_version}}
+          python tools/create_conda_yml.py ${{ matrix.os }} ${{matrix.python_version}}
+      - name: Setup Mambaforge
         uses: conda-incubator/setup-miniconda@v2.1.1
         with:
           miniforge-version: latest
           miniforge-variant: Mambaforge
           activate-environment: quickBayes-dev
-          environment-file: quickBayes-dev-win.yml
-          auto-activate-base: false
-          use-mamba: true
-
-      - name: Setup Mambaforge linux
-        if: matrix.os == 'ubuntu-latest'
-        uses: conda-incubator/setup-miniconda@v2.1.1
-        with:
-          miniforge-version: latest
-          miniforge-variant: Mambaforge
-          activate-environment: quickBayes-dev
-          environment-file: quickBayes-dev-linux.yml
-          auto-activate-base: false
-          use-mamba: true
-
-      - name: Setup Mambaforge mac
-        if: matrix.os == 'macOS-latest'
-        uses: conda-incubator/setup-miniconda@v2.1.1
-        with:
-          miniforge-version: latest
-          miniforge-variant: Mambaforge
-          activate-environment: quickBayes-dev
-          environment-file: quickBayes-dev-mac.yml
+          environment-file: quickBayes-dev.yml
           auto-activate-base: false
           use-mamba: true
 
       - name: check install
         shell: bash -l {0}
         run:  |
-             mamba env list
-             python --version; conda list ; pip list
+          mamba env list
+          python --version; conda list ; pip list
       - name: compile
         shell: bash -l {0}
         run:  |
-            conda activate quickBayes-dev
-            python -m pip install .
+          conda activate quickBayes-dev
+          python -m pip install .
       - name: run tests
         timeout-minutes: 10
         shell: bash -l {0}
         run:  |
-             python -m pytest
+          python -m pytest
