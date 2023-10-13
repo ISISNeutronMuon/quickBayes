@@ -4,4 +4,5 @@ __pycache__/
 *.so
 *.c
 build/
+dist/
 src/quickBayes.egg-info/

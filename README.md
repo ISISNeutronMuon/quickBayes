@@ -31,28 +31,32 @@ This project uses a minimal conda environment for development called `quickBayes
 To create the environment run this command from the root directory of the project:
 
 ```sh
-> mamba env create -f quickBayes-dev-<OS>.yml
+mamba env create -f quickBayes-dev-<OS>.yml
+conda activate quickBayes-dev
 ```
 
 where, ``<OS>`` is either `windows`, `linux` or `mac` depending on your operating system.
-To activate the environment:
+
+### Build and Test
+
+From the root of this repository:
+
+To build a wheel, run
 
 ```sh
-> conda activate quickBayes-dev
-> which python  # should produce something in $HOME/mambaforge
+python setup.py bdist_wheel
 ```
 
-To compile and install the library in development mode:
+To install the wheel, run
 
 ```sh
-> cd <path-to-repository-clone>  # this directory containing setup.py
-> python -m pip install -v --editable .
+pip install --force-reinstall dist/quickBayes-0.2.0-cp310-cp310-*.whl
 ```
 
-You should now be able to run the tests:
+To run the tests
 
 ```sh
-> python -m pytest .
+pytest test/
 ```
 
 ## Building for PyPi
