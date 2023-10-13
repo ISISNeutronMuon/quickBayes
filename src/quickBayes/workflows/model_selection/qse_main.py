@@ -56,7 +56,7 @@ class QlStretchedExp(ModelSelectionWorkflow):
         func.add_single_SE()
         return func
 
-    def update_scipy_fit_engine(self, func: BaseFitFunction, params: ndarray):
+    def update_scipy_engine(self, func: BaseFitFunction, params: ndarray):
         """
         This updates the bounds and guess for scipy
         fit engine.

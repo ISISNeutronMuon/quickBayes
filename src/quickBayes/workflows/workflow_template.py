@@ -81,7 +81,7 @@ class WorkflowTemplate(object):
         :param *args: additional arguments
         """
         if self._engine.name == 'scipy':
-            self.update_scipy_fit_engine(func, params)
+            self.update_scipy_engine(func, params)
         elif self._engine.name == 'gofit':
             self.update_gofit_engine(func)
         else:
@@ -135,7 +135,7 @@ class WorkflowTemplate(object):
         """
         return func.get_bounds()
 
-    def update_scipy_fit_engine(self, func: BaseFitFunction, params: ndarray):
+    def update_scipy_engine(self, func: BaseFitFunction, params: ndarray):
         """
         This updates the bounds and guess for scipy fit engine
         :param func: the fitting function

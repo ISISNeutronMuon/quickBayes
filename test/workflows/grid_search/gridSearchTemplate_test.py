@@ -183,7 +183,7 @@ class GridSearchTemplateTest(unittest.TestCase):
         self.wf.set_scipy_engine([], [], [])
         self.assertEqual(self.wf.fit_engine.name, 'scipy')
 
-    def test_update_scipy_fit_engine(self):
+    def test_update_scipy_engine(self):
         # same
         self.assertEqual(self.wf.fit_engine, None)
         x, y, e = gen_grid_search_data()
