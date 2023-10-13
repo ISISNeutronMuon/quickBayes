@@ -1,7 +1,7 @@
 import unittest
 from quickBayes.fit_functions.qse_function import QSEFunction
 from quickBayes.fit_functions.BG import LinearBG
-from quickBayes.workflow.QSE import qse_data_main, QlStretchedExp
+from quickBayes.workflows.QSE import qse_data_main, QlStretchedExp
 import numpy as np
 import os.path
 

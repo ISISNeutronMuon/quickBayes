@@ -1,5 +1,5 @@
 import unittest
-from quickBayes.workflow.model_template import ModelSelectionWorkflow
+from quickBayes.workflows.model_template import ModelSelectionWorkflow
 from quickBayes.fit_functions.BG import FlatBG
 from quickBayes.fit_functions.exp_decay import ExpDecay
 from quickBayes.fit_functions.composite import CompositeFunction

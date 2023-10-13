@@ -1,7 +1,7 @@
 from quickBayes.fit_functions.qldata_function import QlDataFunction
 from quickBayes.utils.spline import spline
 from quickBayes.utils.general import get_background_function
-from quickBayes.workflow.model_template import ModelSelectionWorkflow
+from quickBayes.workflows.model_template import ModelSelectionWorkflow
 from quickBayes.fit_functions.base import BaseFitFunction
 from quickBayes.utils.crop_data import crop
 

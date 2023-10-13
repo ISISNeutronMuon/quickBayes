@@ -1,4 +1,4 @@
-from quickBayes.workflow.grid_template import GridSearchTemplate
+from quickBayes.workflows.grid_template import GridSearchTemplate
 from quickBayes.fit_functions.qse_fixed import QSEFixFunction
 from quickBayes.utils.spline import spline
 from numpy import ndarray

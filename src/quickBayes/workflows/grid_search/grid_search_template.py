@@ -1,4 +1,4 @@
-from quickBayes.workflow.template import WorkflowTemplate
+from quickBayes.workflows.template import WorkflowTemplate
 from quickBayes.log_likelihood import loglikelihood
 from quickBayes.fit_functions.base import BaseFitFunction
 

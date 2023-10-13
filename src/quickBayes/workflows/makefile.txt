@@ -1,1 +1,1 @@
-workflow.template: join('workflows', 'workflow_template.py')
+workflows.template: join('workflows', 'workflow_template.py')
