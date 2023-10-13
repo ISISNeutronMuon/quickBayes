@@ -1,8 +1,6 @@
 # quickBayes
 
-This package provides a convenient API
-for performing Bayesian analysis
-on muon and neutron-scattering data.
+This package provides a convenient API for performing Bayesian analysis on muon and neutron-scattering data.
 
 ## Installing
 
@@ -19,7 +17,7 @@ The library is available on [PyPi](https://pypi.org/project/quickBayes/#descript
 To activate pre-commit, setup the Conda environment and then type ``mamba update pre-commit``.
 Then once its updated type ``pre-commit install``, this generates a bash style file.
 However, this will produce an error when you try to run it (a known issue with pre-commit).
-In your terminal, but outside of your environment, type `` mamba env update --file quickBayes-dev-win.yml --prune``
+In your terminal, but outside of your environment, type `` mamba env update --file quickBayes-dev.yml --prune``
 Once it has completed, close the terminal and open a new one and activate the Conda environment.
 In your terminal (Gitbash on Windows) you will now be able to run pre-commit checks (outside of your Conda environment).
 
@@ -31,11 +29,9 @@ This project uses a minimal conda environment for development called `quickBayes
 To create the environment run this command from the root directory of the project:
 
 ```sh
-mamba env create -f quickBayes-dev-<OS>.yml
+mamba env create -f quickBayes-dev.yml
 conda activate quickBayes-dev
 ```
-
-where, ``<OS>`` is either `windows`, `linux` or `mac` depending on your operating system.
 
 ### Build and Test
 
