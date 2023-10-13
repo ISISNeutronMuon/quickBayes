@@ -1,6 +1,6 @@
 import unittest
-from quickBayes.functions.qse_fixed import QSEFixFunction
-from quickBayes.functions.BG import LinearBG
+from quickBayes.fit_functions.qse_fixed import QSEFixFunction
+from quickBayes.fit_functions.BG import LinearBG
 from quickBayes.workflow.qse_search import QSEGridSearch
 import numpy as np
 import os.path

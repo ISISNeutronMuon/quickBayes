@@ -1,4 +1,4 @@
-from quickBayes.functions.SE import StretchExp
+from quickBayes.fit_functions.SE import StretchExp
 from numpy import ndarray
 from typing import Dict, List
 

@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quickBayes.functions.SE import StretchExp
+from quickBayes.fit_functions.SE import StretchExp
 
 
 class StretchExpTest(unittest.TestCase):

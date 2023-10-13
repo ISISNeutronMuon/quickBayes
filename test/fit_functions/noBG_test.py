@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quickBayes.functions.BG import NoBG
+from quickBayes.fit_functions.BG import NoBG
 
 
 class NoBGTest(unittest.TestCase):

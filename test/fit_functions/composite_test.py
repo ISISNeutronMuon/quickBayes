@@ -1,9 +1,9 @@
 import unittest
 import numpy as np
-from quickBayes.functions.SE import StretchExp
-from quickBayes.functions.lorentz import Lorentzian
-from quickBayes.functions.BG import LinearBG
-from quickBayes.functions.composite import CompositeFunction
+from quickBayes.fit_functions.SE import StretchExp
+from quickBayes.fit_functions.lorentz import Lorentzian
+from quickBayes.fit_functions.BG import LinearBG
+from quickBayes.fit_functions.composite import CompositeFunction
 
 
 class CompositeFunctionTest(unittest.TestCase):

@@ -1,6 +1,6 @@
 from quickBayes.fitting.scipy_engine import ScipyFitEngine
 from quickBayes.fitting.gofit_engine import GoFitEngine
-from quickBayes.functions.base import BaseFitFunction
+from quickBayes.fit_functions.base import BaseFitFunction
 
 from quickBayes.utils.general import update_guess
 

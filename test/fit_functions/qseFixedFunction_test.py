@@ -1,8 +1,8 @@
 import unittest
 import numpy as np
-from quickBayes.functions.BG import LinearBG
-from quickBayes.functions.SE import StretchExp
-from quickBayes.functions.qse_fixed import QSEFixFunction
+from quickBayes.fit_functions.BG import LinearBG
+from quickBayes.fit_functions.SE import StretchExp
+from quickBayes.fit_functions.qse_fixed import QSEFixFunction
 
 
 class QSEFixedFunctionTest(unittest.TestCase):

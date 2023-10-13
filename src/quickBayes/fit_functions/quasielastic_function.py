@@ -1,7 +1,7 @@
-from quickBayes.functions.convolution import (
+from quickBayes.fit_functions.convolution import (
         ConvolutionWithResolution)
-from quickBayes.functions.base import BaseFitFunction
-from quickBayes.functions.delta import Delta
+from quickBayes.fit_functions.base import BaseFitFunction
+from quickBayes.fit_functions.delta import Delta
 from numpy import ndarray
 from typing import Dict, List
 from abc import abstractmethod

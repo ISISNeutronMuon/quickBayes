@@ -1,7 +1,7 @@
 import unittest
 from quickBayes.workflow.QlData import ql_data_main, QLData
-from quickBayes.functions.qldata_function import QlDataFunction
-from quickBayes.functions.BG import LinearBG
+from quickBayes.fit_functions.qldata_function import QlDataFunction
+from quickBayes.fit_functions.BG import LinearBG
 import numpy as np
 import os.path
 

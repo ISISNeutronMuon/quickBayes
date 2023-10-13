@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quickBayes.functions.lorentz import Lorentzian
+from quickBayes.fit_functions.lorentz import Lorentzian
 
 
 class LorentzianTest(unittest.TestCase):

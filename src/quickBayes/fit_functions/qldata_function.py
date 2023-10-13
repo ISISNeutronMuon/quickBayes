@@ -1,6 +1,6 @@
-from quickBayes.functions.base import BaseFitFunction
-from quickBayes.functions.qe_function import QEFunction
-from quickBayes.functions.lorentz import Lorentzian
+from quickBayes.fit_functions.base import BaseFitFunction
+from quickBayes.fit_functions.qe_function import QEFunction
+from quickBayes.fit_functions.lorentz import Lorentzian
 from numpy import ndarray
 from math import sqrt
 from typing import Dict, List

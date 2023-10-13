@@ -1,5 +1,5 @@
-from quickBayes.functions.base import BaseFitFunction
-from quickBayes.functions.composite import CompositeFunction
+from quickBayes.fit_functions.base import BaseFitFunction
+from quickBayes.fit_functions.composite import CompositeFunction
 from quickBayes.utils.crop_data import crop
 from quickBayes.utils.spline import spline
 from numpy import ndarray

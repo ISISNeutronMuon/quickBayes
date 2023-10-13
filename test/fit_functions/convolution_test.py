@@ -1,8 +1,8 @@
 import unittest
 from numpy import ndarray
 import numpy as np
-from quickBayes.functions.gaussian import Gaussian
-from quickBayes.functions.convolution import (
+from quickBayes.fit_functions.gaussian import Gaussian
+from quickBayes.fit_functions.convolution import (
         ConvolutionWithResolution as conv)
 from quickBayes.utils.crop_data import crop
 

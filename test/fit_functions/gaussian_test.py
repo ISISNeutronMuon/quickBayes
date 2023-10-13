@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quickBayes.functions.gaussian import Gaussian
+from quickBayes.fit_functions.gaussian import Gaussian
 
 
 class GaussianTest(unittest.TestCase):

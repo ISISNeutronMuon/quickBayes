@@ -1,6 +1,6 @@
-from quickBayes.functions.SE_fix import StretchExpWithFixes
-from quickBayes.functions.base import BaseFitFunction
-from quickBayes.functions.qse_function import QSEFunction
+from quickBayes.fit_functions.SE_fix import StretchExpWithFixes
+from quickBayes.fit_functions.base import BaseFitFunction
+from quickBayes.fit_functions.qse_function import QSEFunction
 from numpy import ndarray
 from typing import List
 

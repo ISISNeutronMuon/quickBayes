@@ -1,4 +1,4 @@
-from quickBayes.functions.base import BaseFitFunction
+from quickBayes.fit_functions.base import BaseFitFunction
 from numpy import ndarray, pi
 from typing import Dict, List
 

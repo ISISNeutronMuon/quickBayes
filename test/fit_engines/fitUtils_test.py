@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quickBayes.functions.BG import LinearBG
+from quickBayes.fit_functions.BG import LinearBG
 from quickBayes.fitting.fit_utils import (log10_hessian_det,
                                           chi_squared,
                                           param_errors,

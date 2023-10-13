@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quickBayes.functions.BG import FlatBG
+from quickBayes.fit_functions.BG import FlatBG
 
 
 class FlatBGTest(unittest.TestCase):

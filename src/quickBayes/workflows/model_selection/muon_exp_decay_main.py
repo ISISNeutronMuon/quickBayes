@@ -1,9 +1,9 @@
-from quickBayes.functions.composite import CompositeFunction
-from quickBayes.functions.exp_decay import ExpDecay
+from quickBayes.fit_functions.composite import CompositeFunction
+from quickBayes.fit_functions.exp_decay import ExpDecay
 from quickBayes.utils.general import get_background_function
 from quickBayes.utils.crop_data import crop
 from quickBayes.workflow.model_template import ModelSelectionWorkflow
-from quickBayes.functions.base import BaseFitFunction
+from quickBayes.fit_functions.base import BaseFitFunction
 from numpy import ndarray
 from typing import Dict, List
 

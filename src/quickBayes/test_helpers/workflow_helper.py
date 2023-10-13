@@ -1,5 +1,5 @@
-from quickBayes.functions.BG import LinearBG
-from quickBayes.functions.composite import CompositeFunction
+from quickBayes.fit_functions.BG import LinearBG
+from quickBayes.fit_functions.composite import CompositeFunction
 import numpy as np
 
 

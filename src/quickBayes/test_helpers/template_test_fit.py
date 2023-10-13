@@ -1,7 +1,7 @@
 from numpy import ndarray
 import numpy as np
 from abc import abstractmethod
-from quickBayes.functions.BG import LinearBG
+from quickBayes.fit_functions.BG import LinearBG
 from quickBayes.test_helpers.fitting_data import (basic_data,
                                                   spline_data,
                                                   func)

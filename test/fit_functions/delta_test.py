@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quickBayes.functions.delta import Delta
+from quickBayes.fit_functions.delta import Delta
 
 
 class DeltaTest(unittest.TestCase):

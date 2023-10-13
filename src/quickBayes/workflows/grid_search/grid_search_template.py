@@ -1,6 +1,6 @@
 from quickBayes.workflow.template import WorkflowTemplate
 from quickBayes.log_likelihood import loglikelihood
-from quickBayes.functions.base import BaseFitFunction
+from quickBayes.fit_functions.base import BaseFitFunction
 
 from numpy import ndarray
 import numpy as np

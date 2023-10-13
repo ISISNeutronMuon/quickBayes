@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from quickBayes.functions.BG import LinearBG
+from quickBayes.fit_functions.BG import LinearBG
 
 
 class LinearBGTest(unittest.TestCase):

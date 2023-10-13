@@ -1,6 +1,6 @@
-from quickBayes.functions.base import BaseFitFunction
-from quickBayes.functions.qe_function import QEFunction
-from quickBayes.functions.SE import StretchExp
+from quickBayes.fit_functions.base import BaseFitFunction
+from quickBayes.fit_functions.qe_function import QEFunction
+from quickBayes.fit_functions.SE import StretchExp
 from numpy import ndarray
 import copy
 from typing import List
