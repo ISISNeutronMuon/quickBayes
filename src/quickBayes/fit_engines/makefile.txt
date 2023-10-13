@@ -1,4 +1,0 @@
-fitting.fit_utils: join('fit_engines', 'fit_utils.py')
-fitting.fit_engine: join('fit_engines', 'fit_engine.py')
-fitting.scipy_engine: join('fit_engines', 'scipy_fit_engine.py')
-fitting.gofit_engine: join('fit_engines', 'gofit_engine.py')
