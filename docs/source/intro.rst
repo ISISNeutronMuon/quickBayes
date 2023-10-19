@@ -21,11 +21,11 @@ The following code was used to produce the data
 
 	x = np.linspace(0, 10, 100)
 	noise = 1 + 0.1*(np.random,normal(0, 2, len(x)))
-              function = Gaussian()
-              ground_truth = function(x, 103, 4.2, .9)
-              y = ground_truth * noise
-              e1 = np.sqrt(y)
-              e2 = np.power(y, 0.1)
+        function = Gaussian()
+        ground_truth = function(x, 103, 4.2, .9)
+        y = ground_truth * noise
+        e1 = np.sqrt(y)
+        e2 = np.power(y, 0.1)
      
 The two data sets are shown in figure 1. 
 
@@ -39,7 +39,7 @@ The chi squared values are 0.003 for the first data set (:math:`\sqrt(y)`) and 0
 This is expected, but both results suggest a good fit. 
 
 The loglikelihood
-==============
+=================
 
 Alternatively, we can use the loglikelihood to calculate the log of the probability that the fit describes the data.
 Since it is a log of a probability the values will always be negative, with the most likely outcomes being closest to zero. 
