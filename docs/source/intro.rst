@@ -16,18 +16,19 @@ For this example we will use a single Gaussian with an amplitude of :math:`103`,
 The following code was used to produce the data
 
 .. code-block:: python
-	from quickBayes.fit_functions.gaussian import Gaussin
-	import numpy as np
 
-	x = np.linspace(0, 10, 100)
-	noise = 1 + 0.1*(np.random,normal(0, 2, len(x)))
-        function = Gaussian()
-        ground_truth = function(x, 103, 4.2, .9)
-        y = ground_truth * noise
-        e1 = np.sqrt(y)
-        e2 = np.power(y, 0.1)
+  from quickBayes.fit_functions.gaussian import Gaussin
+  import numpy as np
+
+  x = np.linspace(0, 10, 100)
+  noise = 1 + 0.1*(np.random,normal(0, 2, len(x)))
+  function = Gaussian()
+  ground_truth = function(x, 103, 4.2, .9)
+  y = ground_truth * noise
+  e1 = np.sqrt(y)
+  e2 = np.power(y, 0.1)
      
-The two data sets are shown in figure 1. 
+The two data sets are shown below. 
 
 .. figure:: /images/bayes_example_data.png
    :alt: bayes_example_data.png
