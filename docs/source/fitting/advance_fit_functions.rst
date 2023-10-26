@@ -32,7 +32,7 @@ This method will take the new x range and then use a spline to calculate the cor
 The normalisation is then reapplied to ensure that the resolution function is always well behaved.
 For example if we want to convolve a resolution profile, :code:`rx, ry`, with a gaussian plus a delta function
 
-.. code-block::python
+.. code-block:: python
 
    from quickBayes.functions.gaussian import Gaussian
    from quickBayes.functions.delta import Delta
