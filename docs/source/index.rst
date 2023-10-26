@@ -16,6 +16,7 @@ Contents
    Introduction <intro>
    loglikelihood
    Fitting <fitting/index>
+   Advanced Fitting <fitting/advance_fit_functions>
    Workflows <workflows/index>
    Tutorial <tutorial/index>
    Developer docs <dev/index>
