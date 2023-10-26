@@ -7,7 +7,7 @@ build:
   os: 'ubuntu-20.04'
   tools:
     python: '3.11' #'mambaforge-4.10'
-       use_system_site_packages: true
+    use_system_site_packages: true
 
 conda:
   environment: quickBayes-dev-linux.yml
