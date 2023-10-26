@@ -93,7 +93,7 @@ The bounds can be set by using :code:`function.set_bounds([1, 2, 0.4], [10, 7, 1
 Making A New Fit Function
 =========================
 
-All fit functions must inherit from :cod:`BaseFitFunction`, this defines the basic methods of a fit function.
+All fit functions must inherit from :code:`BaseFitFunction`, this defines the basic methods of a fit function.
 Each class will need the following methods:
 
 - :code:`__init__` to define the setup of the function
