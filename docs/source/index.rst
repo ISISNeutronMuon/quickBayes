@@ -14,10 +14,9 @@ Contents
    :caption: Contents:
 
    Introduction <intro>
-   loglikelihood
    Fitting <fitting/index>
+   loglikelihood
    Workflows <workflows/index>
-   Tutorial <tutorial/index>
    Developer docs <dev/index>
    usage
    api
