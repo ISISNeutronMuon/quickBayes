@@ -55,7 +55,7 @@ Using the example from the introduction section we can calculate the loglikeliho
    noise = 1 + 0.1 * (np.random.normal(0, .2, len(x)))
    gauss = func()
    ground_truth = gauss (x, 103, 4.2, .9)
-   y = ground_truth*noise
+   y = ground_truth * noise
    e = np.sqrt(y) # normal for count data
    # construct fit functions
    gauss_2 = func()
@@ -70,14 +70,14 @@ Using the example from the introduction section we can calculate the loglikeliho
    beta = np.max(y) * (np.max(x) - np.min(x))
    loglike = loglikelihood(len(x), chi_2, engine.get_covariance_matrix(), 1, beta)
    # report results
-   print(‘one peak’, engine.get_fit_parameters(), chi_2, loglike)
+   print("one peak", engine.get_fit_parameters(), chi_2, loglike)
 
    # for two peaks
    engine.set_guess_and_bounds([100, 5, 1.2, 100, 5, 1.2], [0, 0, 0, 0, 0, 0], [200, 10, 10, 200, 10, 10])
    engine.do_fit(x, y, e, two_peaks)
    chi_2 = engine.get_chi_squared()
    loglike = loglikelihood(len(x), chi_2, engine.get_covariance_matrix(), 1, beta)
-   print(‘two peaks’, engine.get_fit_parameters(), chi_2, loglike)
+   print("two peaks", engine.get_fit_parameters(), chi_2, loglike)
 
 
 If the :code:`e` values are changed (e.g. :code:`e = np.power(y, 0.1)`) then the values for loglikelihoods will change.
