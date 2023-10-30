@@ -45,7 +45,7 @@ class CompositeFunction(BaseFitFunction):
             j += N
         return split
 
-    def __call__(self, x: ndarray, *args: float) -> ndarray:
+    def __call__(self, x: ndarray, *args) -> ndarray:
         """
         Implement a sum of functions.
         Need to follow the expected
@@ -59,7 +59,7 @@ class CompositeFunction(BaseFitFunction):
         elif len(args) != self.N_params:
             raise ValueError(f"Expected {self.N_params} args, got {len(args)}")
 
-        fun_args = self.split_args(args)
+        fun_args = self.split_args(list(args))
         result = np.zeros(len(x))
         for j, func in enumerate(self._funcs):
             result += func(x, *fun_args[j])
@@ -79,7 +79,7 @@ class CompositeFunction(BaseFitFunction):
         return params
 
     def report(self, report_dict: Dict[str, List[float]],
-               *args: float) -> Dict[str, List[float]]:
+               *args) -> Dict[str, List[float]]:
         """
         report the results
         :param report_dic: dict of results
@@ -89,7 +89,7 @@ class CompositeFunction(BaseFitFunction):
         if len(args) != self.N_params:
             raise ValueError(f"Expected {self.N_params} args, got {len(args)}")
 
-        fun_args = self.split_args(args)
+        fun_args = self.split_args(list(args))
         for j, func in enumerate(self._funcs):
             report_dict = func.report(report_dict, *fun_args[j])
         return report_dict
@@ -108,8 +108,8 @@ class CompositeFunction(BaseFitFunction):
             raise ValueError(f"Expected {self.N_params} args, "
                              f"got {len(params)} and {len(errors)}")
 
-        fun_args = self.split_args(params)
-        error_args = self.split_args(errors)
+        fun_args = self.split_args(list(params))
+        error_args = self.split_args(list(errors))
         for j, func in enumerate(self._funcs):
             report_dict = func.report_errors(report_dict,
                                              error_args[j],

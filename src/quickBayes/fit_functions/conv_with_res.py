@@ -58,7 +58,7 @@ class ConvolutionWithResolution(CompositeFunction):
         func.add_to_prefix(self._prefix)
         super().add_function(func)
 
-    def __call__(self, x: ndarray, *args: float) -> ndarray:
+    def __call__(self, x: ndarray, *args) -> ndarray:
         """
         Implement a convolution with a resolution function.
         Need to follow the expected

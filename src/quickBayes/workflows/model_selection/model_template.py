@@ -92,7 +92,7 @@ class ModelSelectionWorkflow(WorkflowTemplate):
 
         self._results_dict = func.report(self._results_dict, *params)
         self._errors_dict = func.report_errors(self._errors_dict,
-                                               errors, params)
+                                               list(errors), list(params))
 
         prob_name = f'N{N}:loglikelihood'
         n_data = len(self._data['y'])

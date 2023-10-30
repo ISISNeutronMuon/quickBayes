@@ -138,7 +138,7 @@ class QEFunction(BaseFitFunction):
             params += self._add_params(N_BG_params + N_f0 + j*2, x0, args)
         return params
 
-    def __call__(self, x: ndarray, *args: float) -> ndarray:
+    def __call__(self, x: ndarray, *args) -> ndarray:
         """
         Implement the function evaluation.
         Need to follow the expected
@@ -150,7 +150,7 @@ class QEFunction(BaseFitFunction):
         N_BG_params = self.BG.N_params
         result = self.BG(x, *args[:N_BG_params])
 
-        params = self._get_params(args)
+        params = self._get_params(list(args))
         result += self.conv(x, *params)
         return result
 
@@ -193,7 +193,7 @@ class QEFunction(BaseFitFunction):
         return params
 
     def report(self, report_dict: Dict[str, List[float]],
-               *args: float) -> Dict[str, List[float]]:
+               *args) -> Dict[str, List[float]]:
         """
         Reports the results
         :param report_dict: dict of results
@@ -205,7 +205,7 @@ class QEFunction(BaseFitFunction):
             raise ValueError(f"Expected {N} args, got {len(args)}")
         report_dict = self.BG.report(report_dict, *args[:self.BG.N_params])
 
-        params = self._get_params(args)
+        params = self._get_params(list(args))
         report_dict = self.conv.report(report_dict, *params)
         return report_dict
 

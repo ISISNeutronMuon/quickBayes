@@ -55,7 +55,7 @@ class WorkflowTemplate(object):
 
     def preprocess_data(self, x_data: ndarray,
                         y_data: ndarray, e_data: ndarray,
-                        *args: float) -> None:
+                        *args) -> None:
         """
         The preprocessing needed for the data.
         This simple case just assigns the data values.
@@ -72,7 +72,7 @@ class WorkflowTemplate(object):
         self._raw = {'x': x_data, 'y': y_data, 'e': e_data}
 
     def update_fit_engine(self, func: BaseFitFunction, params: ndarray,
-                          *args: float) -> None:
+                          *args) -> None:
         """
         This updates the fit engine specific properties.
         e.g. the bounds and guess for scipy
