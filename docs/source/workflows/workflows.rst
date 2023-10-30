@@ -136,3 +136,15 @@ The following workflows are available as part of the quickBayes package:
 
 All of these workflows use the scipy fit engine.
 
+
+Grid Search
+===========
+
+It is possible to use a workflow to do a grid search of two parameters.
+This requires a function with at least one free parameter, after fixing two for the grid point. 
+At present this is an experimental method and is not fully supported. 
+The fitting function needs to be made specifically for this method, with the fixed paramters as private members. 
+The results from the grid search are the loglikelihood normalised so that the most likely point has a value of one.
+The least likely point has a value of zero.
+It is important to note that this normalisation only takes into account the sampled grid.
+Hence, if the grid is too coarse then the true most likely value will not be found. 
