@@ -64,7 +64,7 @@ The other methods are
 
 
 Model Selection
-=============
+===============
 
 The main advantage of a workflow is to simplify model selection.
 Examples for the models being selected between could be the number of Lorentzians (:code:`QLData`) or the number of exponential decays (:code:`MuonExpDecay`) .
