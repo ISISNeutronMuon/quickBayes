@@ -17,6 +17,7 @@ Contents
    Fitting <fitting/index>
    loglikelihood
    Workflows <workflows/index>
+   History <history>
    Developer docs <dev/index>
    usage
    api
