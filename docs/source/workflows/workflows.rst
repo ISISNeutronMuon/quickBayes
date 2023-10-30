@@ -77,7 +77,7 @@ It also has two additional methods
 
 For example lets consider the case of wanting to know how many gaussians are within a dataset.
 We know that there is at least one gaussian.
-All of the peaks are centred near zero and are approximately zero outside of the range :math:`-10` to :amth:`10`.
+All of the peaks are centred near zero and are approximately zero outside of the range :math:`-10` to :math:`10`.
 The x data starts at :math:`-50` and ends at :math:`50`, but most of this is just background.
 Hence, it is worth cropping the data before the main part of the analysis.
 The following workflow could be used:
