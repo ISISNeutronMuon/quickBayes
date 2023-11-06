@@ -13,6 +13,8 @@ Contents
    :maxdepth: 2
    :caption: Contents:
 
+   Workflows <workflows>
+
 Indices and tables
 ==================
 

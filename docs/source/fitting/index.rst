@@ -14,5 +14,7 @@ Contents
    :caption: Contents:
 
    fit_functions
+   make_fit_functions
+   advance_fit_functions
    fit_engines
 
