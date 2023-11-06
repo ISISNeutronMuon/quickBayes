@@ -69,7 +69,7 @@ Model Selection
 The main advantage of a workflow is to simplify model selection.
 Examples for the models being selected between could be the number of Lorentzians (:code:`QLData`) or the number of exponential decays (:code:`MuonExpDecay`) .
 The :code:`ModelSelectionWorkflow` simplifies creating these kind of analyses.
-It inherits the the :code:`workflowTemplate` class but has as additional property :code`get_parameters_and_errors`.
+It inherits the the :code:`workflowTemplate` class but has as additional property :code:`get_parameters_and_errors`.
 It also has two additional methods
 
 - :code:`update_function` for updating the model (e.g. adding a peak).

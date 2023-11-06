@@ -57,7 +57,7 @@ There is also a :code:`set_guess_and_bounds` method to update the guess and boun
 GoFit
 =====
 
-The :code:`GoFitEngine` uses the :code:`multistart` method from GoFit.
+The :code:`GoFitEngine` uses the :code:`multistart` method from `GoFit <https://ralna.github.io/GOFit/_build/html/index.html>`.
 At initialisation it also requires
 
 - The lower bounds for the fit parameters.

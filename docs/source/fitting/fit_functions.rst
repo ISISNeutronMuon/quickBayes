@@ -2,7 +2,8 @@ Fit Functions
 =============
 
 Fit functions are the mathematical representations of the data.
-In quickBayes the fit functions are all classes with a very specific structure, see <insert link> for a full list of currently available options.
+In quickBayes the fit functions are all classes with a very specific structure, see :ref:`here<quickBayes.fit_functions
+>` for a full list of currently available options.
 The first step is to create a fit function object, these are Python classes designed to make it easier for inspecting important information.
 As an example we will use the gaussian function and this page will outline the various methods that you can use.
 The simplest example is to just create a fit function and to then call it.
@@ -60,7 +61,7 @@ Hence,
 
 .. code-block:: python
 
-  [1.0, 2.0, 3.0]
+  [1.0, 0.0, 2.0]
 
 Or a specific index can be given
 

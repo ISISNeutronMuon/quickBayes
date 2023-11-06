@@ -12,9 +12,9 @@ To make the calculation faster a series of assumptions are made:
 .. math::
     P(M|D_k,I) \propto \frac{N! (4\pi)^N}{\beta^N\sqrt{\det(H)}}\exp{(-\frac{\chi^2}{2})},
 
-where :math:`\\beta = (x_{max}-x_{min})A_{max}`, :math:`H` is the Hessian matrix.
-The :math:`\\beta` value represents the variation in the data by taking the product of the length of the :math:`x` range with the maximum height of the data.
-To convert the probability into a loglikelihood we need to take the :math:`\\log_{10}` and use:
+where :math:`\beta = (x_{max}-x_{min})A_{max}`, :math:`H` is the Hessian matrix.
+The :math:`\beta` value represents the variation in the data by taking the product of the length of the :math:`x` range with the maximum height of the data.
+To convert the probability into a loglikelihood we need to take the :math:`\log_{10}` and use:
 
 .. math::
     \log_{10}(\exp{\alpha}) = \ln(\exp{\alpha})\log_{10}(\exp{1}) \\
@@ -33,7 +33,7 @@ to get:
 This final equation is the unnormalized loglikelihood.
 
 The assumption of being at a local minima is important, because if a fit is over-parameterised it should be unlikely (i.e. a large negative loglikelihood).
-However, this is not the case as it produces a low :math:`\\chi^2` value.
+However, this is not the case as it produces a low :math:`\chi^2` value.
 To help understand this imagine some data that averages around the value two.
 If we fit a flat background to the data we would get the expected result of two.
 If we then fit a sum of two flat background to the same data then the sum of the two will give the expected result of two.
