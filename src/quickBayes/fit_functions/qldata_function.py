@@ -39,7 +39,7 @@ class QlDataFunction(QEFunction):
         return [args[0], args[2]]
 
     def report(self, report_dict: Dict[str, List[float]],
-               *args: float) -> Dict[str, List[float]]:
+               *args) -> Dict[str, List[float]]:
         """
         Reports the results
         :param report_dict: dict of results
@@ -47,7 +47,7 @@ class QlDataFunction(QEFunction):
         :returns updated results dict
         """
         report_dict = super().report(report_dict, *args)
-        params = self._get_params(args)
+        params = self._get_params(list(args))
         # manually add EISF
         if self.delta and self.conv.N_params > 2:
             BG_N_params = self.BG.N_params
@@ -118,4 +118,4 @@ class QlDataFunction(QEFunction):
         :return the updated list
         """
         to_update[1] = guess[1]
-        return to_update
+        return list(to_update)
