@@ -8,7 +8,7 @@ You can then add your changes to this branch and once it is ready to be merged i
 
 To reduce the chances of problems; Conda (alternatively you can use mamba) is used to manage the setup of the development environment (it is also used for the continuous integration).
 To setup the developer’s environment use the command :code:`conda env create -f quickBayes-dev.yml` (this will use the latest supported Python version).
-If you want to use a different Python version, the you will need to use the command `python tools/create_conda_yml.py <OS> <version>` first.
+If you want to use a different Python version, then you will need to use the command `python tools/create_conda_yml.py <OS> <version>` first.
 This will then generate a new :code:`quickBayes-dev.yml`.
 After creating the conda environment you will need to use the command :code:`conda activate quickBayes-dev` to get access to the environment.
 This guarantees that your setup is correct and it is isolated from the rest of your machine (i.e. changes here wont break any of your other software).
