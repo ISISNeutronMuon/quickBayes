@@ -9,7 +9,7 @@ build:
     python: 'mambaforge-22.9'
 
 conda:
-  environment: quickBayes-dev-linux.yml
+  environment: quickBayes-dev.yml
 
 
 python:

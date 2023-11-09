@@ -15,7 +15,7 @@ supported = ['windows', 'ubuntu', 'windows-latest', 'ubuntu-latest',
 exp = []
 
 # cannot support 3.11 until gofit does
-versions = ['3.8', '3.9', '3.10']
+versions = ['3.8', '3.9', '3.10', '3.11']
 
 
 def get_input():
@@ -53,14 +53,11 @@ def get_OS_info(OS, version):
     default_yml = create_default(version)
     if OS == 'mac' or OS == 'macOS-latest':
         yml_dict = for_mac(default_yml)
-        file_name = str(yml_dict["name"])+'-mac.yml'
     elif OS == 'windows' or OS == 'windows-latest':
         yml_dict = for_windows(default_yml)
-        file_name = str(yml_dict["name"])+'-win.yml'
     elif OS == 'ubuntu' or OS == 'ubuntu-latest':
         yml_dict = for_linux(default_yml)
-        file_name = str(yml_dict["name"])+'-linux.yml'
-    return yml_dict, file_name
+    return yml_dict, str(yml_dict["name"])+'.yml'
 
 
 """
@@ -79,8 +76,7 @@ def create_default(version):
     """
     default_yml = {}
 
-    pip_dict = {'cython': '',
-                'gofit': ''}
+    pip_dict = {}
 
     default_yml['name'] = 'quickBayes-dev'
     default_yml['channels'] = 'conda-forge'
@@ -90,6 +86,8 @@ def create_default(version):
                                    'pytest': '',
                                    'pre-commit': '>=2.15',
                                    'joblib': '',
+                                   'Cython': '',
+                                   'gofit': '',
                                    'pip': pip_dict}
     return default_yml
 

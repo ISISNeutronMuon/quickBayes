@@ -56,10 +56,10 @@ def record_dependencies(yml, outfile):
 
     deps = yml['dependencies']
     for package in deps.keys():
-        if package == 'pip':
+        if package == 'pip' and deps['pip'] != {}:
             outfile.write(str(INDENT) + ' - pip: \n')
             record_pip(deps['pip'], outfile)
-        else:
+        elif package != 'pip':
             outfile.write(str(INDENT) + ' - ' + str(package) +
                           ' ' + str(deps[package]) + ' \n')
 
