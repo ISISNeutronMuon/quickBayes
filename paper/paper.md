@@ -26,17 +26,15 @@ At present there are example workflows for:
 -	Determining the number of exponential decays in MuSR data.
 
 The `quickBayes` package comes with an API that can be easily be extended by users to calculate the most likely hypothesis given their data.
-![Two plots of the same raw data from a Quasi Elastic Neutron Scattering (QENS) experiment, showing the fits for one and two peaks (it also includes a linear background and an elastic peak).
-The inserts show zoomed in images of the peak centre.
-From the loglikelihood calculation the most likely number of peaks is two. \label{fig:peaks}](figures/peaks.png) {width=60%}
+![Two plots of the same raw data from a Quasi Elastic Neutron Scattering (QENS) experiment, showing the fits for one and two peaks (it also includes a linear background and an elastic peak). The inserts show zoomed in images of the peak centre. From the loglikelihood calculation the most likely number of peaks is two. \label{fig:peaks}](figures/peaks.png){width=40%}
 
 
 # Statement of need
 
 The `quickBayes` package started as a replacement for the `quasielasticbayes` package [@quasielasticbayes], which was used for:
 
-- determining the most likely number of Lorentzians in QENS data.
-- Calculating the loglikelihood of a stretched exponential in QENS data
+- Determining the most likely number of Lorentzians in QENS data.
+- Calculating the loglikelihood of a stretched exponential in QENS data.
 - Calculating a contour of the probability of a stretched exponential as a function of beta and sigma (full width half maxima).
 
 The `quasielasticbayes` package is highly successful within the field of QENS [@bayesPaper].
