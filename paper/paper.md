@@ -27,7 +27,8 @@ At present there are example workflows for:
 
 The `quickBayes` package comes with an API that can be easily be extended by users to calculate the most likely hypothesis given their data.
 ![Two plots of the same raw data from a Quasi Elastic Neutron Scattering (QENS) experiment, showing the fits for one and two peaks (it also includes a linear background and an elastic peak).
-The inserts show zoomed in images of the peak centre. \label{fig:peaks}](figures/peaks.png) {width=60%}
+The inserts show zoomed in images of the peak centre.
+From the loglikelihood calculation the most likely number of peaks is two. \label{fig:peaks}](figures/peaks.png) {width=60%}
 
 
 # Statement of need
