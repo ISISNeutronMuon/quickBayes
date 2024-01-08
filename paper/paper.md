@@ -16,21 +16,20 @@ bibliography: paper.bib
 
 # Summary
 
-It is common in science to have multiple hypothesis that could describe your data.
+It is common in science to have multiple hypotheses that could describe your data.
 Each one of these hypothesis provides a mathematical description of the data and gives unique physical insight into the data.
-However, it is not always obvious which hypothesis is the correct one and to demonstrate this figure \ref{fig:peaks} show Quasi Elastic Neutron Scattering (QENS) data fitted with one and two Lorentzian peaks.
+However, it is not always obvious which hypothesis is the correct one and to demonstrate this figure \ref{fig_peaks} show Quasi Elastic Neutron Scattering (QENS) data fitted with one and two Lorentzian peaks.
 The [`quickBayes`](https://quickbayes.readthedocs.io/en/latest/) package is designed to make it easier for users to determine which hypothesis is correct given their data.
 At present there are example workflows for:
 
--	Determining the number of lorentzians in quasielastic neutron scattering data.
+-	Determining the number of Lorentzians in quasielastic neutron scattering data.
 -	Determining the number of exponential decays in MuSR data.
 
 The `quickBayes` package comes with an API that can be easily be extended by users to calculate the most likely hypothesis given their data.
 
 ![ Two plots of the same raw data from a Quasi Elastic Neutron Scattering (QENS) experiment, showing the fits for one and two peaks (it also includes a linear background and an elastic peak).
 The inserts show zoomed in images of the peak centre.
-From the loglikelihood calculation the most likely number of peaks is two. \label{fig:peaks} ](figures/peaks.png){width=80%}{height="22pt"}
-
+From the loglikelihood calculation the most likely number of peaks is two. \label{fig_peaks} ](figures/peaks.png)
 
 # Statement of need
 
