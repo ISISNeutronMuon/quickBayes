@@ -60,6 +60,6 @@ Therefore, a new code was required that captured the key functionality of the `q
 
 I would like to thank Jari Fowkes for his helpful comments and insights.
 Thank you to the main tester of the package Spencer Howells.
-I would also like to thank the reviewers for `qucikBayes`; Martyn Gigg, Silke Schomann, Robert Applin and Jess Farmer.  
+I would also like to thank the reviewers for `quickBayes`; Martyn Gigg, Silke Schomann, Robert Applin and Jess Farmer.  
 
 # References
