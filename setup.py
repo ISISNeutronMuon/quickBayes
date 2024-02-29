@@ -34,6 +34,6 @@ setup(
     url='https://www.mantidproject.org',
     version=VERSION,
     license='BSD',
-    data_files=[('.', ['tools/*'])],
+    data_files=[('.', ['tools/setup_helper.py'])],
     package_dir={'': 'src'}
 )
