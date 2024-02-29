@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 from tools.setup_helper import get_extensions
 
 
-VERSION = "1.0.0b20"
+VERSION = "1.0.0b21"
 
 
 PACKAGE_NAME = 'quickBayes'
@@ -34,5 +34,6 @@ setup(
     url='https://www.mantidproject.org',
     version=VERSION,
     license='BSD',
-    package_dir={'': 'src', 'tools': 'tools'}
+    data_files=[('.', ['tools/*'])],
+    package_dir={'': 'src'}
 )
