@@ -14,6 +14,7 @@ Contents
    :caption: Contents:
 
    Introduction <intro>
+   Installation and support <install>
    Fitting <fitting/index>
    loglikelihood
    Workflows <workflows/index>
