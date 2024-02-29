@@ -60,16 +60,5 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - name: mint API token
-        id: mint
-        uses: tschm/token-mint-action@v1.0.2
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: artifact
-          path: dist
-
       - name: Publish package distribution to PYPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          password: ${{ steps.mint.outputs.api-token }}
