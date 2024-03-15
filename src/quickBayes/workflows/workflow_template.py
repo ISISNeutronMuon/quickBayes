@@ -1,5 +1,6 @@
 from quickBayes.fitting.scipy_engine import ScipyFitEngine
 from quickBayes.fitting.gofit_engine import GoFitEngine
+from quickBayes.fitting.bumps_engine import Bumps
 from quickBayes.functions.base import BaseFitFunction
 
 from quickBayes.utils.general import update_guess
@@ -82,6 +83,8 @@ class WorkflowTemplate(object):
         """
         if self._engine.name == 'scipy':
             self.update_scipy_fit_engine(func, params)
+        elif self._engine.name == 'bumps':
+            self.update_bumps_engine(func)
         elif self._engine.name == 'gofit':
             self.update_gofit_engine(func)
         else:
@@ -145,6 +148,13 @@ class WorkflowTemplate(object):
 
         guess = update_guess(list(params), func)
         self._engine.set_guess_and_bounds(guess, lower, upper)
+
+    def set_bumps_engine(self, func, names, x, y, wrapper):
+        self._engine= Bumps(names, func.get_guess(), func, x, y)
+        self._engine.setup(wrapper)
+
+    def update_bumps_engine(self, func):
+        return
 
     def set_gofit_engine(self, samples: int, lower: ndarray,
                          upper: ndarray) -> None:
