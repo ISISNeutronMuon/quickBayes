@@ -52,7 +52,11 @@ class Bumps(FitEngine):
         """
         self._func = function
         # create some dummy param names
+        #if params == []:
+        
         guess = function.get_guess()
+        #else:
+        #guess = params
         param_names = full_names if full_names != [] else [ f'a{j}' for j in range(len(guess))]
         # Bumps fails with the *args notation
         param_name_str = ', '.join(param_names)
@@ -100,17 +104,16 @@ class Bumps(FitEngine):
             param_order.append(str(self._fit_problem._parameters[i]))
         self.fit_order = param_order
 
-
-
+    
     """
     def do_fit(self, x_data, y_data, e_data
                , func):
         params = self._do_fit(x_data, y_data, e_data, func)
 
         def ff(p):
-            return func(x_data, *p)
+            return self._func(self._x_data, *p)
         def rr(p):
-            return var(func, x_data, y_data, p)
+            return var(func, self._x_data, self._y_data, p)
 
         tmp = ndt.Gradient(ff)(params)
         df_by_dp = tmp.T # derivative(x_data, params, func)
@@ -120,8 +123,8 @@ class Bumps(FitEngine):
 
         self._covars.append(scipy.linalg.inv(hess)*2.) #calculate_covar(x_data, y_data, e_data, func, df_by_dp, params)
         self.add_params(params)
-        self.add_fit(x_data, func, df_by_dp, params)
-        self._chi2.append(chi_squared(x_data, y_data, e_data,
+        self.add_fit(self._x_data, self._func, df_by_dp, params)
+        self._chi2.append(chi_squared(self._x_data, self._y_data, self._e_data,
                                       self._fit, params))
         self._fit = None
     """

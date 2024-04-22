@@ -63,21 +63,21 @@ class ScipyFitEngine(FitEngine):
                                   sigma=e_data, absolute_sigma=True,
                                   maxfev=self._max_iterations,
                                   bounds=(self._lower, self._upper))
-        self._covars.append(covar)
+        #self._covars.append(covar)
         return params
-
-    def calculate_covar(self, x_data: ndarray, y_data: ndarray,
-                        e_data: ndarray,
-                        func: Callable, df_by_dp: ndarray,
-                        params: ndarray) -> None:
-        """
-        Calculated the covariance matrix during the fit
-        So do nothing here as we already have the value
-        :param x_data: the x data to fitted against
-        :param y_data: the y data to fitted against
-        :param e_data: the error data to fitted against
-        :param func: the fitting function
-        :param df_by_dp: the derivatives wrt the parameters
-        :param params: the fit parameters
-        """
-        return
+    
+    #def calculate_covar(self, x_data: ndarray, y_data: ndarray,
+    #                    e_data: ndarray,
+    #                    func: Callable, df_by_dp: ndarray,
+    #                    params: ndarray) -> None:
+    #    """
+    #    Calculated the covariance matrix during the fit
+    #    So do nothing here as we already have the value
+    #    :param x_data: the x data to fitted against
+    #    :param y_data: the y data to fitted against
+    #    :param e_data: the error data to fitted against
+    #    :param func: the fitting function
+    #    :param df_by_dp: the derivatives wrt the parameters
+    #    :param params: the fit parameters
+    #    """
+    #    return

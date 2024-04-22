@@ -81,9 +81,12 @@ class WorkflowTemplate(object):
         :param params: the fitting parameters
         :param *args: additional arguments
         """
+        #p = func._get_params(params)
+
         if self._engine.name == 'scipy':
             self.update_scipy_fit_engine(func, params)
         elif self._engine.name == 'bumps':
+            
             self.update_bumps_engine(func)
         elif self._engine.name == 'gofit':
             self.update_gofit_engine(func)
@@ -149,12 +152,12 @@ class WorkflowTemplate(object):
         guess = update_guess(list(params), func)
         self._engine.set_guess_and_bounds(guess, lower, upper)
 
-    def set_bumps_engine(self, func, names, x, y, wrapper):
-        self._engine= Bumps(names, func.get_guess(), func, x, y)
-        self._engine.setup(wrapper)
+    def set_bumps_engine(self, func, x, y, e):
+        self._engine= Bumps(func, x, y, e)
+        #self._engine.set_function(func)
 
     def update_bumps_engine(self, func):
-        return
+        self._engine.set_function(func)
 
     def set_gofit_engine(self, samples: int, lower: ndarray,
                          upper: ndarray) -> None:

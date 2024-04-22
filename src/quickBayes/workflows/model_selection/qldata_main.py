@@ -54,6 +54,7 @@ class QLData(ModelSelectionWorkflow):
         :return the modified fitting function
         """
         func.add_single_lorentzian()
+        func.set_func_guess([.12, -.06, .02])
         return func
 
 
