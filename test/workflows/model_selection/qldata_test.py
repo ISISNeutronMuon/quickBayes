@@ -1,5 +1,5 @@
 import unittest
-from quickBayes.workflow.QlData import ql_data_main, QLData
+from quickBayes.workflow.model_selection.QlData import ql_data_main, QLData
 from quickBayes.functions.qldata_function import QlDataFunction
 from quickBayes.functions.BG import LinearBG
 import numpy as np

@@ -1,0 +1,14 @@
+[build-system]
+requires = ['hatchling']
+build-backend = 'hatchling.build'
+
+[project]
+name = 'quickBayes'
+version = "0.2.0b0"
+requires-python = ">=3.7.1"
+dependencies = ['numpy', 'scipy', 'gofit']
+authors = [{name='Anthony Lim', email='anthony.lim@stfc.ac.uk'}]
+description = 'stuff'
+readme = 'README.md'
+license = {text = 'BSD'}
+
