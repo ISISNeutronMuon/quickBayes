@@ -8,7 +8,7 @@ version = "1.0.0b22"
 requires-python = ">=3.8.1"
 dependencies = ['numpy', 'scipy', 'gofit']
 authors = [{name='Anthony Lim', email='anthony.lim@stfc.ac.uk'}]
-description = 'A Bayesian fitting package used for model selection and grid searches of fits for neutron and muon data.',
+description = "A Bayesian fitting package used for model selection and grid searches of fits for neutron and muon data."
 keywords=['bayesian', 'fitting', 'QENS', 'muons']
 readme = 'README.md'
 license = {text = 'BSD'}
