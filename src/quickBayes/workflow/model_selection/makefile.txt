@@ -1,0 +1,4 @@
+workflow.model_template: join('workflows', 'model_selection', 'model_template.py')
+workflow.QlData: join('workflows', 'model_selection', 'qldata_main.py')
+workflow.QSE: join('workflows', 'model_selection', 'qse_main.py')
+workflow.MuonExpDecay: join('workflows', 'model_selection', 'muon_exp_decay_main.py')
