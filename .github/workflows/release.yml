@@ -1,10 +1,13 @@
 name: Build and upload to PyPI
 
 on:
+ on:
+  push:
+    branches:
+    - 'main'
   pull_request:
     branches:
       - 'main'
- 
   release:
     types:
         - published
