@@ -1,5 +1,5 @@
 import unittest
-from quickBayes.workflow.grid_search.grid_search_template import GridSearchTemplate
+from quickBayes.workflow.grid_search.template import GridSearchTemplate
 from quickBayes.functions.BG import FlatBG
 from quickBayes.functions.exp_decay import ExpDecay
 from quickBayes.test_helpers.workflow_helper import (gen_grid_search_data,
