@@ -4,11 +4,18 @@ build-backend = 'hatchling.build'
 
 [project]
 name = 'quickBayes'
-version = "0.2.0b0"
-requires-python = ">=3.7.1"
+version = "1.0.0b22"
+requires-python = ">=3.8.1"
 dependencies = ['numpy', 'scipy', 'gofit']
 authors = [{name='Anthony Lim', email='anthony.lim@stfc.ac.uk'}]
-description = 'stuff'
+description = 'A Bayesian fitting package used for '
+              'model selection and grid searches of fits '
+              'for neutron and muon data.',
+keywords=['bayesian', 'fitting', 'QENS', 'muons']
 readme = 'README.md'
 license = {text = 'BSD'}
 
+[project.urls]
+Homepage = "https://quickbayes.readthedocs.io/en/latest/"
+Documentation = "https://quickbayes.readthedocs.io/en/latest/"
+Repository = 'https://github.com/ISISNeutronMuon/quickBayes'
