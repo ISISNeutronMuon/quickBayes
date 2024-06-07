@@ -13,8 +13,11 @@ Contents
    :maxdepth: 2
    :caption: Contents:
 
-   Introduction <intro>
+   Welcome to quickBayes <intro>
+   Introduction <introduction>
    Installation and support <install>
+   Bayesian Methods <cf_methods>
+   Theory <theory>
    Fitting <fitting/index>
    loglikelihood
    Workflows <workflows/index>
