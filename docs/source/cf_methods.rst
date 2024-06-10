@@ -48,22 +48,22 @@ Odds factor
 
 Check the label for :ref:`integration <eq:int>`
 
-:ref:`odds factor<https://jakevdp.github.io/blog/2015/08/07/frequentism-and-bayesianism-5-model-selection/>`
+`odds factor<https://jakevdp.github.io/blog/2015/08/07/frequentism-and-bayesianism-5-model-selection/>`_
 
 
 MCMC to eval integral
 ---------------------
 
-:ref:`MCMC <https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo>`
+`MCMC <https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo>`_
 
 Nested sampling
 ---------------
 
-:ref:`nested sampling <https://en.wikipedia.org/wiki/Nested_sampling_algorithm>`
+`nested sampling <https://en.wikipedia.org/wiki/Nested_sampling_algorithm>`_
 
 AIC and BIC
 -----------
 
 
-:ref:`AIC <https://en.wikipedia.org/wiki/Akaike_information_criterion>`
-:ref:`BIC <https://en.wikipedia.org/wiki/Bayesian_information_criterion>`
+`AIC <https://en.wikipedia.org/wiki/Akaike_information_criterion>`_
+`BIC <https://en.wikipedia.org/wiki/Bayesian_information_criterion>`_
