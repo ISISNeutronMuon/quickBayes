@@ -65,5 +65,5 @@ AIC and BIC
 -----------
 
 
-:ref:`AIC <https://en.wikipedia.org/wiki/Akaike_information_criterion>`_
-:ref:`BIC <https://en.wikipedia.org/wiki/Bayesian_information_criterion>`_
+:ref:`AIC <https://en.wikipedia.org/wiki/Akaike_information_criterion>`
+:ref:`BIC <https://en.wikipedia.org/wiki/Bayesian_information_criterion>`
