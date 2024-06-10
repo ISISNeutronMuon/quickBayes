@@ -48,7 +48,7 @@ Odds factor
 
 Check the label for :ref:`integration <eq:int>`
 
-`odds factor<https://jakevdp.github.io/blog/2015/08/07/frequentism-and-bayesianism-5-model-selection/>`_
+`odds factor <https://jakevdp.github.io/blog/2015/08/07/frequentism-and-bayesianism-5-model-selection/>`_
 
 
 MCMC to eval integral
