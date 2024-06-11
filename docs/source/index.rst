@@ -19,6 +19,7 @@ Contents
    Installation and support <install>
    Bayesian Methods <cf_methods>
    Theory <theory>
+   Examples <examples/QENS>
    Developer docs <dev/index>
    api
 
