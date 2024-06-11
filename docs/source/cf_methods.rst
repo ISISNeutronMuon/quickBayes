@@ -1,3 +1,5 @@
+.. _cf:
+
 Bayesian Methods
 ================
 
@@ -64,7 +66,6 @@ Nested sampling
 AIC and BIC
 -----------
 
-`Mantid <https://mantidproject.org/>`_
 `AIC <https://en.wikipedia.org/wiki/Akaike_information_criterion/>`_
 
 `BIC <https://en.wikipedia.org/wiki/Bayesian_information_criterion/>`_

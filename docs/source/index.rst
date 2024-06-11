@@ -15,15 +15,11 @@ Contents
 
    Welcome to quickBayes <intro>
    Introduction <introduction>
+   History <history>
    Installation and support <install>
    Bayesian Methods <cf_methods>
    Theory <theory>
-   Fitting <fitting/index>
-   loglikelihood
-   Workflows <workflows/index>
-   History <history>
    Developer docs <dev/index>
-   usage
    api
 
 Indices and tables
