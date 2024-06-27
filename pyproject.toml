@@ -13,6 +13,10 @@ keywords=['bayesian', 'fitting', 'QENS', 'muons']
 readme = 'README.md'
 license = {text = 'BSD'}
 
+[project.optional-dependencies]
+docs = ["sphinx==7.3.7",
+        "nbsphinx==0.9.4"]
+
 [project.urls]
 Homepage = "https://quickbayes.readthedocs.io/en/latest/"
 Documentation = "https://quickbayes.readthedocs.io/en/latest/"
