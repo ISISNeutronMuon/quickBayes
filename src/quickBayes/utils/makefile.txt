@@ -1,4 +1,0 @@
-utils.general: join('utils', 'general.py')
-utils.spline: join('utils', 'spline.py')
-utils.crop_data: join('utils', 'crop_data.py')
-utils.parallel: join('utils', 'parallel.py')

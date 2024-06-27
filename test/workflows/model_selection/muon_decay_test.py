@@ -1,5 +1,5 @@
 import unittest
-from quickBayes.workflow.MuonExpDecay import muon_expdecay_main
+from quickBayes.workflow.model_selection.muon_decay import muon_expdecay_main
 import numpy as np
 import os.path
 
