@@ -81,7 +81,7 @@ def create_default(version):
     default_yml['name'] = 'quickBayes-dev'
     default_yml['channels'] = 'conda-forge'
     default_yml['dependencies'] = {'python': '=' + version + '.*',
-                                   'numpy': '',
+                                   'numpy': '==1.26.0',
                                    'scipy': '',
                                    'pytest': '',
                                    'pre-commit': '>=2.15',

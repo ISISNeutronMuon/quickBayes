@@ -14,8 +14,8 @@ extensions = get_extensions(PACKAGE_NAME)
 setup(
     name=PACKAGE_NAME,
     requires=['numpy'],
-    setup_requires=['numpy>=1.12'],
-    install_requires=['numpy>=1.12', 'scipy', 'gofit'],
+    setup_requires=['numpy==1.26.0'],
+    install_requires=['numpy==1.26.0', 'scipy', 'gofit'],
     packages=find_packages(where='src'),
     description='A Bayesian fitting package used for '
                 'model selection and grid searches of fits '
