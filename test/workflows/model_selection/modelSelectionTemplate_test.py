@@ -1,9 +1,9 @@
 import unittest
-from quickBayes.workflow.model_template import ModelSelectionWorkflow
+from quickBayes.workflow.model_selection.template import ModelSelectionWorkflow
 from quickBayes.functions.BG import FlatBG
 from quickBayes.functions.exp_decay import ExpDecay
 from quickBayes.functions.composite import CompositeFunction
-from quickBayes.test_helpers.workflows import gen_model_selection_data
+from quickBayes.test_helpers.workflow_helper import gen_model_selection_data
 
 
 class SimpleWorkflow(ModelSelectionWorkflow):

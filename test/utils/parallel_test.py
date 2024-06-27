@@ -1,5 +1,5 @@
 import unittest
-from quickBayes.workflow.QSE import qse_data_main
+from quickBayes.workflow.model_selection.QSE import qse_data_main
 from quickBayes.utils.parallel import parallel
 import numpy as np
 import os.path

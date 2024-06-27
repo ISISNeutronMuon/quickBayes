@@ -1,4 +1,0 @@
-test_helpers.template_fit_test: join('test_helpers', 'template_test_fit.py')
-test_helpers.fitting_data: join('test_helpers', 'fitting_data.py')
-test_helpers.template_scipy_fit: join('test_helpers', 'template_scipy_fit_test.py')
-test_helpers.workflows: join('test_helpers', 'workflow_helper.py')
