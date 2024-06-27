@@ -15,6 +15,7 @@ license = {text = 'BSD'}
 
 [project.optional-dependencies]
 docs = ["sphinx==7.3.7",
+	'jupyter',
         "nbsphinx==0.9.4"]
 
 [project.urls]
