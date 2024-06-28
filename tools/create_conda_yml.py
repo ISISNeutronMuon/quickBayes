@@ -76,7 +76,7 @@ def create_default(version):
     """
     default_yml = {}
 
-    pip_dict = {}
+    pip_dict = {'readthedocs-sphinx-ext': ''}
 
     default_yml['name'] = 'quickBayes-dev'
     default_yml['channels'] = 'conda-forge'
@@ -88,6 +88,9 @@ def create_default(version):
                                    'joblib': '',
                                    'Cython': '',
                                    'gofit': '',
+                                   'sphinx': '',
+                                   'jupyter-book': '',
+                                   'nbsphinx': '',
                                    'pip': pip_dict}
     return default_yml
 
