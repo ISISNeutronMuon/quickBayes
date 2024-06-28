@@ -19,7 +19,7 @@ Contents
    Installation and support <install>
    Bayesian Methods <cf_methods>
    Theory <theory>
-   Examples <examples/QENS.ipynb>
+   examples/QENS.ipynb
    Developer docs <dev/index>
    api
 
