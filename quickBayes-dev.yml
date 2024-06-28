@@ -14,5 +14,6 @@ dependencies:
   - gofit
   - sphinx
   - jupyter-book
+  - nbsphinx
   - pip:
     - readthedocs-sphinx-ext
