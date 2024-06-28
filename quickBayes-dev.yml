@@ -13,5 +13,6 @@ dependencies:
   - Cython
   - gofit
   - sphinx
+  - jupyter-book
   - pip:
     - readthedocs-sphinx-ext
