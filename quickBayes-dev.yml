@@ -12,3 +12,7 @@ dependencies:
   - joblib
   - Cython
   - gofit
+- pip:
+  - readthedocs-sphinx-ext
+- sphinx
+- jupyter-book
