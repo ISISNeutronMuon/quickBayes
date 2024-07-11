@@ -1,7 +1,7 @@
 Welcome To quickBayes
 =====================
 
-The quickBayes package is an open source library for calculating Bayesian quantities in a short period of time, by making some assumptions.
+The quickBayes package is an open source library for calculating a fast approximation of the Bayesian evidence for use in model selection.
 The package is cross platform, supporting Windows, Mac OS and Linux.
 This package has been developed by Anthony Lim from STFC’s ISIS Neutron and Muon facility.
 
