@@ -16,9 +16,7 @@ Bayesian inference is used to calculate the whole posterior probability distribu
 The equation for the posterior probability can be written as
 
 .. math::
-   :label: post
-
-   P(\underline{\theta}| D, M) = P(D | \underline{\theta}, M)\frac{P(D | \underline{\theta}, M)}{P(D | M),
+   P(\underline{\theta} | D, M) = P(D | \underline{\theta}, M)\frac{P(D | \underline{\theta}, M)}{P(D | M)},
 
 where :math:`\underline{\theta}` is a vector of model parameters, :math:`M` is the model and :math:`D` is the data.
 :math:`P(\underline{\theta} | M)` is the prior distribution and represents current knowledge of the system.
@@ -73,7 +71,7 @@ The probability of the data will be the same for all models, so by taking a rati
 .. math::
    :label: odds
 
-   O_{21} = \frac{P(M_2 | D)}{P(M_1 | D) = \frac{P(D | M_2)P(M_2)}{P(D | M_1)P(M_1)}
+   O_{21} = \frac{P(M_2 | D)}{P(M_1 | D)} = \frac{P(D | M_2)P(M_2)}{P(D | M_1)P(M_1)}
 
 where :math:`0_{21}` is the odds factor for models two (:math:`M_2`) and one (:math:`M_1`).
 Assuming that there is no prior knowledge then :math:`P(M_1) \approx P(M_2)`.
@@ -93,7 +91,7 @@ To evaluate the odds factor, the probability of the data given the model needs t
 This is written as
 
 .. math::
-   P(D | M) = \int_\omega d\undeline{\theta} \quad P(D| \underline{\theta}, M)P(\underline{\theta} | M)
+   P(D | M) = \int_\omega d\underline{\theta} \quad P(D| \underline{\theta}, M)P(\underline{\theta} | M)
 
 where the integral over :math:`\omega` is over the available parameter space for :math:`\underline{\theta}`.
 
