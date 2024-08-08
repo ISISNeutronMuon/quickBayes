@@ -6,10 +6,10 @@ Introduction
 Statistics is dominated by a school of thought known as frequentist statistics.
 To demonstrate the difference, let's consider a bag containing a mixture of red and yellow balls.
 If a ball is chosen from the bag, such that only one person knows its colour.
-Then a frequentist would say that the probability of that ball being red is either :math:`100%` or :math:`0%`, as it is definitely red or not.
+Then a frequentist would say that the probability of that ball being red is either :math:`100\%` or :math:`0\%`, as it is definitely red or not.
 
 A Bayesian approach relies more on probability and uncertainty.
-In the above example of picking a ball, they would say that the probability of the ball being red is :math:`50%` as it is either red or yellow.
+In the above example of picking a ball, they would say that the probability of the ball being red is :math:`50\%` as it is either red or yellow.
 This initial probability is known as a prior and represents the known information at the beginning.
 After revealing the colour of the ball it is placed back into the bag, it is shaken, and a new ball is picked.
 After repeating this :math:`100` times a red ball was picked :math:`70` times.

@@ -13,6 +13,15 @@ Bayes Theorm
 ------------
 
 Bayesian inference is used to calculate the whole posterior probability distribution function (PDF).
+The equation for the posterior probability can be written as
+.. math::
+    :name: eq:post
+
+    P(\underline{\theta}| D, M) = P(D | \underline{\theta}, M)\frac{P(D | \underline{\theta}, M)}{P(D | M),
+
+where :math:`\underline{\theta}` is a vector of model parameters, :math:`M` is the model and :math:`D` is the data.
+:math:`P(\underline{\theta} | M)` is the prior distribution and represents current knowledge of the system.
+:math:`P(D | M)` is the evidence and acts as a normalisation for the posterior.
 The shape and spread of the PDF provides insight into the model and the parameter.
 A narrow PDF suggests that the parameter is well defined or has little evidence of variation.
 A broad PDF could mean that the model is insensitive to that specific parameter.
@@ -48,9 +57,51 @@ The key assumptions are:
 Odds factor
 -----------
 
+One method for comparing models is known as the odds factor.
+It assumes that you can calculate the probability of the data given the :math:`i^{\mathrm{th}` model (:math:`M_i`), by taking the ratio of two different models.
+This section will use a derivation based on the work from `here <https://jakevdp.github.io/blog/2015/08/07/frequentism-and-bayesianism-5-model-selection/>`_.
+
+For model selection we want the model posterior
+
+.. math::
+   P(M | D) = P(D | M) \frac{P(M)}{P(D)},
+
+where :math:`P(D | M)` is the probability of the data given the model, :math:`P(M)` is the probability of the model and :math:`P(D)` the probability of the data.
+The probability of the data will be the same for all models, so by taking a ratio the term can be removed
+
+.. math::
+   :name: eq:odds
+   O_{21} = \frac{P(M_2 | D)}{P(M_1 | D) = \frac{P(D | M_2)P(M_2)}{P(D | M_1)P(M_1)}
+
+where :math:`0_{21}` is the odds factor for models two (:math:`M_2`) and one (:math:`M_1`).
+Assuming that there is no prior knowledge then :math:`P(M_1) \approx P(M_2)`.
+Then equation :numref:`eq:odds` can be simplified to
+
+.. math::
+   O_{21} = \frac{P(D | M_2)}{P(D | M_1)},
+
+which is known as the Bayes factor.
+Alternatively, the Bayesian probability for the :math:`j^\mathrm{th}` model is
+
+.. math::
+   P(M_j | D) = \frac{ P((D | M_j)}{ \sum_k P(D | M_k)}.
+
+
+To evaluate the odds factor, the probability of the data given the model needs to be calculated.
+This is written as
+
+.. math::
+   :name: eq:P(D|M)
+   P(D | M) = \int_\omega d\undeline{\theta} \quad P(D| \underline{\theta}, M)P(\underline{\theta} | M)
+
+where the integral over :math:`\omega` is over the available parameter space for :math:`\underline{\theta}`.
+
+
+
+
+
 Check the label for :ref:`integration <eq:int>`
 
-`odds factor <https://jakevdp.github.io/blog/2015/08/07/frequentism-and-bayesianism-5-model-selection/>`_
 
 
 MCMC to eval integral
