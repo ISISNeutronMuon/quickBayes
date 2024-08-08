@@ -71,13 +71,13 @@ where :math:`P(D | M)` is the probability of the data given the model, :math:`P(
 The probability of the data will be the same for all models, so by taking a ratio the term can be removed
 
 .. math::
-   :name: odds
+   :label: odds
 
    O_{21} = \frac{P(M_2 | D)}{P(M_1 | D) = \frac{P(D | M_2)P(M_2)}{P(D | M_1)P(M_1)}
 
 where :math:`0_{21}` is the odds factor for models two (:math:`M_2`) and one (:math:`M_1`).
 Assuming that there is no prior knowledge then :math:`P(M_1) \approx P(M_2)`.
-Then equation :numref:`odds` can be simplified to
+Then equation :math:numref:`odds` can be simplified to
 
 .. math::
    O_{21} = \frac{P(D | M_2)}{P(D | M_1)},
@@ -93,8 +93,6 @@ To evaluate the odds factor, the probability of the data given the model needs t
 This is written as
 
 .. math::
-   :label: P(D|M)
-
    P(D | M) = \int_\omega d\undeline{\theta} \quad P(D| \underline{\theta}, M)P(\underline{\theta} | M)
 
 where the integral over :math:`\omega` is over the available parameter space for :math:`\underline{\theta}`.
