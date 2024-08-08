@@ -15,9 +15,9 @@ Bayes Theorm
 Bayesian inference is used to calculate the whole posterior probability distribution function (PDF).
 The equation for the posterior probability can be written as
 .. math::
-    :name: eq:post
+   :name: eq:post
 
-    P(\underline{\theta}| D, M) = P(D | \underline{\theta}, M)\frac{P(D | \underline{\theta}, M)}{P(D | M),
+   P(\underline{\theta}| D, M) = P(D | \underline{\theta}, M)\frac{P(D | \underline{\theta}, M)}{P(D | M),
 
 where :math:`\underline{\theta}` is a vector of model parameters, :math:`M` is the model and :math:`D` is the data.
 :math:`P(\underline{\theta} | M)` is the prior distribution and represents current knowledge of the system.
@@ -34,9 +34,9 @@ Essentially these methods will sample the PDF directly, allowing them to generat
 Bayesian model selection use Bayes theorm to calculate the probability, :math:`P` of the data :math:`D` given the model :math:`M`
 
 .. math::
-    :name: eq:int
+   :name: eq:int
 
-    P(D|M) = \int_\Omega P(D| \underline{\theta}, M)P( \underline{\theta}|M)\mathrm{d\underline{\theta}}.
+   P(D|M) = \int_\Omega P(D| \underline{\theta}, M)P( \underline{\theta}|M)\mathrm{d\underline{\theta}}.
 
 where the :math:`\underline{\theta}` are the parameters and the integral is over all possible values for the parameters, :math:`\Omega`.
 
@@ -97,12 +97,6 @@ This is written as
    P(D | M) = \int_\omega d\undeline{\theta} \quad P(D| \underline{\theta}, M)P(\underline{\theta} | M)
 
 where the integral over :math:`\omega` is over the available parameter space for :math:`\underline{\theta}`.
-
-
-
-
-
-Check the label for :ref:`integration <eq:int>`
 
 
 
