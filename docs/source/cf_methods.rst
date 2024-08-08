@@ -71,7 +71,7 @@ where :math:`P(D | M)` is the probability of the data given the model, :math:`P(
 The probability of the data will be the same for all models, so by taking a ratio the term can be removed
 
 .. math::
-   :label: odds
+   :name: odds
 
    O_{21} = \frac{P(M_2 | D)}{P(M_1 | D) = \frac{P(D | M_2)P(M_2)}{P(D | M_1)P(M_1)}
 
