@@ -14,6 +14,7 @@ Bayes Theorm
 
 Bayesian inference is used to calculate the whole posterior probability distribution function (PDF).
 The equation for the posterior probability can be written as
+
 .. math::
    :name: eq:post
 
