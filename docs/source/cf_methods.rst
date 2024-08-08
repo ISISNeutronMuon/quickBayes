@@ -16,7 +16,7 @@ Bayesian inference is used to calculate the whole posterior probability distribu
 The equation for the posterior probability can be written as
 
 .. math::
-   :name: eq:post
+   :label: post
 
    P(\underline{\theta}| D, M) = P(D | \underline{\theta}, M)\frac{P(D | \underline{\theta}, M)}{P(D | M),
 
@@ -35,7 +35,7 @@ Essentially these methods will sample the PDF directly, allowing them to generat
 Bayesian model selection use Bayes theorm to calculate the probability, :math:`P` of the data :math:`D` given the model :math:`M`
 
 .. math::
-   :name: eq:int
+   :label: int
 
    P(D|M) = \int_\Omega P(D| \underline{\theta}, M)P( \underline{\theta}|M)\mathrm{d\underline{\theta}}.
 
@@ -44,7 +44,7 @@ where the :math:`\underline{\theta}` are the parameters and the integral is over
 quickBayes
 ----------
 
-The quickBayes method makes a series of assumptions to reduce :ref:`the full PDF evaluation <eq:int>` to a single analytic equation.
+The quickBayes method makes a series of assumptions to reduce :ref:`the full PDF evaluation <int>` to a single analytic equation.
 The full theory is discussed here.
 The key assumptions are:
 
@@ -71,13 +71,13 @@ where :math:`P(D | M)` is the probability of the data given the model, :math:`P(
 The probability of the data will be the same for all models, so by taking a ratio the term can be removed
 
 .. math::
-   :name: eq:odds
+   :label: eq:odds
 
    O_{21} = \frac{P(M_2 | D)}{P(M_1 | D) = \frac{P(D | M_2)P(M_2)}{P(D | M_1)P(M_1)}
 
 where :math:`0_{21}` is the odds factor for models two (:math:`M_2`) and one (:math:`M_1`).
 Assuming that there is no prior knowledge then :math:`P(M_1) \approx P(M_2)`.
-Then equation :numref:`eq:odds` can be simplified to
+Then equation :numref:`odds` can be simplified to
 
 .. math::
    O_{21} = \frac{P(D | M_2)}{P(D | M_1)},
@@ -93,7 +93,7 @@ To evaluate the odds factor, the probability of the data given the model needs t
 This is written as
 
 .. math::
-   :name: eq:P(D|M)
+   :label: P(D|M)
 
    P(D | M) = \int_\omega d\undeline{\theta} \quad P(D| \underline{\theta}, M)P(\underline{\theta} | M)
 
