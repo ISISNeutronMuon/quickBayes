@@ -71,6 +71,7 @@ The probability of the data will be the same for all models, so by taking a rati
 
 .. math::
    :name: eq:odds
+
    O_{21} = \frac{P(M_2 | D)}{P(M_1 | D) = \frac{P(D | M_2)P(M_2)}{P(D | M_1)P(M_1)}
 
 where :math:`0_{21}` is the odds factor for models two (:math:`M_2`) and one (:math:`M_1`).
@@ -92,6 +93,7 @@ This is written as
 
 .. math::
    :name: eq:P(D|M)
+
    P(D | M) = \int_\omega d\undeline{\theta} \quad P(D| \underline{\theta}, M)P(\underline{\theta} | M)
 
 where the integral over :math:`\omega` is over the available parameter space for :math:`\underline{\theta}`.
