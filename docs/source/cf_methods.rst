@@ -91,9 +91,10 @@ To evaluate the odds factor, the probability of the data given the model needs t
 This is written as
 
 .. math::
-   P(D | M) = \int_\omega d\underline{\theta} \quad P(D| \underline{\theta}, M)P(\underline{\theta} | M)
+   P(D | M) = \int_\Omega d\underline{\theta} \quad P(D| \underline{\theta}, M)P(\underline{\theta} | M)
 
-where the integral over :math:`\omega` is over the available parameter space for :math:`\underline{\theta}`.
+where the integral over :math:`\Omega` is over the available parameter space for :math:`\underline{\theta}`.
+This quantity can be evaluated using either Markov Chain Monte Carlo (MCMC) or nested sampling.
 
 
 
