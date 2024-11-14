@@ -114,7 +114,6 @@ Each walker describes the potential parameters for the model, :math:`\underline{
 The walkers are then evolve to their new positions according to the equation
 
 .. math::
-   :label:MCMCDE
    \underline{\theta}_i^{t+1} = \underline{\theta}_i^t + \gamma(\underline{\theta}_j^t - \underline{\theta}_k^t) + \underline{\epsilon}
 
 where :math:`i\ne j\ne k`, `gamma` gives the strength of the coupling between the walkers and :math:`\epsilon` provides a random change to the parameters.
