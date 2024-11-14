@@ -112,12 +112,12 @@ These methods are relatively straightforward and provide insight into MCMC metho
 
 The differential evolution algorithm provides an equation that determines how the random walkers will be updated.
 Each walker describes the potential parameters for the model, :math:`\underline{\theta}_i^t`, where :math:`i` is used to label the different walkers and :math:`t` labels the step of the algorithm.
-The walkers are then evolve to their new positions according to the equation
+The walkers evolve to their proposed new positions according to the equation
 
 .. math::
    \underline{\theta}_i^{t+1} = \underline{\theta}_i^t + \gamma(\underline{\theta}_j^t - \underline{\theta}_k^t) + \underline{\epsilon}
 
-where :math:`i\ne j\ne k`, `gamma` gives the strength of the coupling between the walkers and :math:`\epsilon` provides a random change to the parameters.
+where :math:`i\ne j\ne k`, :math:`\gamma` gives the strength of the coupling between the walkers and :math:`\epsilon` provides a random change to the parameters.
 The first term provides some history to the method, so the new parameter values are not completely random.
 This prevents the walker from picking new guesses that are significantly worse than the current one.
 The second term can be thought of as a diffusion term, it determines how much the walker will move.
@@ -134,7 +134,7 @@ Once a walker has a new position, it will not automatically move to it.
 Instead it has a finite probability of its values being updated.
 One method for determining if the walker position should be updated is the Metropolis Hastings algorithm.
 For a given walker position it is possible to calculate the likelihood (typically a Gausssian).
-The likelihoods are calculated for both the proposed new (:math:`\underline{\theta}_j^{t+1}`) and current (:math:`\underline{\theta}_j^t`) walker positions.
+The likelihoods are calculated for both the proposed, :math:`\underline{\theta}_j^{t+1}`, and current, :math:`\underline{\theta}_j^t`, walker positions.
 Then the ratio is taken and compared to a random number.
 The proposed value is accepted if the random number is smaller than the ratio.
 As a result the walker is not guranteed to update to the new position if its current values are good.
