@@ -92,6 +92,7 @@ This is written as
 
 .. math::
    :label: P_int
+
    P(D | M) = \int_\Omega d\underline{\theta} \quad P(D| \underline{\theta}, M)P(\underline{\theta} | M)
 
 where the integral over :math:`\Omega` is over the available parameter space for :math:`\underline{\theta}`.
