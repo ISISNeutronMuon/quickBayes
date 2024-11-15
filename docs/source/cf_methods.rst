@@ -165,7 +165,7 @@ Instead they are used to create a series of contours of approximatly equal likel
 This can be thought of as being similar to Russian dolls, where the larger outer shells are removed to reveal a smaller more complex shell.
 As a result nested sampling is good for investigating multi-modal posterior distributions.
 
-This is a brief description of how the algorithm works, but a more detailed discussion can be found `here <https://arxiv.org/pdf/2205.15570>`_.
+This is a brief description of how the algorithm works, but a more detailed discussion of the subject is outline in this `paper <https://arxiv.org/pdf/2205.15570>`_.
 
 The likelihood, :math:`P(D|underline{\theta}, M)`, and prior, :math:`P(\underline{\theta}| M)`, are related to the evidence by
 
