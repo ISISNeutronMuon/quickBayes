@@ -121,7 +121,7 @@ where :math:`i\ne j\ne k`, :math:`\gamma` gives the strength of the coupling bet
 The first term provides some history to the method, so the new parameter values are not completely random.
 This prevents the walker from picking new guesses that are significantly worse than the current one.
 The second term can be thought of as a diffusion term, it determines how much the walker will move.
-It depends on the distance between two different walkers and then multiplies the result by a scalar :math:`gamma`.
+It depends on the distance between two different walkers and then multiplies the result by a scalar :math:`\gamma`.
 So if the MCMC has a bad estimate of the PDF, then the distance between the walkers is probably large.
 Hence, the next guess will move more in an attempt to find a better set of parameters.
 This part of the algorithm is described as the burn in period, and is the time for the walkers to find a good PDF.
@@ -147,9 +147,9 @@ The second is to define the behaviour of the walkers at the boundaries of the pa
 Typically they are chosen to be either reflective or a periodic boundary.
 For a Mertropolis Hastings algorithm both options are suitable, because the results are independent of the path taken by the walker.
 
-MCMC will eventually give a very good represnetation of the data, even if it has a complex PDF.
-However, it can be very computationally expensive to evaluate due to the burn in period.
-It is also difficult to know prior to the calculation how long the burn in period should be.
+MCMC will eventually give a good represnetation of a unimodal posterior PDF of the data, even if it has some complex structure.
+However, it can be very computationally expensive to evaluate due to the number of walkers required to get a good estimate of the posterior and the burn in period.
+The compuational cost is difficult to estimate as it requires prior knowledge of how long the burn in period should be.
 Hence, it can be too short leading to poor results or too long wasting valuable computational time.
 
 
@@ -158,7 +158,78 @@ Hence, it can be too short leading to poor results or too long wasting valuable 
 Nested sampling
 ---------------
 
-`nested sampling <https://en.wikipedia.org/wiki/Nested_sampling_algorithm/>`_
+A popular alternative to MCMC is nested sampling.
+The algorithm creates a set of randomly distributed samples across the potential parameter space, just like MCMC.
+The samples (refered to as walkers in MCMC) do not evolve in nested sampling.
+Instead they are used to create a series of contours of approximatly equal likelihood within the parameter space.
+This can be thought of as being similar to Russian dolls, where the larger outer shells are removed to reveal a smaller more complex shell.
+As a result nested sampling is good for investigating multi-modal posterior distributions.
+
+This is a brief description of how the algorithm works, but a more detailed discussion can be found `here <https://arxiv.org/pdf/2205.15570>`_.
+
+The likelihood, :math:`P(D|underline{\theta}, M)`, and prior, :math:`P(\underline{\theta}| M)`, are related to the evidence by
+
+.. math::
+   P(D|M) = \int_\Omega P(D| \underline{\theta}, M)P( \underline{\theta}|M)\mathrm{d\underline{\theta}}.
+
+In nested sampling the notation is slightly different:
+
+* The evidence is :math:`Z = P(D | M)`.
+* The prior is :math:`\pi(\underline{\theta}) = P(\underline{\theta} | M)`.
+* The likleihood is :math:`L(\underline{\theta}) = P(D | \underline{\theta}, M)`.
+
+Hence, the above equation is written as
+
+.. math::
+   :label: NS
+
+   Z = \int_\Omega L(\underline{\theta})\pi(\underline{\theta}) \mathrm{d\underline{\theta}},
+
+which can be simplified to a one dimensional integral with a change of variables.
+We define the likelihood contour to be
+
+.. math::
+   :label: contour
+
+   X(L) = \int \pi(\underline{\theta}) \mathrm{d\underline{\theta}},
+
+and the integral is over a surface with a constant likelihood.
+In practice the integral needs to be replaced by a summation and then :math:`X` is described as the volume variable.
+The change of variables allows equation :math:numref:`NS` to be written as
+
+.. math::
+   :label: Z
+
+   Z = \int_0^1 L(X) \mathrm{dX}.
+
+The first few steps are similaar to MCMC:
+
+#. The bounds for the parameter space are defined.
+#. A set of uniformally random points are placed in the bound parameter space.
+#. The likelihoods are calculated for all of the random points.
+
+Nested sampling then simplifies the problem of exploring multidimensional space, by reducing it to a series of shells (contours in the limit of infinite samples, see equation :math:numref:`contour`).
+This is done by initialising the evidence to zero and the volume variable to one.
+The following set of steps are then repeated untial a stopping criteria is met:
+
+#. The sample with the minimum value for the likelihood, :math:`L*` is identified for an iteration :math:`i`.
+#. The integral in equation :math:numref:`Z` is updated with the new likelihood, via a numberical integration method. For trapezium rule the new contribution to the evidence will be :math:`\frac{L*(X_{i-1} - X_{i+1})}{2}`.
+#. The sample is then removed.
+#. A replacement sample is then placed into the remaining volume (i.e. it has a higher likelihood) according to :math:`\ln X_{i} \approx - (i \pm \sqrt{i})/N`, where :math:`N` is the number of samples.
+#. This results in a volume contraction, which focuses on areas of high likelihood.
+
+The final step is to average the remaining likelihoods and to multiply it by the remaining volume varaible to get the last contribution to :math:`Z`.
+
+The posterior weights for the :math:`i^/mathrm{th}` shell can then be written as
+
+.. math::
+
+P_i = \frac{L_i(X_{i+1} - X_{i})}{2Z}.
+
+A density estimation method (e.g. weighted histogram) can then be used to generate the PDF.
+The strength of nested sampling is that it can capture multi-modal distributions, but it can be computationally expensive.
+
+
 
 AIC and BIC
 -----------
