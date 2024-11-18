@@ -167,7 +167,7 @@ As a result nested sampling is good for investigating multi-modal posterior dist
 
 This is a brief description of how the algorithm works, but a more detailed discussion of the subject is outline in this `paper <https://arxiv.org/pdf/2205.15570>`_.
 
-The likelihood, :math:`P(D|underline{\theta}, M)`, and prior, :math:`P(\underline{\theta}| M)`, are related to the evidence by
+The likelihood, :math:`P(D|\underline{\theta}, M)`, and prior, :math:`P(\underline{\theta}| M)`, are related to the evidence by
 
 .. math::
    P(D|M) = \int_\Omega P(D| \underline{\theta}, M)P( \underline{\theta}|M)\mathrm{d\underline{\theta}}.
@@ -220,11 +220,11 @@ The following set of steps are then repeated untial a stopping criteria is met:
 
 The final step is to average the remaining likelihoods and to multiply it by the remaining volume varaible to get the last contribution to :math:`Z`.
 
-The posterior weights for the :math:`i^/mathrm{th}` shell can then be written as
+The posterior weights for the :math:`i^\mathrm{th}` shell can then be written as
 
 .. math::
 
-P_i = \frac{L_i(X_{i+1} - X_{i})}{2Z}.
+   P_i = \frac{L_i[X_{i+1} - X_{i}]}{2Z}.
 
 A density estimation method (e.g. weighted histogram) can then be used to generate the PDF.
 The strength of nested sampling is that it can capture multi-modal distributions, but it can be computationally expensive.
