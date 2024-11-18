@@ -231,9 +231,98 @@ The strength of nested sampling is that it can capture multi-modal distributions
 
 
 
-AIC and BIC
------------
+Akaike Information Criterion (AIC) and Bayesian Information Criterion (BIC)
+---------------------------------------------------------------------------
 
-`AIC <https://en.wikipedia.org/wiki/Akaike_information_criterion/>`_
+Both the AIC and BIC are methods for determining which model best suits the data.
+These methods have their origin in information theory.
+The key idea is to reduce the amount of information lost by the model when describing the data.
 
-`BIC <https://en.wikipedia.org/wiki/Bayesian_information_criterion/>`_
+Lets assume that a function, :math:`g`, exists that perfectly describes the observed data.
+The Kullback-Leibler distance then defines the information as
+
+.. math::
+
+   I = E\left[\ln\left\{\frac{g(x)}{P(x|\underline{\theta})}\right}\right],
+
+where :math:`x` are the observed data points, and :math:`E` is a functional defined as
+
+.. math::
+
+   E[y(x)] = \int g(x) y(x) \mathrm{dx}.
+
+However, the exact form of the functional does not impact the derivation.
+As a result the information can be written as
+
+.. math::
+
+   I = E\left[ \ln{\{g(x)\}} - \ln\{f(x | \underline{\theta}\}\right].
+
+It is clear that the way to minimize the information loss is to minimise the argument for the functional,
+
+.. math::
+   :label: AIC_derivation
+
+   a = \ln{\{g(x)\}} - \ln\{f(x | \underline{\theta}\}.
+
+Hence, the best model is the one with the lowest value, this reamins true for the AIC and BIC.
+The only part that depends on the model in equation :math:numref:`AIC_derivation` is :math:`f(x|\underline{\theta})`, which is liklihood of the parameters (and model) given the data and will be denoted by :math:`\mathcal{L}(\underline{\theta}|x)`.
+This allows equation :math:numref:`AIC_derivation` to be written as
+
+.. math::
+   :label: AIC_no_approx
+
+   a = \ln{\{g(x)\}} - \ln{\{\mathcal{L}(\underline{\theta}|x)\}}.
+
+When comparing models to the same data set, the first term will be a constant and only the second term depends on the choice of model.
+However, the exact form of :math:`g(x)` is not known and as a result it must be estimated.
+The AIC and BIC use different approximations for this first term.
+Both the AIC and BIC multiply equation :math:numref:`AIC_no_approx` by a factor two (for hostoric reasons).
+To derive the AIC some `statistical arguments <https://ieeexplore.ieee.org/document/1100705>`_ are made that :math:`2\ln{\{g(x)\}} = 2k` to get
+
+.. math::
+
+   \mathrm{AIC} = 2k - 2\ln{\{\mathcal{L}(\underline{\theta}|x)\}},
+
+where :math:`k` are the number of parameters in the model.
+This approximation only holds true for large sample sizes, which results in it giving preference to overparameterised models for a small number of data points.
+A more sophisticated version of the AIC has been developed to account for small sample sizes
+
+.. math::
+
+   \mathrm{AIC_c} = \mathrm{AIC} + \frac{2k^2 + 2k}{n - k - 1},
+
+where :math:`n` is the number of data points.
+It is clear that in the limit of infinite data this just reduces to the AIC.
+Whereas the BIC `shows that <https://www.jstor.org/stable/2958889>` (via a different derivation) that :math:`2\ln{\{g(x)\}} = k\ln{n}` to get
+
+.. math::
+
+   \mathrm{BIC} = k\ln{n} - 2\ln{\{\mathcal{L}(\underline{\theta}|x)\}}.
+
+
+To better understand these methods it is worth considering the case of a gaussian likelihood function
+
+.. math::
+
+   \mathcal{L(\underline{\theta}|x) = \frac{1}{\sigma\sqrt{2\pi}}\exp\left(-\frac{\sum_j (y_j - h(\underline{\theta}, x))^2}{2\sigma^2}\right),
+
+where :math:`h` is the model (fitting function) being used to describe the data, :math:`y_j` is the observed :math:`j^\mathrm{th}` data point and :math:`\sigma` is the uncertainty.
+This means that the likelihood can be written as
+
+.. math::
+
+   \mathcal{L(\underline{\theta}|x) = C\exp\left(-\frac{\chi^2}{2}\right),
+
+where :math:`chi^2` is the chi squared value from linear least squares and :math:`C` is a constant term.
+Since only differences are important equation :math:numref:`AIC_no_approx` can be written as
+
+.. math::
+
+   2a = 2\ln{\{g(x)\}} - \chi^2.
+
+For both the AIC and BIC the first term is the same if the comparing two models with the same number of parameters against the same data set.
+Hence, the best AIC and BIC is just the model with the lowest :math:`chi^2` value.
+
+
+
