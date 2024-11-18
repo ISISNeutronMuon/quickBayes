@@ -243,7 +243,7 @@ The Kullback-Leibler distance then defines the information as
 
 .. math::
 
-   I = E\left[\ln\left\{\frac{g(x)}{P(x|\underline{\theta})}\right}\right],
+   I = E\left[\ln\left\{\frac{g(x)}{P(x|\underline{\theta})\right\}}\right],
 
 where :math:`x` are the observed data points, and :math:`E` is a functional defined as
 
@@ -294,7 +294,7 @@ A more sophisticated version of the AIC has been developed to account for small 
 
 where :math:`n` is the number of data points.
 It is clear that in the limit of infinite data this just reduces to the AIC.
-Whereas the BIC `shows that <https://www.jstor.org/stable/2958889>` (via a different derivation) that :math:`2\ln{\{g(x)\}} = k\ln{n}` to get
+Whereas the BIC `shows that <https://www.jstor.org/stable/2958889>`_ (via a different derivation) that :math:`2\ln{\{g(x)\}} = k\ln{(n)}` to get
 
 .. math::
 
@@ -305,14 +305,14 @@ To better understand these methods it is worth considering the case of a gaussia
 
 .. math::
 
-   \mathcal{L(\underline{\theta}|x) = \frac{1}{\sigma\sqrt{2\pi}}\exp\left(-\frac{\sum_j (y_j - h(\underline{\theta}, x))^2}{2\sigma^2}\right),
+   \mathcal{L}(\underline{\theta}|x) = \frac{1}{\sigma\sqrt{2\pi}}\exp\left(-\frac{\sum_j (y_j - h(\underline{\theta}, x))^2}{2\sigma^2}\right),
 
 where :math:`h` is the model (fitting function) being used to describe the data, :math:`y_j` is the observed :math:`j^\mathrm{th}` data point and :math:`\sigma` is the uncertainty.
 This means that the likelihood can be written as
 
 .. math::
 
-   \mathcal{L(\underline{\theta}|x) = C\exp\left(-\frac{\chi^2}{2}\right),
+   \mathcal{L}(\underline{\theta}|x) = C\exp\left(-\frac{\chi^2}{2}\right),
 
 where :math:`chi^2` is the chi squared value from linear least squares and :math:`C` is a constant term.
 Since only differences are important equation :math:numref:`AIC_no_approx` can be written as
