@@ -243,7 +243,7 @@ The Kullback-Leibler distance then defines the information as
 
 .. math::
 
-   I = E\left[\ln\left\{\frac{g(x)}{P(x|\underline{\theta})\right\}}\right],
+   I = E\left [\ln\left \{\frac{g(x)}{P(x|\underline{\theta})}\right\}\right],
 
 where :math:`x` are the observed data points, and :math:`E` is a functional defined as
 
