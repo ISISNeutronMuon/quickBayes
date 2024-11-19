@@ -409,17 +409,17 @@ Lets define the difference between two neighbouring models to be
 
 .. math::
 
-   \Delta = \ln{[P(D|M_{N+1})} - \ln{[P(D|M_N)]}.
+   \Delta = \ln{[P(D|M_{N+1})]} - \ln{[P(D|M_N)]}.
 
 Hence,
 
 .. math::
-   \Delta = \ln(4\pi) - \ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} - \ln{(\sqrt{\det{H_{N+1})} - \frac{\chi^2_{N+1}}{2} + \ln{(\sqrt{\det{H_{N})} + \frac{\chi^2_{N}}{2},
+   \Delta = \ln(4\pi) - \ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} - \ln{(\sqrt{\det{H_{N+1}}})} - \frac{\chi^2_{N+1}}{2} + \ln{(\sqrt{\det{H_{N}}})} + \frac{\chi^2_{N}}{2},
 
 which can be rearranged to
 
 .. math::
 
-   \Delta = \ln(4\pi) - \ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} - \ln{\left(\frac{\sqrt{\det{H_{N+1}}}{\sqrt{\det{H_N}}}}\right)} - \frac{1}{2}(\chi^2_{N+1} - \chi^2_{N}),
+   \Delta = \ln(4\pi) - \ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} - \ln{\left(\frac{\sqrt{\det{H_{N+1}}}}{\sqrt{\det{H_N}}}\right)} - \frac{1}{2}(\chi^2_{N+1} - \chi^2_{N}),
 
-w
+
