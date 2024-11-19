@@ -422,7 +422,7 @@ Substituting in :math:numref:`logs` into the defintion of :math:`Delta` yields,
 which can be rearranged to
 
 .. math::
-   :label:Delta_qb
+   :label: Delta_qb
 
    \Delta = \ln(4\pi) - \ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} + \ln{\left(\frac{\sqrt{\det{H_{N}}}}{\sqrt{\det{H_N+1}}}\right)} + \frac{1}{2}(\chi^2_{N} - \chi^2_{N+1}).
 
