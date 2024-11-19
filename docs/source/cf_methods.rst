@@ -325,4 +325,101 @@ For both the AIC and BIC the first term is the same if the comparing two models 
 Hence, the best AIC and BIC is just the model with the lowest :math:`chi^2` value.
 
 
+Comparison with Bayesian methods
+--------------------------------
 
+The Bayesian methods MCMC and nested sampling both use computationally expensive algorithms to calculate the posterior distribution.
+From these posterior distributions different models can be compared, using the odds factor.
+The `quickBayes` package is significantly less computationally demanding than its Bayesian counterparts.
+However, this is at the cost of only calculating the likelihood for comparing different models.
+The posterior distributions are never calculated explicitly.
+Hence, why its not as computationally intensive.
+
+For both the Bayesian methods and `quickBayes` the equation of interest is the probability of the data given the model.
+Therefore, `quickBayes` is attempting to solve the exact same problem as other Bayesian methods by making simplifing assumptions.
+
+The `quickBayes` package is best used when the user just wants to know which model is most likely.
+If the user wants to know the posterior PDFs then one of the Bayesian methods would be more appropriate.
+
+
+Comparison with AIC and BIC
+---------------------------
+
+The AIC and BIC are both (relatively) simple equations for calculating the most likely model.
+This is similar to the ethos behind the `quickBayes` package.
+However, the AIC and BIC both originate from information theory, while `quickBayes` starts from the probability of the data given the model.
+To explore this distinction we will consider a pair of models
+
+.. math::
+   :label: cf_f_def
+
+   M_N(x, \underline{\theta}) = \sum_{j}^N f(x, \underline{\theta}),
+
+where the repeated function :math:`f` is repeated `N` times, with the parameters :math:`\underline{\theta}`.
+When increasing the number of lines by one, the number of fitting parameters will increase by :math:`k`.
+To compare two AIC's we can subtract two neighbouring models from each other
+
+.. math::
+
+   \Delta \mathrm{AIC} = \mathrm{AIC}_{N+1} - \mathrm{AIC}_N,
+
+where the :math:`\mathrm{AIC}_N` is an AIC with :math:`N` functions.
+Assuming a gaussian distribution, this can be simplified to
+
+.. math::
+   :label: Delta_AIC
+
+   \Delta AIC = 2k + \chi_N^2 - \chi_{N+1}^2,
+
+where :math:`\chi_m^2` is the chi squared value for a model with :math:`N` functions.
+Similarly, the change in BIC due to two neighbouring models can be written as
+
+.. math::
+
+   \Delta \mathrm{BIC} = \mathrm{BIC}_{N+1} - \mathrm{BIC}_N,
+
+where the :math:`\mathrm{BIC}_N` is an BIC with :math:`N` functions.
+It can be shown that for a gaussian distribution,
+
+.. math::
+   :label: Delta_BIC
+
+   \Delta BIC = 2k\ln{(n)} + \chi_N^2 - \chi_{N+1}^2,
+
+where :math:`n` is the number of data points.
+The interpretation of equations :math:numref:`Delta_AIC` and :math:numref:`Delta_BIC` are similar.
+When comparing the AIC/BIC it is the value which is smaller that is most likely.
+Hence, if equations :math:numref:`Delta_AIC` or :math:numref:`Delta_BIC` are negative then the model with :math:`N+1` functions is prefered.
+Alternatively, if the value is positive then less function (i.e. :math:`N`) are prefered.
+For both equations :math:numref:`Delta_AIC` and :math:numref:`Delta_BIC` they have a cost term for adding an extra function and then a difference in the chi squared values.
+If the number of parameters per function (:math:`k`) is much smaller than the difference in the chi squared values, then this is equivalent to just comparing the goodness of fit.
+
+The main equation for quickBayes (equation :math:numref:`logs`) can be written as
+
+.. math::
+
+   \ln{[P(D|M_N)]} = C \sum_{j=1}^{N}\ln{(j)} +
+   N\ln{(4\pi)} - N\ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} -
+   \ln{(\sqrt{\det{H}})}  -
+   \frac{\chi^2}{2},
+
+where :math:`chi^2` is at the minimum, :math:`M_N` is the model with :math:`N` functions and :math:`C` is a normalisation constant.
+The normalisation constant will be the same for all of the models, so when taking the difference it will cancel out.
+Lets define the difference between two neighbouring models to be
+
+.. math::
+
+   \Delta = \ln{[P(D|M_{N+1})} - \ln{[P(D|M_N)]}.
+
+Hence,
+
+.. math::
+   \Delta = \ln(4\pi) - \ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} - \ln{(\sqrt{\det{H_{N+1})} - \frac{\chi^2_{N+1}}{2} + \ln{(\sqrt{\det{H_{N})} + \frac{\chi^2_{N}}{2},
+
+which can be rearranged to
+
+.. math::
+
+   \Delta = \ln(4\pi) - \ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} - \ln{\left(\frac{\sqrt{\det{H_{N+1}}}{\sqrt{\det{H_N}}}}\right)} - \frac{1}{2}(\chi^2_{N+1} - \chi^2_{N}),
+
+w
