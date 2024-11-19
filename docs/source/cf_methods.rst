@@ -411,7 +411,10 @@ Lets define the difference between two neighbouring models to be
 
    \Delta = \ln{[P(D|M_{N+1})]} - \ln{[P(D|M_N)]}.
 
-Hence,
+When using :math:`Delta` to determine the best model, some care is needed.
+The probabilities should always be less than one, so the logs are negative, and the as a model becomes more probable the value gets closer to zero.
+Hence, a negative result for :math:`Delta` means that :math:`N` functions are prefered and a positive result means :math:`N+1` functions give the more likely fit.
+Substituting in :math:numref:`logs` into the defintion of :math:`Delta` yields,
 
 .. math::
    \Delta = \ln(4\pi) - \ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} - \ln{(\sqrt{\det{H_{N+1}}})} - \frac{\chi^2_{N+1}}{2} + \ln{(\sqrt{\det{H_{N}}})} + \frac{\chi^2_{N}}{2},
@@ -419,7 +422,20 @@ Hence,
 which can be rearranged to
 
 .. math::
+   :label:Delta_qb
 
-   \Delta = \ln(4\pi) - \ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} - \ln{\left(\frac{\sqrt{\det{H_{N+1}}}}{\sqrt{\det{H_N}}}\right)} - \frac{1}{2}(\chi^2_{N+1} - \chi^2_{N}),
+   \Delta = \ln(4\pi) - \ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} + \ln{\left(\frac{\sqrt{\det{H_{N}}}}{\sqrt{\det{H_N+1}}}\right)} + \frac{1}{2}(\chi^2_{N} - \chi^2_{N+1}).
+
+The first term is a benefit to using more functions and the second term is the cost of the prior, as discussed preveously.
+The third term is related to the ...
+The final term is the difference between the chi squared values, similar to the differences in the AIC and BIC.
+
+Equations :math:numref:`Delta_AIC` and :math:numref:`Delta_BIC` have a term that penalises complexity (more functions) and then a term that is the comparison between the goodness of the fits for the two models.
+Whereas, equation :math:numref:`Delta_qb` instead has a term that encourages complexity and a term that penalises poor prior knowledge.
+The comparison for the goodness of fit also takes into account the Hessian matrices for the models.
+This additional term ...
+
+
+
 
 
