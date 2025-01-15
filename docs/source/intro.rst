@@ -26,7 +26,8 @@ This documentation is split into the following parts:
 - An introduction to :ref:`Bayesian Statistics <stats>`
 - The :ref:`history and validation <history>` of quickBayes
 - :ref:`Installation and support <install>`
-- A brief review of :ref:`Bayesian methods <cf>`
+- A brief review of :ref:`Bayesian theory <maths>`
 - The :ref:`key principles and theory behind quickBayes <theory>`
+- A brief review of :ref:`Bayesian methods <cf/index>`
 - Some real world **examples** from QENS and muon spectroscopy
 - :ref:`Developer documentation <dev>`
