@@ -3,14 +3,7 @@
 Makov Chain Monte Carlo (MCMC)
 ------------------------------
 
-The integral in
-
-.. math::
-
-   P(D|M) = \int_\Omega P(D| \underline{\theta}, M)P( \underline{\theta}|M)\mathrm{d\underline{\theta}}
-
-
-typically requires a numberical method to evaluate it.
+The integral in equation :math:numref:`eq_int` typically requires a numberical method to evaluate it.
 Markov Chain Monte Carlo (MCMC) is a method that uses random walkers to estimate the probability distribution.
 The MCMC has two main components, the first defines how the walkers select their new positions and the second is how to determine if to accept the new values.
 There are several options for each of these parts, leading to numerous possible MCMC simulations.

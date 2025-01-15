@@ -94,23 +94,6 @@ For both the AIC and BIC the first term is the same if the comparing two models 
 Hence, the best AIC and BIC is just the model with the lowest :math:`chi^2` value.
 
 
-Comparison with direct Bayesian methods
----------------------------------------
-
-The Bayesian methods MCMC and nested sampling both use computationally expensive algorithms to calculate the posterior distribution.
-From these posterior distributions different models can be compared, using the odds factor.
-The `quickBayes` package is significantly less computationally demanding than its Bayesian counterparts.
-However, this is at the cost of only calculating the likelihood for comparing different models.
-The posterior distributions are never calculated explicitly.
-Hence, why its not as computationally intensive.
-
-For both the Bayesian methods and `quickBayes` the equation of interest is the probability of the data given the model.
-Therefore, `quickBayes` is attempting to solve the exact same problem as other Bayesian methods by making simplifing assumptions.
-
-The `quickBayes` package is best used when the user just wants to know which model is most likely.
-If the user wants to know the posterior PDFs then one of the Bayesian methods would be more appropriate.
-
-
 Comparison with AIC and BIC
 ---------------------------
 
@@ -180,10 +163,10 @@ Lets define the difference between two neighbouring models to be
 
    \Delta = \ln{[P(D|M_{N+1})]} - \ln{[P(D|M_N)]}.
 
-When using :math:`Delta` to determine the best model, some care is needed.
+When using :math:`\Delta` to determine the best model, some care is needed.
 The probabilities should always be less than one, so the logs are negative, and the as a model becomes more probable the value gets closer to zero.
-Hence, a negative result for :math:`Delta` means that :math:`N` functions are prefered and a positive result means :math:`N+1` functions give the more likely fit.
-Substituting in :math:numref:`logs` into the defintion of :math:`Delta` yields,
+Hence, a negative result for :math:`\Delta` means that :math:`N` functions are prefered and a positive result means :math:`N+1` functions give the more likely fit.
+Substituting in :math:numref:`logs` into the defintion of :math:`\Delta` yields,
 
 .. math::
    \Delta = \ln(4\pi) - \ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} - \ln{(\sqrt{\det{H_{N+1}}})} - \frac{\chi^2_{N+1}}{2} + \ln{(\sqrt{\det{H_{N}}})} + \frac{\chi^2_{N}}{2},

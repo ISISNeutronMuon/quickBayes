@@ -11,7 +11,7 @@ The key assumptions are:
 - The lines can be written as an amplitude multiplied by some function
 - The prior probabilities are flat across the domain of interest
 - The normalisation is just the value of the hyper volume for the parameters
-- The :math:`P(D|\underline\theta, M)` can be represented as gaussians and be represented by a first order Taylor expansion
+- The :math:`P(D|\underline\theta, M)` can be represented as gaussians and approximated by a first order Taylor expansion
 
 In the second part the first assumption is removed, allowing for unique lines (functions) to be included.
 
@@ -29,11 +29,12 @@ Hence, the model, :math:`M`, can be written as as sum of indistinguishable funct
 
 where, :math:`A_j` is amplitude, :math:`\theta` are parameters and :math:`f` is the function.
 
-From :ref:`maths` we know that the model posterior can be written as
+From :maths:numref:`bayes` we know that the model posterior can be written as
 
 .. math::
+   :label: bayes
 
-   P(M|D) = P(D|M) \frac{(M)}{P(D)}
+   P(M|D) = P(D|M) \frac{P(M)}{P(D)}
 
 where :math:`D` is the data and :math:`P` is the probability.
 If we assume a uniform prior :math:`P(M) = 1/N` for :math:`N` lines and that :math:`P(D)` is the same for all models then
@@ -43,14 +44,14 @@ If we assume a uniform prior :math:`P(M) = 1/N` for :math:`N` lines and that :ma
 
     P(M|D) \propto P(D|M).
 
-From :ref:`maths` we know that :math:`P(D|M)` can be written as an intergral to get,
+From :math:numref:`eq_int` we know that :math:`P(D|M)` can be written as an intergral to get,
 
 .. math::
     :label: P(D|M)
 
     P(D|M) \propto \int \mathrm{d}^N\theta P(D | \theta, M) P(\theta | M).
 
-To make the above equation tractable, lets assume that we know that the probability is zero outside of some known spacesuch that
+To make the above equation tractable, lets assume that we know that the probability is zero outside of some known space such that
 
 .. math::
    :label: x
@@ -96,8 +97,8 @@ Substituting this into :math:numref:`P(DM)` gives
 
     P(D|M) \propto [(x_\mathrm{max} – x_\mathrm{min}) A_\mathrm{max}]^{-N}\int \mathrm{d}^N\theta \exp\left(-\frac{\chi^2}{2}\right).
 
-The next step is to assume that a best fit exists, and that the corresponding best fit parameters are :math:`\theta_0` and a the chi squared value is :math:`\chi_\mathrm{min}^2`.
-A Taylor expansion of the chi squared is
+The next step is to assume that a best fit exists, and that the corresponding best fit parameters are :math:`\theta_0` and the chi squared value is :math:`\chi_\mathrm{min}^2`.
+A Taylor expansion of the chi squared yields
 
 .. math::
    :label: chi2_expansion
@@ -109,7 +110,7 @@ and the integral can then be written as
 .. math::
    :label: Taylor
 
-   \int \mathrm{d}^N\theta \exp\left(-\frac{\chi^2}{2}\right) \approx \exp\left(-\frac{\chi^2_\mathrm{min}}{2}\right) \frac{(4\pi)^N}{\sqrt{(\mathrm{det}(\underline{\nabla} \ \underline{\nabla} \chi^2)) }}
+   \int \mathrm{d}^N\theta \exp\left(-\frac{\chi^2}{2}\right) \approx \exp\left(-\frac{\chi^2_\mathrm{min}}{2}\right) \frac{(4\pi)^N}{\sqrt{(\mathrm{det}(\underline{\nabla} \ \underline{\nabla} \chi^2)) }},
 
 where :math:`\mathrm{det}(H) = \mathrm{det}(\underline{\nabla} \ \underline{\nabla} \chi^2))` is the determinant of the Hessian matrix :math:`H`.
 Substituting :math:numref:`Taylor` into :math:numref:`almost` and for :math:`N` indistinguishable lines there are :math:`N!` possibilities
@@ -119,7 +120,7 @@ Substituting :math:numref:`Taylor` into :math:numref:`almost` and for :math:`N` 
 
    P(D|M) \propto P(M|D) \propto \frac{N! (4\pi)^N }{[(x_\mathrm{max} - x_\mathrm{min})A_\mathrm{max}]^N \sqrt{\mathrm{det}(H)}} \exp\left(-\frac{\chi^2_0}{2}\right).
 
-Taking the logs and rearranging this equation gives
+Finally, by taking the logs and rearranging this equation gives
 
 .. math::
    :label: logs
@@ -142,7 +143,7 @@ The fourth term is a bit more complex as it involves the Hessian matrix.
 Lets consider the best case scenario of :math:`\mathrm{det}(H) = 1`, which corresponds to a perfectly behaved model.
 Then the contribution to :math:numref:`logs` is zero.
 If :math:`\mathrm{det}(H) < 1` then at least one of the eigenvalues is very small and is an indication of the model being overparameterised.
-This invalidates the assumption of being at a local minima, and is quickBayes will automatically add an additional penality if this occurs.
+This invalidates the assumption of being at a local minima, and quickBayes will automatically add an additional penality if this occurs.
 As :math:`\mathrm{det}(H)` gets larger the less likely the model is to be correct.
 The final term is a penality for having a poor fit, as the quality of the fit decreases so does the likelihood of the model.
 
@@ -210,7 +211,7 @@ The prior is still given by the volume of the hyper cube from :math:numref:`x2`,
 
     P(\underline{\theta} | G + F) = [(x_\mathrm{max} – x_\mathrm{min}) (A_\mathrm{max}-A_\mathrm{max})]^{-N}(x_\mathrm{max} – x_\mathrm{min})^{-k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})]^{-1}.
 
-The first part of this is just a more general version of :math:numref:`P(theta|M)`.
+The first part of this is just :math:numref:`P(theta|M)`.
 To simplify the notation let :math:`\beta =  [(x_\mathrm{max} – x_\mathrm{min}) (A_\mathrm{max}-A_\mathrm{max})]^{-N}`, which is the contribution to the prior for the distinguishable lines, then :math:numref:`P(theta|M2)` becomes
 
 .. math::
@@ -266,7 +267,7 @@ Taking the log of this expression and rearranging yields
    - \sum_i^k
    \log{(\alpha_{i_\mathrm{max}}-
    \alpha_{i_\mathrm{max}})} -
-   \frac{\chi^2_0}{2}
+   \frac{\chi^2_0}{2}.
    \end{eqnarray}
 
 If the :math:`k` distinguishable lines are the same for all models being considered, then the :math:`k\log{(x_\mathrm{max} - x_\mathrm{min})}`, :math:`k\log{(4\pi)}` and :math:`\sum_i^k
