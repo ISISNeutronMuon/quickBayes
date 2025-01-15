@@ -7,6 +7,22 @@ In this section the key equation for quickBayes is derived in detail.
 The first part is the origianl derivation as set out by Sivia.
 The second part is an extension of the derivation to include distinct lines.
 
+quickBayes
+----------
+
+The quickBayes method makes a series of assumptions to reduce :ref:`the full PDF evaluation <eq_int>` to a single analytic equation.
+The full theory is discussed here.
+The key assumptions are:
+
+- The model can be written as a series of indistinguishable lines (i.e. the same repeated function)
+- The lines can be written as an amplitude multiplied by some function
+- The prior probabilities are flat across the domain of interest
+- The normalisation is just the value of the hyper volume for the parameters.
+- The :math:`P(D|\underline\theta, M)` can be represented as gaussians and be represented by a first order Taylor expansion
+
+
+
+
 Original Derivation
 -------------------
 

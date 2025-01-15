@@ -17,8 +17,9 @@ Contents
    Introduction <introduction>
    History <history>
    Installation and support <install>
-   Bayesian Methods <cf_methods>
-   Theory <theory>
+   Bayesian Theory <maths>
+   Theory of quickBayes <theory>
+   Bayesian methods comparison <cf/index>
    Examples <examples/index>
    Developer docs <dev/index>
    api
