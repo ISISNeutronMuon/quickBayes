@@ -6,7 +6,6 @@ Makov Chain Monte Carlo (MCMC)
 The integral in
 
 .. math::
-   :name: eq_int
 
    P(D|M) = \int_\Omega P(D| \underline{\theta}, M)P( \underline{\theta}|M)\mathrm{d\underline{\theta}}
 
