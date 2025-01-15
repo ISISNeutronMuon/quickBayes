@@ -3,7 +3,15 @@
 Makov Chain Monte Carlo (MCMC)
 ------------------------------
 
-The integral in equation :math:numref:'P_int' typically requires a numberical method to evaluate it.
+The integral in
+
+.. math::
+   :name: eq_int
+
+   P(D|M) = \int_\Omega P(D| \underline{\theta}, M)P( \underline{\theta}|M)\mathrm{d\underline{\theta}}
+
+
+typically requires a numberical method to evaluate it.
 Markov Chain Monte Carlo (MCMC) is a method that uses random walkers to estimate the probability distribution.
 The MCMC has two main components, the first defines how the walkers select their new positions and the second is how to determine if to accept the new values.
 There are several options for each of these parts, leading to numerous possible MCMC simulations.
@@ -26,9 +34,9 @@ So if the MCMC has a bad estimate of the PDF, then the distance between the walk
 Hence, the next guess will move more in an attempt to find a better set of parameters.
 This part of the algorithm is described as the burn in period, and is the time for the walkers to find a good PDF.
 If the walkers provide a good description of the PDF, then the difference is small.
-This results in the walker moving very far from its original position.
-The competing effects from the second term, depending on the distance between two walkers, has the effect of pulling walkers towards good parameter values.
-The final term just randoms a bit of randomness into the position update.
+This results in the walker moving a small distance from its original position.
+The competing effects from the second term, depending on the distance between two walkers, pulls the walkers towards good parameter values.
+The final term adds a bit of randomness into the position update.
 
 Once a walker has a new position, it will not automatically move to it.
 Instead it has a finite probability of its values being updated.
@@ -37,7 +45,7 @@ For a given walker position it is possible to calculate the likelihood (typicall
 The likelihoods are calculated for both the proposed, :math:`\underline{\theta}_j^{t+1}`, and current, :math:`\underline{\theta}_j^t`, walker positions.
 Then the ratio is taken and compared to a random number.
 The proposed value is accepted if the random number is smaller than the ratio.
-As a result the walker is not guranteed to update to the new position if its current values are good.
+As a result the walker is not guranteed to update to the new position if its current values are good enough.
 
 The combined effect of the two algorithms is that the walkers will eventually converge onto a distribution that describes the PDF.
 To make this tractable, a few extra conditions are needed.

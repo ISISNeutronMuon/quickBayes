@@ -25,17 +25,17 @@ As a result the information can be written as
 
 .. math::
 
-   I = E\left[ \ln{\{g(x)\}} - \ln\{f(x | \underline{\theta}\}\right].
+   I = E\left[ \ln{\{g(x)\}} - \ln\{f(x | \underline{\theta})\}\right].
 
 It is clear that the way to minimize the information loss is to minimise the argument for the functional,
 
 .. math::
    :label: AIC_derivation
 
-   a = \ln{\{g(x)\}} - \ln\{f(x | \underline{\theta}\}.
+   a = \ln{\{g(x)\}} - \ln\{P(x | \underline{\theta}\}.
 
 Hence, the best model is the one with the lowest value, this reamins true for the AIC and BIC.
-The only part that depends on the model in equation :math:numref:`AIC_derivation` is :math:`f(x|\underline{\theta})`, which is liklihood of the parameters (and model) given the data and will be denoted by :math:`\mathcal{L}(\underline{\theta}|x)`.
+The only part that depends on the model in equation :math:numref:`AIC_derivation` is :math:`P(x|\underline{\theta})`, which is liklihood of the parameters (and model) given the data and will be denoted by :math:`\mathcal{L}(\underline{\theta}|x)`.
 This allows equation :math:numref:`AIC_derivation` to be written as
 
 .. math::
@@ -46,7 +46,7 @@ This allows equation :math:numref:`AIC_derivation` to be written as
 When comparing models to the same data set, the first term will be a constant and only the second term depends on the choice of model.
 However, the exact form of :math:`g(x)` is not known and as a result it must be estimated.
 The AIC and BIC use different approximations for this first term.
-Both the AIC and BIC multiply equation :math:numref:`AIC_no_approx` by a factor two (for hostoric reasons).
+Both the AIC and BIC multiply equation :math:numref:`AIC_no_approx` by a factor two (for historic reasons).
 To derive the AIC some `statistical arguments <https://ieeexplore.ieee.org/document/1100705>`_ are made that :math:`2\ln{\{g(x)\}} = 2k` to get
 
 .. math::
@@ -62,8 +62,8 @@ A more sophisticated version of the AIC has been developed to account for small 
    \mathrm{AIC_c} = \mathrm{AIC} + \frac{2k^2 + 2k}{n - k - 1},
 
 where :math:`n` is the number of data points.
-It is clear that in the limit of infinite data this just reduces to the AIC.
-Whereas the BIC `shows that <https://www.jstor.org/stable/2958889>`_ (via a different derivation) that :math:`2\ln{\{g(x)\}} = k\ln{(n)}` to get
+It is clear that in the limit of infinite data this just reduces to the standard AIC.
+Whereas the BIC `shows that <https://www.jstor.org/stable/2958889>`_ (via a different derivation) :math:`2\ln{\{g(x)\}} = k\ln{(n)}`, which gives
 
 .. math::
 
@@ -84,7 +84,7 @@ This means that the likelihood can be written as
    \mathcal{L}(\underline{\theta}|x) = C\exp\left(-\frac{\chi^2}{2}\right),
 
 where :math:`chi^2` is the chi squared value from linear least squares and :math:`C` is a constant term.
-Since only differences are important equation :math:numref:`AIC_no_approx` can be written as
+Since only differences are important, equation :math:numref:`AIC_no_approx` can be written as
 
 .. math::
 
@@ -94,8 +94,8 @@ For both the AIC and BIC the first term is the same if the comparing two models 
 Hence, the best AIC and BIC is just the model with the lowest :math:`chi^2` value.
 
 
-Comparison with Bayesian methods
---------------------------------
+Comparison with direct Bayesian methods
+---------------------------------------
 
 The Bayesian methods MCMC and nested sampling both use computationally expensive algorithms to calculate the posterior distribution.
 From these posterior distributions different models can be compared, using the odds factor.
@@ -124,7 +124,7 @@ To explore this distinction we will consider a pair of models
 
    M_N(x, \underline{\theta}) = \sum_{j}^N f(x, \underline{\theta}),
 
-where the repeated function :math:`f` is repeated `N` times, with the parameters :math:`\underline{\theta}`.
+where the repeated function :math:`f` is repeated :math:`N` times, with the parameters :math:`\underline{\theta}`.
 When increasing the number of lines by one, the number of fitting parameters will increase by :math:`k`.
 To compare two AIC's we can subtract two neighbouring models from each other
 
@@ -167,7 +167,7 @@ The main equation for quickBayes (equation :math:numref:`logs`) can be written a
 
 .. math::
 
-   \ln{[P(D|M_N)]} = C \sum_{j=1}^{N}\ln{(j)} +
+   \ln{[P(D|M_N)]} = C + \sum_{j=1}^{N}\ln{(j)} +
    N\ln{(4\pi)} - N\ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} -
    \ln{(\sqrt{\det{H}})}  -
    \frac{\chi^2}{2},
@@ -196,15 +196,9 @@ which can be rearranged to
    \Delta = \ln(4\pi) - \ln{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} + \ln{\left(\frac{\sqrt{\det{H_{N}}}}{\sqrt{\det{H_N+1}}}\right)} + \frac{1}{2}(\chi^2_{N} - \chi^2_{N+1}).
 
 The first term is a benefit to using more functions and the second term is the cost of the prior, as discussed preveously.
-The third term is related to the ...
+The third term is related to the Hessian matrix.
 The final term is the difference between the chi squared values, similar to the differences in the AIC and BIC.
 
 Equations :math:numref:`Delta_AIC` and :math:numref:`Delta_BIC` have a term that penalises complexity (more functions) and then a term that is the comparison between the goodness of the fits for the two models.
 Whereas, equation :math:numref:`Delta_qb` instead has a term that encourages complexity and a term that penalises poor prior knowledge.
 The comparison for the goodness of fit also takes into account the Hessian matrices for the models.
-This additional term ...
-
-
-
-
-

@@ -5,12 +5,12 @@ Nested sampling
 
 A popular alternative to MCMC is nested sampling.
 The algorithm creates a set of randomly distributed samples across the potential parameter space, just like MCMC.
-The samples (refered to as walkers in MCMC) do not evolve in nested sampling.
+However, the samples (refered to as walkers in MCMC) do not evolve in nested sampling.
 Instead they are used to create a series of contours of approximatly equal likelihood within the parameter space.
 This can be thought of as being similar to Russian dolls, where the larger outer shells are removed to reveal a smaller more complex shell.
 As a result nested sampling is good for investigating multi-modal posterior distributions.
 
-This is a brief description of how the algorithm works, but a more detailed discussion of the subject is outline in this `paper <https://arxiv.org/pdf/2205.15570>`_.
+This is a brief description of how the algorithm works, but a more detailed discussion of the subject is outlined in this `paper <https://arxiv.org/pdf/2205.15570>`_.
 
 The likelihood, :math:`P(D|\underline{\theta}, M)`, and prior, :math:`P(\underline{\theta}| M)`, are related to the evidence by
 
@@ -61,7 +61,7 @@ The following set of steps are then repeated untial a stopping criteria is met:
 #. The integral in equation :math:numref:`Z` is updated with the new likelihood, via a numberical integration method. For trapezium rule the new contribution to the evidence will be :math:`\frac{L*(X_{i-1} - X_{i+1})}{2}`.
 #. The sample is then removed.
 #. A replacement sample is then placed into the remaining volume (i.e. it has a higher likelihood) according to :math:`\ln X_{i} \approx - (i \pm \sqrt{i})/N`, where :math:`N` is the number of samples.
-#. This results in a volume contraction, which focuses on areas of high likelihood.
+#. This results in a volume contraction, which focuses on areas of higher likelihood.
 
 The final step is to average the remaining likelihoods and to multiply it by the remaining volume varaible to get the last contribution to :math:`Z`.
 
