@@ -97,7 +97,7 @@ Substituting :math:numref:`Taylor` into :math:numref:`almost` and for indistingu
 .. math::
    :label: sivia
 
-   P(D|M) \propto P(M|D) \propto \frac{N! (4\pi)^N }{[(x_\mathrm{max} - x_\mathrm{min})A_\mathrm{max}]^N \sqrt{H}} \exp\left(-\frac{\chi^2_0}{2}\right)
+   P(D|M) \propto P(M|D) \propto \frac{N! (4\pi)^N }{[(x_\mathrm{max} - x_\mathrm{min})A_\mathrm{max}]^N \sqrt{\mathrm{det}(H)}} \exp\left(-\frac{\chi^2_0}{2}\right)
 
 Taking the logs and rearranging gives
 
@@ -106,8 +106,25 @@ Taking the logs and rearranging gives
 
    \log{[P(D|M)]} \propto \sum_{j=1}^{N}\log{(j)} +
    N\log{(4\pi)} - N\log{([x_\mathrm{max} - x_\mathrm{min}]A_\mathrm{max})} -
-   \log{(\sqrt{H})}  -
-   \frac{\chi^2_0}{2}
+   \log{(\sqrt{\mathrm{det}(H)})}  -
+   \frac{\chi^2_0}{2}.
+
+To make the equation an equality would require the addition of the normalisation for the probability, but this would be the same when comparing models with the same data set.
+Hence, the term can be neglected.
+The larger the probability, the larger its log value.
+Hence, the better model has a larger value.
+The first two terms in :math:numref:`logs` correspond to a benefit to having complexity.
+This is because as the number of parameters increases, it becomes easier to fit the model to the data.
+The third term is related to the prior.
+If the prior is large, then little is known about the expected result.
+This is then penalised as the uncertainty in the model being correct becomes larger.
+The fourth term is a bit more complex as it involves the Hessian matrix.
+Lets consider the best case scenario of :math:`\mathrm{det}(H) = 1`, which corresponds to a perfect fit.
+Then the contribution to :math:numref:`logs` is zero.
+If :math:`\mathrm{det}(H) < 1` then at least one of the eigenvalues is very small and is an indication of the model being overparameterised.
+This invalidates the assumption of being at a local minima, and is accounted for in the code.
+As :math:`\mathrm{det}(H)` gets larger the less likely the model.
+The final term is a penality for having a poor fit, as the :math:`\chi^2` grows the likelihood decreases.
 
 
 Including Unique Lines
