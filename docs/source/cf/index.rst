@@ -9,6 +9,11 @@
 Bayesian Methods Comparison
 ===========================
 
+There are wide variety of Bayesian methods.
+This section discusses the ideas and concepts of these other methods.
+In addition it will highlight the key differences.
+
+
 Contents
 --------
 

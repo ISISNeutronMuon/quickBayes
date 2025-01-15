@@ -8,7 +8,7 @@ Getting Started
 Installation
 ------------
 
-The quickBayes package is easy to install using code:`pip`.
+The quickBayes package is easy to install using :code:`pip`.
 The library is available on `PyPi <https://pypi.org/project/quickBayes/#description/>`_ and can be installed with pip:
 
 .. code-block:: python

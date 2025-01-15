@@ -1,13 +1,11 @@
 .. _maths:
 
-Bayesian Methods
-================
+Bayesian theory
+===============
 
-There are wide variety of Bayesian methods.
-This section discusses the ideas and concepts of these other methods.
-In addition it will highlight the key differences.
-
-
+In this section the concepts for using Bayesian techniques for model selection will be discussed.
+The first part discusses Bayes theorm and how it can be used to get the probability of the model given the data.
+The second part is on the odds factor and how to interpret the posterior probability for model selection.
 
 Bayes Theorm
 ------------
@@ -27,7 +25,7 @@ A broad PDF could mean that the model is insensitive to that specific parameter.
 If the PDF is non-symmetric, then the most likely value is still the peak of the distribution.
 However, it is more likely for the parameter to have a value higher/lower than the peak of the distribution.
 
-Calculating the full PDF can be achieved by using Macov Chain Monte Carlo (MCMC) or nested sampling.
+Calculating the full PDF can be achieved by using :ref:`Macov Chain Monte Carlo (MCMC) <MCMC>` or :ref:`nested sampling<nest>`.
 Essentially these methods will sample the PDF directly, allowing them to generate the full PDF.
 
 Bayesian model selection use Bayes theorm to calculate the probability, :math:`P` of the data :math:`D` given the model :math:`M`
@@ -52,7 +50,7 @@ For model selection we want the model posterior
    P(M | D) = P(D | M) \frac{P(M)}{P(D)},
 
 where :math:`P(D | M)` is the probability of the data given the model, :math:`P(M)` is the probability of the model and :math:`P(D)` the probability of the data.
-The probability of the data will be the same for all models, so by taking a ratio the term can be removed
+The probability of the data will be the same for all models, so by taking a ratio it cancels out
 
 .. math::
    :label: odds
@@ -67,14 +65,14 @@ Then equation :math:numref:`odds` can be simplified to
    O_{21} = \frac{P(D | M_2)}{P(D | M_1)},
 
 which is known as the Bayes factor.
-Alternatively, the Bayesian probability for the :math:`j^\mathrm{th}` model is
+Alternatively, the Bayesian probability for the :math:`j^\mathrm{th}` model can be written as
 
 .. math::
-   P(M_j | D) = \frac{ P((D | M_j)}{ \sum_k P(D | M_k)}.
+   P(M_j | D) = \frac{ P(D | M_j)}{ \sum_k P(D | M_k)}.
 
 
 To evaluate the odds factor, the probability of the data given the model needs to be calculated.
-This is written as
+This is typically written as
 
 .. math::
    :label: P_int
@@ -82,5 +80,5 @@ This is written as
    P(D | M) = \int_\Omega d\underline{\theta} \quad P(D| \underline{\theta}, M)P(\underline{\theta} | M)
 
 where the integral over :math:`\Omega` is over the available parameter space for :math:`\underline{\theta}`.
-This quantity can be evaluated using either Markov Chain Monte Carlo (MCMC) or nested sampling.
+This quantity can be evaluated directly using either :ref:`Markov Chain Monte Carlo (MCMC) <MCMC>` or :ref:`nested sampling <nest>`.
 

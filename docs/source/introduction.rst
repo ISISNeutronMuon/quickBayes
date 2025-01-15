@@ -21,7 +21,7 @@ Why use Bayes?
 --------------
 
 In science it is often difficult to know which model gives the best representation of the measured data.
-For example, in muon spectroscopy it is important to know how many exponential decays are present in the data as each one represents **....**
+For example, in muon spectroscopy it is important to know how many exponential decays are present in the data, with each one providing information on the muon stopping site or the muon relaxation time (depending on the setup).
 The model is used to describe the hypothesis, in this case there are :math:`M` exponential decays, where :math:`M` is an integer between :math:`1` and :math:`N`.
 This results in :math:`N` different models and knowing which one to use is not obvious.
 Some methods for deciding include:
