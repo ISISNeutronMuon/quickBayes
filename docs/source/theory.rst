@@ -100,6 +100,7 @@ A Taylor expansion of the chi squared is
 
 .. math::
    :label: chi2_expansion
+
    \chi^2 \approx \chi^2_\mathrm{min} + \frac{1}{2}[\underline{\theta} - \underline{\theta_0}]^\mathrm{T} \underline\nabla\ \underline\nabla \chi^2(\underline{\theta_0})[\underline{\theta} - \underline{\theta_0}]
 
 and the integral can then be written as
