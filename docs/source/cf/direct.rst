@@ -1,4 +1,4 @@
-.. _direct_cf:
+.. _direct:
 
 
 Comparison with direct Bayesian methods

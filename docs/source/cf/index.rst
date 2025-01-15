@@ -23,5 +23,5 @@ Contents
 
    Markov Chain Monte Carlo <MCMC>
    Nested Sampling <nest>
-   Comparison to direct Bayesian methods <direct_cf>
+   Comparison to direct Bayesian methods <direct>
    AIC and BIC <AIC>
