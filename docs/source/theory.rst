@@ -39,6 +39,7 @@ where :math:`D` is the data and :math:`P` is the probability.
 If we assume a uniform prior :math:`P(M) = 1/N` for :math:`N` lines and that :math:`P(D)` is the same for all models then
 
 .. math::
+   :label: prior
 
     P(M|D) \propto P(D|M).
 
@@ -151,6 +152,7 @@ Including Unique Lines
 Sometimes we will want to determine the best model when there are distinguishable lines within the model.
 For example, selecting if the background is flat or linear.
 In this section we will show how to handle this sort of model selection analytically by using a series of approximations and assumptions.
+Since the derivation is very similar to the above, just the key changes will be highlighted here.
 
 Lets define a model, :math:`M` as as sum of indistinguishable functions/lines and some other functions :math:`g_i`
 
@@ -164,104 +166,92 @@ Once again the model posterior is
 
 .. math::
 
-   P(M|D) = P(D|M) \frac{(M)}{P(D)}
+   P(M|D) = P(D|M) \frac{(M)}{P(D)}.
 
-where :math:`D` is the data and :math:`P` is the probability
-Assuming a uniform prior :math:`P(M) = 1/N` for :math:`N` lines and :math:`P(D)` is the same for all models
-
-.. math::
-
-   P(M|D) \propto P(D|M).
-
-The probabilities can then be split into two parts corresponding to the two terms in :math:numref:`big M`
+Assuming that the prior is uniform yields :math:numref:`prior`, but the evidence can then be split into two parts corresponding to the two terms in :math:numref:`big M`
 
 .. math::
-   P(D|M) = P(D|G + F)
+
+   P(D|M) = P(D|G + F),
 
 where :math:`G = \sum_j \alpha_j g_j(x, \underline{\theta})` and :math:`F = \sum_j A_j f(x, \underline{\theta})`.
+Hence, :math:numref:`P(D|M)` can be written as
 
 .. math::
     :label: P(D|G + F)
 
-    P(D|M) \propto \int \mathrm{d}\underline{\theta} P(D | \underline{\theta}, G + F) P(\underline{\theta} | G + F)
+    P(D|M) \propto \int \mathrm{d}\underline{\theta} P(D | \underline{\theta}, G + F) P(\underline{\theta} | G + F).
 
-assume that we have a known space to investigate
+We then assume that the bounds for the prior are known, with the :math:`x` values being
 
 .. math::
    :label: x2
 
    x_\mathrm{min} \le x \le x_\mathrm{max}
 
-For the :math:`F` terms:
+and the amplitudes of the :math:`F` terms are
 
 .. math::
    :label: A2
 
-   A_\mathrm{min} \le A_j \le A_\mathrm{max}
+   A_\mathrm{min} \le A_j \le A_\mathrm{max}.
 
-For the :math:`G` terms:
+For the distinguishable lines (:math:`G` terms) the bounds for the :math:`i^\mathrm{th}` term can be written as
 
 .. math::
    :label: alpha
 
-   \alpha_{i_\mathrm{min}} \le \alpha_i \le \alpha_{i_\mathrm{max}}
+   \alpha_{i_\mathrm{min}} \le \alpha_i \le \alpha_{i_\mathrm{max}}.
 
-So the normalization prior must be the volume of the hyper cube from :math:numref:`x2`, :math:numref:`A2` and :math:numref:`alpha`
+The prior is still given by the volume of the hyper cube from :math:numref:`x2`, :math:numref:`A2` and :math:numref:`alpha`, which gives
 
 .. math::
    :label: P(theta|M2)
 
-    P(\underline{\theta} | G + F) = [(x_\mathrm{max} – x_\mathrm{min}) (A_\mathrm{max}-A_\mathrm{max})]^{-N}(x_\mathrm{max} – x_\mathrm{min})^{-k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})]^{-1}
+    P(\underline{\theta} | G + F) = [(x_\mathrm{max} – x_\mathrm{min}) (A_\mathrm{max}-A_\mathrm{max})]^{-N}(x_\mathrm{max} – x_\mathrm{min})^{-k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})]^{-1}.
 
-The first part of this is just a more general version of :math:numref:`P(theta|M)`, so let :math:`\beta =  [(x_\mathrm{max} – x_\mathrm{min}) (A_\mathrm{max}-A_\mathrm{max})]^{-N}` then :math:numref:`P(theta|M2)` becomes
+The first part of this is just a more general version of :math:numref:`P(theta|M)`.
+To simplify the notation let :math:`\beta =  [(x_\mathrm{max} – x_\mathrm{min}) (A_\mathrm{max}-A_\mathrm{max})]^{-N}`, which is the contribution to the prior for the distinguishable lines, then :math:numref:`P(theta|M2)` becomes
 
 .. math::
    :label: P(theta|M2)2
 
-   P(\underline{\theta} | G + F) = \beta (x_\mathrm{max} – x_\mathrm{min})^{-k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})]^{-1}
+   P(\underline{\theta} | G + F) = \beta (x_\mathrm{max} – x_\mathrm{min})^{-k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})]^{-1}.
 
 
-substituting :math:numref:`P(theta|M2)2` into :math:numref:`P(D|G + F)`
-
-.. math::
-
-   P(D|G + F) \propto \beta (x_\mathrm{max} – x_\mathrm{min})^{-k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})^{-1} \int \mathrm{d}\underline{\theta} P(D | \underline{\theta}, G + F)
-
-Assume that the data is subject to independent additive gaussian noise
+Substituting :math:numref:`P(theta|M2)2` into :math:numref:`P(D|G + F)` gives
 
 .. math::
 
-   P(D|\underline{\theta}, G + F) \propto \exp\left(-\frac{\chi^2}{2}\right)
+   P(D|G + F) \propto \beta (x_\mathrm{max} – x_\mathrm{min})^{-k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})^{-1} \int \mathrm{d}\underline{\theta} P(D | \underline{\theta}, G + F).
 
-where :math:`\chi^2` is the chi squared value and is a function of :math:`\underline{\theta}`
+Once again we can assume that the data is subject to independent additive gaussian noise
+
+.. math::
+
+   P(D|\underline{\theta}, G + F) \propto \exp\left(-\frac{\chi^2}{2}\right).
+
+Hence,
 
 .. math::
    :label: almost2
 
    P(D|G + F) \propto  \beta (x_\mathrm{max} – x_\mathrm{min})^{-k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})^{-1} \int \mathrm{d}\underline{\theta} \exp\left( - \frac{\chi^2}{2}\right)
 
-Assume a best fit exists with corresponding best fit parameters :math:`\underline{\theta_0}` and a chi squared value of :math:`\chi_\mathrm{min}^2`
-
-Use a Taylor expansion
-
-.. math::
-
-    \chi^2 \approx \chi^2_\mathrm{min} + \frac{1}{2}[\underline{\theta} - \underline{\theta_0}]^\mathrm{T} \underline\nabla\ \underline\nabla \chi^2(\underline{\theta_0})[\underline{\theta} - \underline{\theta_0}]
-
-Hence
+and we can assume that a best fit exists with corresponding best fit parameters :math:`\underline{\theta_0}` and a chi squared value of :math:`\chi_\mathrm{min}^2`.
+The Taylor expansion in :math:numref:`Taylor` can then be written as
 
 .. math::
    :label: Taylor2
 
-   \int \mathrm{d}\underline{\theta} \exp\left(-\frac{\chi^2}{2}\right) \approx \exp\left(-\frac{\chi^2_\mathrm{min}}{2}\right) \frac{(4\pi)^{N+k}}{\sqrt{(\mathrm{det}(\underline{\nabla} \ \underline{\nabla} \chi^2)) }}
+   \int \mathrm{d}\underline{\theta} \exp\left(-\frac{\chi^2}{2}\right) \approx \exp\left(-\frac{\chi^2_\mathrm{min}}{2}\right) \frac{(4\pi)^{N+k}}{\sqrt{(\mathrm{det}(\underline{\nabla} \ \underline{\nabla} \chi^2)) }}.
 
-where :math:`\mathrm{det}(H) = \mathrm{det}(\underline{\nabla} \ \underline{\nabla} \chi^2))` is the determinant of the Hessian matrix :math:`H`.
-Substituting :math:numref:`Taylor2` into :math:numref:`almost2` and for indistinguishable lines there are :math:`N` factorial possibilities
+Substituting :math:numref:`Taylor2` into :math:numref:`almost2` and including a factor of :math:`N!` for the possibilities of :math:`N` indistinguishable lines
 
 .. math::
    :label: me
 
-   P(D|M) \propto P(M|D) \propto \frac{N! (4\pi)^{N+k}\beta }{\sqrt{H}(x_\mathrm{max} – x_\mathrm{min})^{k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})} \exp\left(-\frac{\chi^2_0}{2}\right)
+   P(D|M) \propto P(M|D) \propto \frac{N! (4\pi)^{N+k}\beta }{\sqrt{H}(x_\mathrm{max} – x_\mathrm{min})^{k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})} \exp\left(-\frac{\chi^2_0}{2}\right).
 
 Taking the log of this expression and rearranging yields
 
@@ -281,15 +271,16 @@ Taking the log of this expression and rearranging yields
 
 If the :math:`k` distinguishable lines are the same for all models being considered, then the :math:`k\log{(x_\mathrm{max} - x_\mathrm{min})}`, :math:`k\log{(4\pi)}` and :math:`\sum_i^k
 \log{(\alpha_{i_\mathrm{max}}-
-\alpha_{i_\mathrm{max}})}` terms can be neglected as they just add a constant offset. Hence,
+\alpha_{i_\mathrm{max}})}` terms can be neglected as they just add a constant offset.
+Hence, the above equation simplifies to
 
 .. math::
 
    \log{[P(D|M)]} \propto \sum_{j=1}^{N}\log{(j)} +
    N\log{(4\pi)} + \log{(\beta)} -
    \log{(\sqrt{H})}  -
-   \frac{\chi^2_0}{2}
+   \frac{\chi^2_0}{2}.
 
-In the case of positive definite amplitudes :math:`A_\mathrm{min} = 0` and substituting in for :math:`\beta` this reduces to :math:numref:`logs`.
+In the case of positive definite amplitudes :math:`A_\mathrm{min} \ge 0` and substituting in for :math:`\beta` this reduces to :math:numref:`logs`.
 Alternatively, substituting :math:numref:`me` into the odds ratio would lead to the terms corresponding to the distinguishable lines cancelling out.
-So they can be neglected, this might happen in the case of a linear background term for all of the models.
+This happens when the models all include the same background term (e.g. flat) and then only differ by the number of distinguishable lines.
