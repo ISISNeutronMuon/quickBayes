@@ -28,6 +28,6 @@ This documentation is split into the following parts:
 - :ref:`Installation and support <install>`
 - A brief review of :ref:`Bayesian theory <maths>`
 - The :ref:`key principles and theory behind quickBayes <theory>`
-- A brief review of :ref:`Bayesian methods <cf/index>`
+- A brief review of :ref:`Bayesian methods <cf>`
 - Some real world **examples** from QENS and muon spectroscopy
 - :ref:`Developer documentation <dev>`
