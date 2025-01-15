@@ -11,7 +11,7 @@ However, quickBayes has abstracted the key ideas to make a more generic package.
 In science hypotheses are tested against data, to determine the underlying behavior of the system.
 These hypotheses can be in the form of a mathematical expression that originates from first principles (i.e. it has been derived) or is an approximation to other more complex mechanisms (e.g. semi-empirical methods).
 The quickBayes package is designed to test these hypotheses against the user’s data to identify the most likely.
-For example, in Quasi Elastic Neutron Scattering (QENS) the data can be represented by a summation of Lorentzian peaks (convoluted with a resolution function, see  :ref:`the QENS example in <examples>` for more detail), but the number of peaks is not obvious as shown below.
+For example, in Quasi Elastic Neutron Scattering (QENS) the data can be represented by a summation of Lorentzian peaks (convoluted with a resolution function, see  the QENS example :ref:`here <examples>` for more detail), but the number of peaks is not obvious as shown below.
 
 .. image:: images/QENS_3_lines.png
    :width: 800px
@@ -29,5 +29,5 @@ This documentation is split into the following parts:
 - A brief review of :ref:`Bayesian theory <maths>`
 - The :ref:`key principles and theory behind quickBayes <theory>`
 - A brief review of :ref:`Bayesian methods <cf>`
-- Some real world **examples** from QENS and muon spectroscopy
+- Some real world :ref:`examples <examples>` from QENS and muon spectroscopy
 - :ref:`Developer documentation <dev>`
