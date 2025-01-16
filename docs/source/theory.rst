@@ -29,10 +29,9 @@ Hence, the model, :math:`M`, can be written as as sum of indistinguishable funct
 
 where, :math:`A_j` is amplitude, :math:`\theta` are parameters and :math:`f` is the function.
 
-From :maths:numref:`bayes` we know that the model posterior can be written as
+From :math:numref:`bayes` we know that the model posterior can be written as
 
 .. math::
-   :label: bayes
 
    P(M|D) = P(D|M) \frac{P(M)}{P(D)}
 
