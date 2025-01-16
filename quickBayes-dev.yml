@@ -11,10 +11,10 @@ dependencies:
   - pre-commit >=2.15
   - joblib
   - Cython
-  - gofit
   - sphinx
   - jupyter-book
   - nbsphinx
   - matplotlib
   - pip:
+    - gofit
     - readthedocs-sphinx-ext

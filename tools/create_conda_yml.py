@@ -14,8 +14,7 @@ supported = ['windows', 'ubuntu', 'windows-latest', 'ubuntu-latest',
              'mac', 'macOS-latest']
 exp = []
 
-# cannot support 3.11 until gofit does
-versions = ['3.8', '3.9', '3.10', '3.11']
+versions = ['3.8', '3.9', '3.10', '3.11', '3.12']
 
 
 def get_input():
@@ -30,7 +29,7 @@ def get_input():
                         ' mac, macOS-latest', type=str)
     parser.add_argument('version',
                         help='the Python version'
-                        ' (3.8, 3.9, 3.10)', type=str)
+                        ' (3.8, 3.9, 3.10, 3.11, 3.12)', type=str)
     args = parser.parse_args()
 
     if args.OS not in supported and args.OS not in exp:
@@ -76,7 +75,8 @@ def create_default(version):
     """
     default_yml = {}
 
-    pip_dict = {'readthedocs-sphinx-ext': ''}
+    pip_dict = {'readthedocs-sphinx-ext': '',
+                'gofit': ''}
 
     default_yml['name'] = 'quickBayes-dev'
     default_yml['channels'] = 'conda-forge'
@@ -87,7 +87,6 @@ def create_default(version):
                                    'pre-commit': '>=2.15',
                                    'joblib': '',
                                    'Cython': '',
-                                   'gofit': '',
                                    'sphinx': '',
                                    'jupyter-book': '',
                                    'nbsphinx': '',
