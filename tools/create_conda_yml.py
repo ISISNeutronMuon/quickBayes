@@ -14,7 +14,8 @@ supported = ['windows', 'ubuntu', 'windows-latest', 'ubuntu-latest',
              'mac', 'macOS-latest']
 exp = []
 
-versions = ['3.8', '3.9', '3.10', '3.11', '3.12']
+# Cannot move to 3.12 until gofit does
+versions = ['3.8', '3.9', '3.10', '3.11']
 
 
 def get_input():
@@ -29,7 +30,7 @@ def get_input():
                         ' mac, macOS-latest', type=str)
     parser.add_argument('version',
                         help='the Python version'
-                        ' (3.8, 3.9, 3.10, 3.11, 3.12)', type=str)
+                        ' (3.8, 3.9, 3.10, 3.11)', type=str)
     args = parser.parse_args()
 
     if args.OS not in supported and args.OS not in exp:
