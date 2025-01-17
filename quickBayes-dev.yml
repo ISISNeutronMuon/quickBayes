@@ -15,7 +15,7 @@ dependencies:
   - jupyter-book
   - nbsphinx
   - matplotlib
+  - pybind11[global]
   - pip:
-    - 'pybind11[global]'
     - gofit
     - readthedocs-sphinx-ext

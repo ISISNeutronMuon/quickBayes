@@ -77,7 +77,6 @@ def create_default(version):
     default_yml = {}
 
     pip_dict = {'readthedocs-sphinx-ext': '',
-                '"pybind11[global]"': '',
                 'gofit': ''}
 
     default_yml['name'] = 'quickBayes-dev'
@@ -92,6 +91,7 @@ def create_default(version):
                                    'sphinx': '',
                                    'jupyter-book': '',
                                    'nbsphinx': '',
+                                   '"pybind11[global]"': '',
                                    'pip': pip_dict}
     return default_yml
 
