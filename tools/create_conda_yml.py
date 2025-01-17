@@ -92,6 +92,7 @@ def create_default(version):
                                    'jupyter-book': '',
                                    'nbsphinx': '',
                                    '"pybind11[global]"': '',
+                                   'eigen': '',
                                    'pip': pip_dict}
     return default_yml
 
