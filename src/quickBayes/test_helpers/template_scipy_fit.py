@@ -30,16 +30,16 @@ class ScipyFitTemplate(FitEngineTemplate):
 
     @staticmethod
     def get_spline_params():
-        return [0.884, 0.095], [0.037, 0.022]
+        return [0.882, 0.095], [0.037, 0.022]
 
     @staticmethod
     def get_spline_fits():
-        expected_y = [.095, 0.188, 0.281, 0.374, 0.467, 0.560,
-                      0.653, 0.746, 0.839, 0.932]
+        expected_y = [.095, 0.188, 0.281, 0.374, 0.467, 0.559,
+                      0.652, 0.745, 0.838, 0.931]
         expected_e = [0.022, 0.019, 0.016, 0.013, 0.012, 0.012,
                       0.013, 0.015, 0.017, 0.020]
-        expected_d = [-0.168, 0.046, -0.095, -0.185, -0.044, -0.160,
-                      0.017, -0.130, -0.001, -0.025]
+        expected_d = [-0.167, 0.046, -0.095, -0.185, -0.044, -0.161,
+                      0.016, -0.132, -0.003, -0.026]
         expected_de = [0.055, 0.053, 0.052, 0.052, 0.051, 0.051,
                        0.052, 0.052, 0.053, 0.054]
         return expected_y, expected_e, expected_d, expected_de
@@ -63,7 +63,7 @@ class ScipyFitTemplate(FitEngineTemplate):
 
     @staticmethod
     def get_spline_chi2():
-        return {'low': 2.921, 'high': 5.366}
+        return {'low': 2.921, 'high': 5.332}
 
     @staticmethod
     def get_spline_covar():
