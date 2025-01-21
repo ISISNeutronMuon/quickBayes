@@ -1,9 +1,9 @@
 .. _MCMC:
 
-Makov Chain Monte Carlo (MCMC)
-------------------------------
+Markov Chain Monte Carlo (MCMC)
+-------------------------------
 
-The integral in equation :math:numref:`eq_int` typically requires a numberical method to evaluate it.
+The integral in equation :math:numref:`eq_int` typically requires a numerical method to evaluate it.
 Markov Chain Monte Carlo (MCMC) is a method that uses random walkers to estimate the probability distribution.
 The MCMC has two main components, the first defines how the walkers select their new positions and the second is how to determine if to accept the new values.
 There are several options for each of these parts, leading to numerous possible MCMC simulations.
@@ -47,7 +47,7 @@ The second is to define the behaviour of the walkers at the boundaries of the pa
 Typically they are chosen to be either reflective or a periodic boundary.
 For a Mertropolis Hastings algorithm both options are suitable, because the results are independent of the path taken by the walker.
 
-MCMC will eventually give a good represnetation of a unimodal posterior PDF of the data, even if it has some complex structure.
+MCMC will eventually give a good representation of a unimodal posterior PDF of the data, even if it has some complex structure.
 However, it can be very computationally expensive to evaluate due to the number of walkers required to get a good estimate of the posterior and the burn in period.
 The compuational cost is difficult to estimate as it requires prior knowledge of how long the burn in period should be.
 Hence, it can be too short leading to poor results or too long wasting valuable computational time.

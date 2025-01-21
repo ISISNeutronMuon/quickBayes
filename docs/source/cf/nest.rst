@@ -21,7 +21,7 @@ In nested sampling the notation is slightly different:
 
 * The evidence is :math:`Z = P(D | M)`.
 * The prior is :math:`\pi(\underline{\theta}) = P(\underline{\theta} | M)`.
-* The likleihood is :math:`L(\underline{\theta}) = P(D | \underline{\theta}, M)`.
+* The liklihood is :math:`L(\underline{\theta}) = P(D | \underline{\theta}, M)`.
 
 Hence, the above equation is written as
 
@@ -47,7 +47,7 @@ The change of variables allows equation :math:numref:`NS` to be written as
 
    Z = \int_0^1 L(X) \mathrm{dX}.
 
-The first few steps are similaar to MCMC:
+The first few steps are similar to MCMC:
 
 #. The bounds for the parameter space are defined.
 #. A set of uniformally random points are placed in the bound parameter space.
@@ -55,7 +55,7 @@ The first few steps are similaar to MCMC:
 
 Nested sampling then simplifies the problem of exploring multidimensional space, by reducing it to a series of shells (contours in the limit of infinite samples, see equation :math:numref:`contour`).
 This is done by initialising the evidence to zero and the volume variable to one.
-The following set of steps are then repeated untial a stopping criteria is met:
+The following set of steps are then repeated until a stopping criteria is met:
 
 #. The sample with the minimum value for the likelihood, :math:`L*` is identified for an iteration :math:`i`.
 #. The integral in equation :math:numref:`Z` is updated with the new likelihood, via a numberical integration method. For trapezium rule the new contribution to the evidence will be :math:`\frac{L*(X_{i-1} - X_{i+1})}{2}`.

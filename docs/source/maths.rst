@@ -7,13 +7,15 @@ In this section the concepts for using Bayesian techniques for model selection w
 The first part discusses Bayes theorm and how it can be used to get the probability of the model given the data.
 The second part is on the odds factor and how to interpret the posterior probability for model selection.
 
-Bayes Theorm
-------------
+Bayes Theorem
+-------------
 
 Bayesian inference is used to calculate the whole posterior probability distribution function (PDF).
 The equation for the posterior probability can be written as
 
 .. math::
+   :name: bayes
+
    P(\underline{\theta} | D, M) = P(D | \underline{\theta}, M)\frac{P(D | \underline{\theta}, M)}{P(D | M)},
 
 where :math:`\underline{\theta}` is a vector of model parameters, :math:`M` is the model and :math:`D` is the data.
@@ -41,7 +43,7 @@ Odds factor
 -----------
 
 One method for comparing models is known as the odds factor.
-It assumes that you can calculate the probability of the data given the :math:`i^{\mathrm{th}` model (:math:`M_i`), by taking the ratio of two different models.
+It assumes that you can calculate the probability of the data given the :math:`i^{\mathrm{th}}` model (:math:`M_i`), by taking the ratio of two different models.
 This section will use a derivation based on the work from `here <https://jakevdp.github.io/blog/2015/08/07/frequentism-and-bayesianism-5-model-selection/>`_.
 
 For model selection we want the model posterior

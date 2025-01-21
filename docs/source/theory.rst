@@ -50,7 +50,7 @@ From :math:numref:`eq_int` we know that :math:`P(D|M)` can be written as an inte
 
     P(D|M) \propto \int \mathrm{d}^N\theta P(D | \theta, M) P(\theta | M).
 
-To make the above equation tractable, lets assume that we know that the probability is zero outside of some known space such that
+To make the above equation tractable, let's assume that we know that the probability is zero outside of some known space such that
 
 .. math::
    :label: x
@@ -142,7 +142,7 @@ The fourth term is a bit more complex as it involves the Hessian matrix.
 Lets consider the best case scenario of :math:`\mathrm{det}(H) = 1`, which corresponds to a perfectly behaved model.
 Then the contribution to :math:numref:`logs` is zero.
 If :math:`\mathrm{det}(H) < 1` then at least one of the eigenvalues is very small and is an indication of the model being overparameterised.
-This invalidates the assumption of being at a local minima, and quickBayes will automatically add an additional penality if this occurs.
+This invalidates the assumption of being at a local minimum, and quickBayes will automatically add an additional penality if this occurs.
 As :math:`\mathrm{det}(H)` gets larger the less likely the model is to be correct.
 The final term is a penality for having a poor fit, as the quality of the fit decreases so does the likelihood of the model.
 
@@ -154,7 +154,7 @@ For example, selecting if the background is flat or linear.
 In this section we will show how to handle this sort of model selection analytically by using a series of approximations and assumptions.
 Since the derivation is very similar to the above, just the key changes will be highlighted here.
 
-Lets define a model, :math:`M` as as sum of indistinguishable functions/lines and some other functions :math:`g_i`
+Lets define a model, :math:`M` as a sum of indistinguishable functions/lines and some other functions :math:`g_i`
 
 .. math::
    :label: big M

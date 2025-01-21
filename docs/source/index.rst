@@ -11,7 +11,7 @@ Contents
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :titlesonly:
 
    Welcome to quickBayes <intro>
    Introduction <introduction>

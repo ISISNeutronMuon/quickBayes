@@ -4,8 +4,8 @@ History of quickBayes
 =====================
 
 The quickBayes packages started as a replacement for the quasielasticbayes package, which was a Fortran code base that was exposed to Python.
-In the development of quickBayes the code became more modular and flexable.
-This allows the quickBayes to be applied to any probelm that requires model selection.
+In the development of quickBayes the code became more modular and flexible.
+This allows quickBayes to be applied to any problem that requires model selection.
 
 To verify the results of quickBayes it was compared to the quasielasticbayes calculations.
 For lorentzian fits of QENS data it produced results that were close enough to quasielasticbayes.
