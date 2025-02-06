@@ -18,7 +18,7 @@ After another :math:`100` draws this hypothesis can be tested by using Bayes the
 This probability is known as the posterior probability and represents the likelihood of a hypothesis given the data.
 Bayes theorem for the posteriror probability is
 
-.. math:
+.. math::
 
    P(\theta|y) = \frac{P(y|\theta)P(\theta)}{P(y)},
 
