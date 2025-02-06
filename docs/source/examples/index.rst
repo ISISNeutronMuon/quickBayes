@@ -3,8 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Workflows
-=========
+.. _examples:
+
+Examples
+========
 
 Contents
 --------
@@ -13,11 +15,6 @@ Contents
    :maxdepth: 2
    :caption: Contents:
 
-   Workflows <workflows>
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   muon.ipynb
+   QENS.ipynb
+   sin_wave.ipynb

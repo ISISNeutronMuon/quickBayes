@@ -1,16 +1,18 @@
+.. _history:
+
 History of quickBayes
 =====================
 
 The quickBayes packages started as a replacement for the quasielasticbayes package, which was a Fortran code base that was exposed to Python.
-In the development of quickBayes the code became more modular and flexable. 
-This allows the code to be applied to any probelm that requires model selection. 
+In the development of quickBayes the code became more modular and flexible.
+This allows quickBayes to be applied to any problem that requires model selection.
 
-To verify the results of quickBayes it was compared to the quasielasticbayes calculations. 
-For lorentzian fits it produced the close enough results.
-However, for a stretched exponential it gave different results for the FWHM.
-The stretched exponential results for the FWHM are different to quasielasticbayes, as shown by the figure below.
-However, the new results agree with the FWHM values for fitting a single Lorentzian ('QL').
-The quickBayes method provides FWHM results that are comparable for all :math:`Q` values (green and black data), unlike the original code that has a divergence for low :math:`Q` value.
+To verify the results of quickBayes it was compared to the quasielasticbayes calculations.
+For lorentzian fits of QENS data it produced results that were close enough to quasielasticbayes.
+However, for a stretched exponential quickBayes gave different results for the Full Width Half Max (FWHM)
+This is shown by the figure below.
+The quickBayes results agree with the FWHM values for fitting a single Lorentzian ('QL'), suggesting that the results are correct.
+Whereas the quasielasticbayes package has a divergence in the FWHM for low :math:`Q` values.
 
 .. figure:: /images/qse_cf.png
    :alt: qse_cf.png

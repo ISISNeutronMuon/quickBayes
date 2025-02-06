@@ -41,16 +41,16 @@ class GoFitEngineTest(FitEngineTemplate, unittest.TestCase):
 
     @staticmethod
     def get_spline_params():
-        return [0.864, 0.100], [0.037, 0.022]
+        return [0.861, 0.101], [0.037, 0.022]
 
     @staticmethod
     def get_spline_fits():
-        expected_y = [.100, 0.191, 0.282, 0.373, 0.464, 0.555,
-                      0.646, 0.737, 0.828, 0.919]
+        expected_y = [.101, 0.192, 0.283, 0.373, 0.464, 0.555,
+                      0.645, 0.736, 0.827, 0.917]
         expected_e = [0.022, 0.019, 0.016, 0.013, 0.012, 0.012,
                       0.013, 0.015, 0.017, 0.020]
-        expected_d = [-0.162, 0.049, -0.094, -0.185, -0.047, -0.165,
-                      0.010, -0.139, -0.012, -0.038]
+        expected_d = [-0.161, 0.050, -0.093, -0.185, -0.047, -0.165,
+                      0.009, -0.141, -0.014, -0.040]
         expected_de = [0.055, 0.053, 0.052, 0.052, 0.051, 0.051,
                        0.052, 0.052, 0.053, 0.054]
         return expected_y, expected_e, expected_d, expected_de
@@ -74,7 +74,7 @@ class GoFitEngineTest(FitEngineTemplate, unittest.TestCase):
 
     @staticmethod
     def get_spline_chi2():
-        return {'low': 3.086, 'high': 5.389}
+        return {'low': 3.086, 'high': 5.357}
 
     @staticmethod
     def get_spline_covar():

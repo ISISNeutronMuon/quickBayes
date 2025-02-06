@@ -7,6 +7,11 @@ build:
   os: 'ubuntu-20.04'
   tools:
     python: 'mambaforge-22.9'
+  jobs:
+    pre_build:
+      # Generate on-the-fly Sphinx configuration from Jupyter Book's _config.yml
+      - "jupyter-book config sphinx docs/source/examples"
+
 
 conda:
   environment: quickBayes-dev.yml
@@ -19,7 +24,9 @@ python:
 
 
 sphinx:
+  configuration: docs/source/conf.py
   fail_on_warning: true
 
 formats:
   - pdf
+  - epub

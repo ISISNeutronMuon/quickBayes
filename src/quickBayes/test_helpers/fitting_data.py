@@ -12,7 +12,9 @@ def func(x_data: ndarray) -> None:
     """
     :param x_data: the x data
     """
-    return 0.1 + 0.9*x_data
+    y = 0.1 + 0.9*x_data
+    y[-1] = 0.99*y[-1]
+    return y
 
 
 def basic_data() -> (ndarray, ndarray, ndarray):
