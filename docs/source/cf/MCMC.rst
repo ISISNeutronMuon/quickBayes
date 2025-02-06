@@ -7,9 +7,8 @@ The integral for the evidence is
 
 .. math::
 
-   P(D|M) = \int_\Omega P(D| \underline{\theta}, M)P( \underline{\theta}|M)\mathrm{d\underline{\theta}}.
-
-and typically requires a numerical method for its evaluation.
+   P(D|M) = \int_\Omega P(D| \underline{\theta}, M)P( \underline{\theta}|M)\mathrm{d\underline{\theta}}
+which typically requires a numerical method for its evaluation.
 
 Markov Chain Monte Carlo (MCMC) is a method that uses random walkers to estimate the probability distribution.
 The MCMC has two main components, the first defines how the walkers select their new positions and the second is how to determine if to accept the new values.
