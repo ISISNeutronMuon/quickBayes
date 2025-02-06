@@ -5,7 +5,7 @@ The quickBayes package is an open source library for calculating a fast approxim
 The package is cross platform, supporting Windows, Mac OS and Linux.
 This package has been developed by Anthony Lim from STFC’s ISIS Neutron and Muon facility.
 
-The quickBayes package was originally designed as a successor to the quasielasticbayes package.
+The quickBayes package was originally designed as a successor to the `quasielasticbayes package <https://github.com/mantidproject/quasielasticbayes>`_.
 However, quickBayes has abstracted the key ideas to make a more generic package.
 
 In science hypotheses are tested against data, to determine the underlying behavior of the system.
