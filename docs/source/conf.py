@@ -15,6 +15,7 @@ copyright = '2023, Anthony Lim'
 author = 'AnthonyLim'
 release = '1.0'
 version = '1.0'
+confval = 'suppress_warnings'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
