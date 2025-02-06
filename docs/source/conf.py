@@ -12,7 +12,7 @@ sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
 
 project = 'quickBayes'
 copyright = '2023, Anthony Lim'
-author = 'Anthony Lim'
+author = 'Anthony  Lim'
 release = '1.0'
 
 # -- General configuration ---------------------------------------------------
