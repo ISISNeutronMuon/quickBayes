@@ -16,7 +16,7 @@ After repeating this :math:`100` times a red ball was picked :math:`70` times.
 This leads to a hypothesis that :math:`70%` of the balls are red.
 After another :math:`100` draws this hypothesis can be tested by using Bayes theorem to calculate the probability of the hypothesis given the new data.
 This probability is known as the posterior probability and represents the likelihood of a hypothesis given the data.
-Bayes theorem for the posteriror probability is
+Bayes theorem for the posterior probability is
 
 .. math::
 
