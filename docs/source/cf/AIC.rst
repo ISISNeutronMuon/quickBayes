@@ -3,7 +3,7 @@
 Akaike Information Criterion (AIC) and Bayesian Information Criterion (BIC)
 ---------------------------------------------------------------------------
 
-Both the `AIC <https://en.wikipedia.org/wiki/Akaike_information_criterion#Comparison_with_BIC>`_ and `BIC <https://en.wikipedia.org/wiki/Bayesian_information_criterion>` are methods for determining which model best suits the data.
+Both the `AIC <https://en.wikipedia.org/wiki/Akaike_information_criterion#>`_ and `BIC <https://en.wikipedia.org/wiki/Bayesian_information_criterion>`_ are methods for determining which model best suits the data.
 These methods have their origin in information theory.
 The key idea is to reduce the amount of information lost by the model when describing the data.
 
