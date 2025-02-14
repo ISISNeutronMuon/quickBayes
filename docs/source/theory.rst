@@ -5,6 +5,7 @@ The theory behind quickBayes
 
 In this section the key equation for quickBayes is derived in detail.
 The quickBayes method makes a series of assumptions to reduce :ref:`the full PDF evaluation <eq_int>` to a single analytic equation.
+This will follow the derivation of `Sivia et al <https://www.sciencedirect.com/science/article/pii/092145269290036R?via=ihub>`_.
 The key assumptions are:
 
 - The model can be written as a series of indistinguishable lines (i.e. the same repeated function)
@@ -13,8 +14,10 @@ The key assumptions are:
 - The normalisation is just the value of the hyper volume for the parameters
 - The :math:`P(D|\underline\theta, M)` can be represented as gaussians and approximated by a first order Taylor expansion
 
-In the second part the first assumption is removed, allowing for unique lines (functions) to be included.
+In the second part I have extended the derivation to remove the first assumption, allowing for unique lines (functions) to be included.
 
+When used by the quickBayes package the chi squared values are calculated using either `scipy <https://scipy.org/>`_ or `gofit <https://ralna.github.io/GOFit/_build/html/index.html>`_.
+However, it is possible to add new fitting engines if these are not sufficient.
 
 Original Derivation
 -------------------

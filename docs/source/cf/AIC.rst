@@ -3,7 +3,7 @@
 Akaike Information Criterion (AIC) and Bayesian Information Criterion (BIC)
 ---------------------------------------------------------------------------
 
-Both the AIC and BIC are methods for determining which model best suits the data.
+Both the `AIC <https://en.wikipedia.org/wiki/Akaike_information_criterion#Comparison_with_BIC>`_ and `BIC <https://en.wikipedia.org/wiki/Bayesian_information_criterion>` are methods for determining which model best suits the data.
 These methods have their origin in information theory.
 The key idea is to reduce the amount of information lost by the model when describing the data.
 
@@ -83,7 +83,7 @@ This means that the likelihood can be written as
 
    \mathcal{L}(\underline{\theta}|x) = C\exp\left(-\frac{\chi^2}{2}\right),
 
-where :math:`chi^2` is the chi squared value from linear least squares and :math:`C` is a constant term.
+where :math:`\chi^2` is the chi squared value from linear least squares and :math:`C` is a constant term.
 Since only differences are important, equation :math:numref:`AIC_no_approx` can be written as
 
 .. math::
@@ -91,7 +91,7 @@ Since only differences are important, equation :math:numref:`AIC_no_approx` can 
    2a = 2\ln{\{g(x)\}} - \chi^2.
 
 For both the AIC and BIC the first term is the same if the comparing two models with the same number of parameters against the same data set.
-Hence, the best AIC and BIC is just the model with the lowest :math:`chi^2` value.
+Hence, the best AIC and BIC is just the model with the lowest :math:`\chi^2` value.
 
 
 Comparison with AIC and BIC
@@ -155,7 +155,7 @@ The main equation for quickBayes (equation :math:numref:`logs`) can be written a
    \ln{(\sqrt{\det{H}})}  -
    \frac{\chi^2}{2},
 
-where :math:`chi^2` is at the minimum, :math:`M_N` is the model with :math:`N` functions and :math:`C` is a normalisation constant.
+where :math:`\chi^2` is at the minimum, :math:`M_N` is the model with :math:`N` functions and :math:`C` is a normalisation constant.
 The normalisation constant will be the same for all of the models, so when taking the difference it will cancel out.
 Lets define the difference between two neighbouring models to be
 
