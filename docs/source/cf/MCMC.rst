@@ -16,6 +16,7 @@ The MCMC has two main components, the first defines how the walkers select their
 There are several options for each of these parts, leading to numerous possible MCMC simulations.
 For this section, the differential evolution and Metropolis Hastings methods will be considered.
 These methods are relatively straightforward and provide insight into MCMC methods.
+More detailed discussion can be found `here <https://www.sciencedirect.com/science/article/pii/S0022169423007643>`_ and `here <https://royalsocietypublishing.org/doi/full/10.1098/rsta.2014.0405>`_.
 
 The differential evolution algorithm provides an equation that determines how the random walkers will be updated.
 Each walker describes the potential parameters for the model, :math:`\underline{\theta}_i^t`, where :math:`i` is used to label the different walkers and :math:`t` labels the step of the algorithm.
