@@ -14,7 +14,7 @@ The key assumptions are:
 - The normalisation is just the value of the hyper volume for the parameters
 - The :math:`P(D|\underline\theta, M)` can be represented as gaussians and approximated by a first order Taylor expansion
 
-In the second part I have extended the derivation to remove the first assumption, allowing for unique lines (functions) to be included.
+In the second part the original derivation has been extended to remove the first assumption, allowing for unique lines (functions) to be included.
 
 When used by the quickBayes package the chi squared values are calculated using either `scipy <https://scipy.org/>`_ or `gofit <https://ralna.github.io/GOFit/_build/html/index.html>`_.
 However, it is possible to add new fitting engines if these are not sufficient.
