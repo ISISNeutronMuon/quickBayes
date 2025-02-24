@@ -48,7 +48,7 @@ jobs:
         shell: bash -l {0}
         run:  |
             conda activate quickBayes-dev
-            python -m pip install .
+            python -m pip install .[gofit]
       - name: run tests
         timeout-minutes: 10
         shell: bash -l {0}
