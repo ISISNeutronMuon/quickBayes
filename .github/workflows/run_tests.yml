@@ -53,15 +53,16 @@ jobs:
         timeout-minutes: 10
         shell: bash -l {0}
         run:  |
-             python -m pytest test/shared test/gofit
+             python -m pytest test/gofit
       - name: without gofit setup
         shell: bash -l {0}
         run:  |
-            python -m pip uninstall gofit quickBayes
+            python -m pip uninstall quickBayes
+            python -m pip uninstall gofit
             python -m pip install --upgrade .
       - name: run tests without gofit
         timeout-minutes: 10
         shell: bash -l {0}
         run:  |
-             python -m pytest test/shared test/default
+             python -m pytest test/default
 
