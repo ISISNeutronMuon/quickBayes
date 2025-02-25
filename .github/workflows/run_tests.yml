@@ -48,9 +48,9 @@ jobs:
         shell: bash -l {0}
         run:  |
             conda activate quickBayes-dev
-            python -m pip install .
       - name: run tests
         timeout-minutes: 10
         shell: bash -l {0}
         run:  |
-             python -m pytest test/default
+            python -m pip install .
+            python -m pytest test/default
