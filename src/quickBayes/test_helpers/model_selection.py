@@ -142,7 +142,3 @@ class WorkflowTemplateTest(object):
         self.assertEqual(self.wf.fit_engine._guess, [2])
         self.assertEqual(self.wf.fit_engine._lower, [-1])
         self.assertEqual(self.wf.fit_engine._upper, [1])
-
-
-if __name__ == '__main__':
-    unittest.main()
