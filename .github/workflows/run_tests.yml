@@ -53,4 +53,4 @@ jobs:
         timeout-minutes: 10
         shell: bash -l {0}
         run:  |
-             python -m pytest/default
+             python -m pytest test/default
