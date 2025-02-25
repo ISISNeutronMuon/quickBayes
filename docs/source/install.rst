@@ -15,6 +15,14 @@ The library is available on `PyPi <https://pypi.org/project/quickBayes/#descript
 
     python -m pip install quickBayes
 
+The default install does not include `gofit <https://ralna.github.io/GOFit/_build/html/index.html>`_.
+To install quickBayes with gofit the command is
+
+.. code-block:: python
+
+    python -m pip install quickBayes[gofit]
+
+
 Reporting Issues
 ----------------
 
