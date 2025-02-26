@@ -30,10 +30,10 @@ The first term provides some history to the method, so the new parameter values 
 This prevents the walker from picking new guesses that are significantly worse than the current one.
 The second term can be thought of as a diffusion term, it determines how much the walker will move.
 It depends on the distance between two different walkers and then multiplies the result by a scalar :math:`\gamma`.
-So if the MCMC has a bad estimate of the PDF, then the distance between the walkers is probably large.
+So if the MCMC has a bad estimate of the posterior PDF, then the distance between the walkers is probably large.
 Hence, the next guess will move more in an attempt to find a better set of parameters.
-This part of the algorithm is described as the burn in period, and is the time for the walkers to find a good PDF.
-If the walkers provide a good description of the PDF, then the difference is small.
+This part of the algorithm is described as the burn in period, and is the time for the walkers to find a good posterior PDF.
+If the walkers provide a good description of the posterior PDF, then the difference is small.
 This results in the walker moving a small distance from its original position.
 The competing effects from the second term, depending on the distance between two walkers, pulls the walkers towards good parameter values.
 The final term adds a bit of randomness into the position update.
@@ -47,7 +47,7 @@ Then the ratio is taken and compared to a random number.
 The proposed value is accepted if the random number is smaller than the ratio.
 As a result the walker is not guranteed to update to the new position if its current values are good enough.
 
-The combined effect of the two algorithms is that the walkers will eventually converge onto a distribution that describes the PDF.
+The combined effect of the two algorithms is that the walkers will eventually converge onto a distribution that describes the posterior PDF.
 To make this tractable, a few extra conditions are needed.
 The first is to limit the probability space, by placing limits on the potential parameter values.
 This is the prior for the problem and the starting distribution for the walkers is normally flat across the parameter space.
@@ -55,7 +55,7 @@ The second is to define the behaviour of the walkers at the boundaries of the pa
 Typically they are chosen to be either reflective or a periodic boundary.
 For a Mertropolis Hastings algorithm both options are suitable, because the results are independent of the path taken by the walker.
 
-MCMC will eventually give a good representation of a unimodal posterior PDF of the data, even if it has some complex structure.
+MCMC will eventually give a good representation of a unimodal posterior posterior PDF of the data, even if it has some complex structure.
 However, it can be very computationally expensive to evaluate due to the number of walkers required to get a good estimate of the posterior and the burn in period.
 The compuational cost is difficult to estimate as it requires prior knowledge of how long the burn in period should be.
 Hence, it can be too short leading to poor results or too long wasting valuable computational time.
