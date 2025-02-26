@@ -1,4 +1,3 @@
-import unittest
 from quickBayes.workflow.grid_search.template import GridSearchTemplate
 from quickBayes.functions.BG import FlatBG
 from quickBayes.functions.exp_decay import ExpDecay
@@ -32,7 +31,7 @@ class SimpleWorkflow(GridSearchTemplate):
         return 1
 
 
-class GridSearchTemplateTest(unittest.TestCase):
+class GridSearchTemplateTest(object):
 
     def setUp(self):
         self.func = FixedComposite()
@@ -198,29 +197,3 @@ class GridSearchTemplateTest(unittest.TestCase):
         self.assertEqual(self.wf.fit_engine._guess, [2.])
         self.assertEqual(self.wf.fit_engine._lower, [-4])
         self.assertEqual(self.wf.fit_engine._upper, [4])
-
-    def test_set_gofit_engine(self):
-        # same
-        self.assertEqual(self.wf.fit_engine, None)
-        x, y, e = gen_grid_search_data()
-        self.wf.preprocess_data(x, y, e)
-        self.wf.set_gofit_engine(5, [], [])
-        self.assertEqual(self.wf.fit_engine.name, 'gofit')
-
-    def test_update_gofit_engine(self):
-        # same
-        self.assertEqual(self.wf.fit_engine, None)
-        x, y, e = gen_grid_search_data()
-        self.wf.preprocess_data(x, y, e)
-        self.wf.set_gofit_engine(5, [], [])
-        self.assertEqual(self.wf.fit_engine._lower, [])
-        self.assertEqual(self.wf.fit_engine._upper, [])
-
-        bg = FlatBG()
-        self.wf.update_fit_engine(bg, [5])
-        self.assertEqual(self.wf.fit_engine._lower, [-1])
-        self.assertEqual(self.wf.fit_engine._upper, [1])
-
-
-if __name__ == '__main__':
-    unittest.main()

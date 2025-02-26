@@ -18,5 +18,4 @@ dependencies:
   - pybind11[global]
   - eigen
   - pip:
-    - gofit
     - readthedocs-sphinx-ext

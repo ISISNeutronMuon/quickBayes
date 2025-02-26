@@ -49,8 +49,15 @@ jobs:
         run:  |
             conda activate quickBayes-dev
             python -m pip install .
-      - name: run tests
+      - name: run tests default
         timeout-minutes: 10
         shell: bash -l {0}
         run:  |
-             python -m pytest
+             python -m pytest test/default test/shared
+      - name: run tests gofit
+        timeout-minutes: 10
+        shell: bash -l {0}
+        run:  |
+             python -m pip uninstall quickBayes
+             python -m pip install .[gofit]
+             python -m pytest test/gofit test/shared
