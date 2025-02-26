@@ -4,7 +4,7 @@ Introduction
 ============
 
 Statistics is dominated by a school of thought known as frequentist statistics.
-To demonstrate the difference, let's consider a bag containing a mixture of red and yellow balls.
+To demonstrate the difference between frequentist and Bayesian statistics, let's consider a bag containing a mixture of red and yellow balls.
 If a ball is chosen from the bag, such that only one person knows its colour.
 Then a frequentist would say that the probability of that ball being red is either :math:`100\%` or :math:`0\%`, as it is definitely red or not.
 
