@@ -254,7 +254,7 @@ Substituting :math:numref:`Taylor2` into :math:numref:`almost2` and including a 
 .. math::
    :label: me
 
-   P(D|M) \propto P(M|D) \propto \frac{N! (4\pi)^{N+k}\beta }{\sqrt{H}(x_\mathrm{max} – x_\mathrm{min})^{k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})} \exp\left(-\frac{\chi^2_0}{2}\right).
+   P(D|M) \propto P(M|D) \propto \frac{N! (4\pi)^{N+k}\beta }{\sqrt{\mathrm{det}(H)}(x_\mathrm{max} – x_\mathrm{min})^{k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})} \exp\left(-\frac{\chi^2_0}{2}\right).
 
 Taking the log of this expression and rearranging yields
 
@@ -264,7 +264,7 @@ Taking the log of this expression and rearranging yields
    \begin{eqnarray}
    \log{[P(D|M)]} \propto \sum_{j=1}^{N}\log{(j)} +
    (N+k)\log{(4\pi)} + \log{(\beta)} -
-   \log{(\sqrt{H})} \\ -
+   \log{(\sqrt{\mathrm{det}(H)})} \\ -
    k\log{(x_\mathrm{max} - x_\mathrm{min})}
    - \sum_i^k
    \log{(\alpha_{i_\mathrm{max}}-
@@ -281,7 +281,7 @@ Hence, the above equation simplifies to
 
    \log{[P(D|M)]} \propto \sum_{j=1}^{N}\log{(j)} +
    N\log{(4\pi)} + \log{(\beta)} -
-   \log{(\sqrt{H})}  -
+   \log{(\sqrt{\mathrm{det}(H)})}  -
    \frac{\chi^2_0}{2}.
 
 In the case of positive definite amplitudes :math:`A_\mathrm{min} \ge 0` and substituting in for :math:`\beta` this reduces to :math:numref:`logs`.
