@@ -3,7 +3,7 @@
 History of quickBayes
 =====================
 
-The quickBayes packages started as a replacement for the quasielasticbayes package, which was a Fortran code base that was exposed to Python.
+The quickBayes package was originally designed as a successor to the `quasielasticbayes package <https://github.com/mantidproject/quasielasticbayes>`_, which was a Fortran code base that was exposed to Python.
 In the development of quickBayes the code became more modular and flexible.
 This allows quickBayes to be applied to any problem that requires model selection.
 
