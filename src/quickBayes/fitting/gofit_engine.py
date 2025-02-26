@@ -11,7 +11,7 @@ try:
                      lower: ndarray, upper: ndarray, samples: int = 10,
                      max_iterations: int = 220000):
             """
-            Creates the scipy curve fit engine class
+            Creates the gofit multistart fit engine class
             Stores useful information about each fit
             :param name: name of the fit engine
             :param x_data: original x data (can fit to an interpolation)
@@ -33,7 +33,8 @@ except ImportError:
                      lower: ndarray, upper: ndarray, samples: int = 10,
                      max_iterations: int = 220000):
             """
-            Creates the scipy curve fit engine class
+            Creates a dummy gofit engine class.
+            This is to prevent errors if gofit is not installed.
             Stores useful information about each fit
             :param name: name of the fit engine
             :param x_data: original x data (can fit to an interpolation)
