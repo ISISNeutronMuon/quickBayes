@@ -12,6 +12,6 @@ The library is available on [PyPi](https://pypi.org/project/quickBayes/#descript
 > python -m pip install quickBayes
 ```
 
-The user documentation is `here <https://quickbayes.readthedocs.io/en/latest/>`.
+The user documentation is [here](https://quickbayes.readthedocs.io/en/latest/).
 
-The developer documentation is `here <https://quickbayes.readthedocs.io/en/latest/dev/index.html>`.
+The developer documentation is [here](https://quickbayes.readthedocs.io/en/latest/dev/index.html).

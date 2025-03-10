@@ -5,10 +5,17 @@ channels:
 
 dependencies:
   - python =3.11.*
-  - numpy
+  - numpy < 2.0.0
   - scipy
   - pytest
   - pre-commit >=2.15
   - joblib
   - Cython
-  - gofit
+  - sphinx
+  - jupyter-book
+  - nbsphinx
+  - matplotlib
+  - pybind11[global]
+  - eigen
+  - pip:
+    - readthedocs-sphinx-ext

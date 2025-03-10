@@ -1,7 +1,9 @@
+.. _dev:
+
 Getting Started
 ===============
 
-To develop for quickBayes you will need to clone the github repository :code:`git clone https://github.com/mantidproject/quickBayes.git`.
+To develop for quickBayes you will need to clone the github repository :code:`git clone https://github.com/ISISNeutronMuon/quickBayes.git`.
 This will place you onto the main branch.
 If you want to make changes then you will need to create a branch by using the command :code:`git checkout --no-track -b <branch name> origin/main`.
 You can then add your changes to this branch and once it is ready to be merged into main, you create a pull request (PR) for review.
