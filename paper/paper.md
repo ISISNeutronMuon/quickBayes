@@ -47,7 +47,7 @@ The code has been developed to make it easy to read and understand, with compreh
 These changes make the new code more maintainable and reliable, while ensuring it is easily extendable by the user community.
 
 Traditionally the calculation of the marginal lieklihood for a model, also known as the evidence, is not analytic and needs to be done with Bayesian inference.
-These are computationally expensive methods, such as Markov chain Monte Carlo [@bayesReview] or Nested Sampling[@Skilling, 2006].
+These are computationally expensive methods, such as Markov chain Monte Carlo [@bayesReview] or Nested Sampling[@Skilling].
 Simpler and far less computationally demanding methods for model comparison exist, such as the Bayesian Information Criterion or Akaike Information Criterion.
 These use the maximum likelihood and some basic information theory to prevent over-fitting by incorporating a penalty for more complex models.
 The packages `quasielasticbayes` and `quickBayes` attempt to provide a middle ground by using a more robust Bayesian approach, while maintaining a fast analytical expression for the evidence [@bayesBook].
