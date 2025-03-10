@@ -4,7 +4,7 @@ The theory behind quickBayes
 ============================
 
 In this section the key equation for quickBayes is derived in detail.
-The quickBayes method makes a series of assumptions to reduce :ref:`the full PDF evaluation <eq_int>` to a single analytic equation.
+The quickBayes method makes a series of assumptions to reduce :ref:`the marginal likelihood <eq_int>` to a single analytic equation.
 This will follow the derivation of `Sivia et al <https://www.sciencedirect.com/science/article/pii/092145269290036R?via=ihub>`_.
 The key assumptions are:
 
@@ -12,7 +12,7 @@ The key assumptions are:
 - The lines can be written as an amplitude multiplied by some function
 - The prior probabilities are flat across the domain of interest
 - The normalisation is just the value of the hyper volume for the parameters
-- The :math:`P(D|\underline\theta, M)` can be represented as gaussians and approximated by a first order Taylor expansion
+- The :math:`P(D|\underline\theta, M)` can be represented as a gaussian i.e. it is approximated by a second order Taylor expansion
 
 In the second part the original derivation has been extended to remove the first assumption, allowing for unique lines (functions) to be included.
 
@@ -105,16 +105,16 @@ A Taylor expansion of the chi squared yields
 .. math::
    :label: chi2_expansion
 
-   \chi^2 \approx \chi^2_\mathrm{min} + \frac{1}{2}[\underline{\theta} - \underline{\theta_0}]^\mathrm{T} \underline\nabla\ \underline\nabla \chi^2(\underline{\theta_0})[\underline{\theta} - \underline{\theta_0}]
+   \chi^2 \approx \chi^2_\mathrm{min} + \frac{1}{2}[\underline{\theta} - \underline{\theta_0}]^\mathrm{T}H(\underline{\theta_0})[\underline{\theta} - \underline{\theta_0}],
 
-and the integral can then be written as
+where :math:`H = \underline{\nabla} \ \underline{\nabla} \chi^2` is the Hessian matrix.
+The integral can then be written as
 
 .. math::
    :label: Taylor
 
-   \int \mathrm{d}^N\theta \exp\left(-\frac{\chi^2}{2}\right) \approx \exp\left(-\frac{\chi^2_\mathrm{min}}{2}\right) \frac{(4\pi)^N}{\sqrt{(\mathrm{det}(\underline{\nabla} \ \underline{\nabla} \chi^2)) }},
+   \int \mathrm{d}^N\theta \exp\left(-\frac{\chi^2}{2}\right) \approx \exp\left(-\frac{\chi^2_\mathrm{min}}{2}\right) \frac{(4\pi)^N}{\sqrt{(\mathrm{det}(H) }}.
 
-where :math:`\mathrm{det}(H) = \mathrm{det}(\underline{\nabla} \ \underline{\nabla} \chi^2))` is the determinant of the Hessian matrix :math:`H`.
 Substituting :math:numref:`Taylor` into :math:numref:`almost` and for :math:`N` indistinguishable lines there are :math:`N!` possibilities
 
 .. math::
@@ -247,14 +247,14 @@ The Taylor expansion in :math:numref:`Taylor` can then be written as
 .. math::
    :label: Taylor2
 
-   \int \mathrm{d}\underline{\theta} \exp\left(-\frac{\chi^2}{2}\right) \approx \exp\left(-\frac{\chi^2_\mathrm{min}}{2}\right) \frac{(4\pi)^{N+k}}{\sqrt{(\mathrm{det}(\underline{\nabla} \ \underline{\nabla} \chi^2)) }}.
+   \int \mathrm{d}\underline{\theta} \exp\left(-\frac{\chi^2}{2}\right) \approx \exp\left(-\frac{\chi^2_\mathrm{min}}{2}\right) \frac{(4\pi)^{N+k}}{\sqrt{\mathrm{det}(H) }}.
 
 Substituting :math:numref:`Taylor2` into :math:numref:`almost2` and including a factor of :math:`N!` for the possibilities of :math:`N` indistinguishable lines
 
 .. math::
    :label: me
 
-   P(D|M) \propto P(M|D) \propto \frac{N! (4\pi)^{N+k}\beta }{\sqrt{H}(x_\mathrm{max} – x_\mathrm{min})^{k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})} \exp\left(-\frac{\chi^2_0}{2}\right).
+   P(D|M) \propto P(M|D) \propto \frac{N! (4\pi)^{N+k}\beta }{\sqrt{\mathrm{det}(H)}(x_\mathrm{max} – x_\mathrm{min})^{k}\prod_i^k (\alpha_{i_\mathrm{max}}-\alpha_{i_\mathrm{max}})} \exp\left(-\frac{\chi^2_0}{2}\right).
 
 Taking the log of this expression and rearranging yields
 
@@ -264,7 +264,7 @@ Taking the log of this expression and rearranging yields
    \begin{eqnarray}
    \log{[P(D|M)]} \propto \sum_{j=1}^{N}\log{(j)} +
    (N+k)\log{(4\pi)} + \log{(\beta)} -
-   \log{(\sqrt{H})} \\ -
+   \log{(\sqrt{\mathrm{det}(H)})} \\ -
    k\log{(x_\mathrm{max} - x_\mathrm{min})}
    - \sum_i^k
    \log{(\alpha_{i_\mathrm{max}}-
@@ -281,7 +281,7 @@ Hence, the above equation simplifies to
 
    \log{[P(D|M)]} \propto \sum_{j=1}^{N}\log{(j)} +
    N\log{(4\pi)} + \log{(\beta)} -
-   \log{(\sqrt{H})}  -
+   \log{(\sqrt{\mathrm{det}(H)})}  -
    \frac{\chi^2_0}{2}.
 
 In the case of positive definite amplitudes :math:`A_\mathrm{min} \ge 0` and substituting in for :math:`\beta` this reduces to :math:numref:`logs`.

@@ -21,14 +21,14 @@ The equation for the posterior probability can be written as
 where :math:`\underline{\theta}` is a vector of model parameters, :math:`M` is the model and :math:`D` is the data.
 :math:`P(\underline{\theta} | M)` is the prior distribution and represents current knowledge of the system.
 :math:`P(D | M)` is the evidence and acts as a normalisation for the posterior.
-The shape and spread of the PDF provides insight into the model and the parameter.
-A narrow PDF suggests that the parameter is well defined or has little evidence of variation.
-A broad PDF could mean that the model is insensitive to that specific parameter.
-If the PDF is non-symmetric, then the most likely value is still the peak of the distribution.
+The shape and spread of the posterior PDF provides insight into the model and the parameter.
+A narrow posterior PDF suggests that the parameter is well defined or has little evidence of variation.
+A broad posterior PDF could mean that the model is insensitive to that specific parameter.
+If the posterior PDF is non-symmetric, then the most likely value is still the peak of the distribution.
 However, it is more likely for the parameter to have a value higher/lower than the peak of the distribution.
 
-Calculating the full PDF can be achieved by using :ref:`Macov Chain Monte Carlo (MCMC) <MCMC>` or :ref:`nested sampling<nest>`.
-Essentially these methods will sample the PDF directly, allowing them to generate the full PDF.
+Calculating the full posterior PDF can be achieved by using :ref:`Markov Chain Monte Carlo (MCMC) <MCMC>` or :ref:`nested sampling<nest>`.
+Essentially these methods will sample the posterior PDF directly, allowing them to generate the full posterior PDF.
 
 Bayesian model selection use Bayes theorm to calculate the probability, :math:`P` of the data :math:`D` given the model :math:`M`
 
@@ -38,6 +38,7 @@ Bayesian model selection use Bayes theorm to calculate the probability, :math:`P
    P(D|M) = \int_\Omega P(D| \underline{\theta}, M)P( \underline{\theta}|M)\mathrm{d\underline{\theta}}.
 
 where the :math:`\underline{\theta}` are the parameters and the integral is over all possible values for the parameters, :math:`\Omega`.
+This quantity is known as the marginal likelihood or the model evidence.
 
 Odds factor
 -----------

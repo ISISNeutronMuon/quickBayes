@@ -71,6 +71,6 @@ The posterior weights for the :math:`i^\mathrm{th}` shell can then be written as
 
    P_i = \frac{L_i[X_{i+1} - X_{i}]}{2Z}.
 
-A density estimation method (e.g. weighted histogram) can then be used to generate the PDF.
+A density estimation method (e.g. weighted histogram) can then be used to generate the posterior PDF.
 The strength of nested sampling is that it can capture multi-modal distributions, but it can be computationally expensive.
 
