@@ -27,7 +27,7 @@ A broad posterior PDF could mean that the model is insensitive to that specific 
 If the posterior PDF is non-symmetric, then the most likely value is still the peak of the distribution.
 However, it is more likely for the parameter to have a value higher/lower than the peak of the distribution.
 
-Calculating the full posterior PDF can be achieved by using :ref:`Macov Chain Monte Carlo (MCMC) <MCMC>` or :ref:`nested sampling<nest>`.
+Calculating the full posterior PDF can be achieved by using :ref:`Markov Chain Monte Carlo (MCMC) <MCMC>` or :ref:`nested sampling<nest>`.
 Essentially these methods will sample the posterior PDF directly, allowing them to generate the full posterior PDF.
 
 Bayesian model selection use Bayes theorm to calculate the probability, :math:`P` of the data :math:`D` given the model :math:`M`
