@@ -1,5 +1,5 @@
 ---
-title: '`quickBayes`: An analytical approach to Bayesian loglikelihoods'
+title: '`quickBayes`: An analytical approach to Bayesian marginal likelihoods'
 tags:
   - Python
   - fitting
@@ -45,8 +45,9 @@ The new code is written in Python with clear sections for fitting functions, fit
 The workflows are designed to use the fitting functions and engines as building blocks, allowing the workflow to focus on the specific steps of the data analysis (e.g. splines, rebinning).
 The code has been developed to make it easy to read and understand, with comprehensive automated testing of the functionality.
 These changes make the new code more maintainable and reliable, while ensuring it is easily extendable by the user community.
+In previous iterations of the quickBayes and quasielasticbayes packages, the term loglikelihood was used as shorthand to describe the natural logarithm of the marginal likelihood or model evidence.
 
-Traditionally the calculation of the marginal lieklihood for a model, also known as the evidence, is not analytic and needs to be done with Bayesian inference.
+Traditionally the calculation of the marginal likelihood for a model, also known as the evidence, is not analytic and needs to be done with Bayesian inference.
 These are computationally expensive methods, such as Markov chain Monte Carlo [@bayesReview] or Nested Sampling[@Skilling].
 Simpler and far less computationally demanding methods for model comparison exist, such as the Bayesian Information Criterion or Akaike Information Criterion.
 These use the maximum likelihood and some basic information theory to prevent over-fitting by incorporating a penalty for more complex models.
