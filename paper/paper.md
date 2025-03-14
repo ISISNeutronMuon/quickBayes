@@ -23,7 +23,7 @@ The [`quickBayes`](https://quickbayes.readthedocs.io/en/latest/) package is desi
 At present there are example workflows for:
 
 -	Determining the number of Lorentzians in quasielastic neutron scattering data.
--	Determining the number of exponential decays in MuSR data.
+-	Determining the number of exponential decays in MuSR (muon spectroscopy) data.
 
 The `quickBayes` package comes with an API that can be easily be extended by users to calculate the most likely hypothesis given their data.
 
