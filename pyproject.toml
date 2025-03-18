@@ -4,7 +4,7 @@ build-backend = 'hatchling.build'
 
 [project]
 name = 'quickBayes'
-version = "1.0.1b1"
+version = "1.0.2"
 requires-python = ">=3.7.1"
 dependencies = ['numpy', 'scipy']
 authors = [{name='Anthony Lim', email='anthony.lim@stfc.ac.uk'}]
