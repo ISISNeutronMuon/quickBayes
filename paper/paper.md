@@ -18,7 +18,7 @@ bibliography: paper.bib
 
 It is common in science to have multiple hypotheses that could describe your data.
 Each one of these hypothesis provides a mathematical description of the data and gives unique physical insight into the data.
-However, it is not always obvious which hypothesis is the correct one and to demonstrate this figure \ref{fig_peaks} show Quasi Elastic Neutron Scattering (QENS) data fitted with one and two Lorentzian peaks.
+However, it is not always obvious which hypothesis is the correct one and to demonstrate this Figure \ref{fig_peaks} show Quasi Elastic Neutron Scattering (QENS) data fitted with one and two Lorentzian peaks.
 The [`quickBayes`](https://quickbayes.readthedocs.io/en/latest/) package is designed to make it easier for users to determine which hypothesis is correct given their data.
 At present there are example workflows for:
 
@@ -42,7 +42,7 @@ The `quickBayes` package started as a replacement for the `quasielasticbayes` pa
 The `quasielasticbayes` package is highly successful within the field of QENS [@bayesPaper].
 During the development of `quickBayes` it became clear that the fundamental concept would benefit other areas of research such as MuSR and was written to be easily extendable into new domains.
 The new code is written in Python with clear sections for fitting functions, fitting engines and workflows.
-The workflows are designed to use the fitting functions and engines as building blocks, allowing the workflow to focus on the specific steps of the data analysis (e.g. splines, rebinning).
+The workflows are designed to use the fitting functions and engines as building blocks, allowing the workflow to focus on the specific steps of the data analysis (e.g., splines, rebinning).
 The code has been developed to make it easy to read and understand, with comprehensive automated testing of the functionality.
 These changes make the new code more maintainable and reliable, while ensuring it is easily extendable by the user community.
 In previous iterations of the quickBayes and quasielasticbayes packages, the term loglikelihood was used as shorthand to describe the natural logarithm of the marginal likelihood or model evidence.
