@@ -20,8 +20,10 @@ class GridSearchTemplateWithGoFitTest(GridSearchTemplateTest,
         x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
         self.wf.set_gofit_engine(5, [], [])
+        self.assertEqual(self.wf.fit_engine._samples, 5)
         self.assertEqual(self.wf.fit_engine._lower, [])
         self.assertEqual(self.wf.fit_engine._upper, [])
+        self.assertEqual(self.wf.fit_engine._max_iterations, 220000)
 
         bg = FlatBG()
         self.wf.update_fit_engine(bg, [5])

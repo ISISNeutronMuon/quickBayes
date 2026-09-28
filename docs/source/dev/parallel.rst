@@ -20,7 +20,7 @@ A simple example is:
   data = np.zeros(100)
 
   start = time.time()
-  data = Parallel(list(range(100)), do_thing)
+  data = parallel(list(range(100)), do_thing)
   print(data)
   print(time.time() - start)
 

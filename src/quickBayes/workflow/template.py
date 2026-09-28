@@ -115,17 +115,19 @@ class WorkflowTemplate(object):
                              "an equivalent method")
 
     def set_scipy_engine(self, guess: ndarray, lower: ndarray,
-                         upper: ndarray) -> None:
+                         upper: ndarray,
+                         max_iterations: float | int = 220000) -> None:
         """
         Method to set the fit engine to be scipy
         :param guess: the starting guess for the fit
         :param lower: the lower bound for the fit
         :param upper: the upper bound for the fit
+        :param max_iterations: the maximum number of iterations for the fit
         """
         self._check_engine_and_data_set_valid()
         self._engine = ScipyFitEngine(self._raw['x'], self._raw['y'],
                                       self._raw['e'], lower, upper,
-                                      guess)
+                                      guess, max_iterations)
 
     def _get_bounds(self, func: BaseFitFunction) -> (ndarray, ndarray):
         """
