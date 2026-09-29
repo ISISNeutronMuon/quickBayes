@@ -13,7 +13,7 @@ class ScipyFitEngine(FitEngine):
 
     def __init__(self, x_data: ndarray, y_data: ndarray, e_data: ndarray,
                  lower: ndarray, upper: ndarray, guess: ndarray,
-                 max_iterations: int = 220000):
+                 max_iterations: float | int = 220000):
         """
         Creates the scipy curve fit engine class
         Stores useful information about each fit
@@ -29,7 +29,7 @@ class ScipyFitEngine(FitEngine):
         super().__init__("scipy", x_data, y_data, e_data)
         # extra parameters
         self.set_guess_and_bounds(guess, lower, upper)
-        self._max_iterations = max_iterations
+        self._set_max_iterations(max_iterations)
 
     def set_guess_and_bounds(self, guess: ndarray,
                              lower: ndarray, upper: ndarray) -> None:
@@ -49,6 +49,19 @@ class ScipyFitEngine(FitEngine):
         self._guess = guess
         self._lower = lower
         self._upper = upper
+
+    def _set_max_iterations(self, max_iterations: float | int) -> None:
+        """
+        Sets the max_iterations for the fit engine.
+        :param max_iterations: the maximum number of iterations for the fit
+        """
+        # validate
+        if isinstance(max_iterations, (float, int)):
+            self._max_iterations = int(max_iterations)
+        else:
+            raise ValueError("The max_iterations cannot be set to "
+                             f"{max_iterations}. Please provide an "
+                             "'int' or 'float' value instead.")
 
     def _do_fit(self, x_data: ndarray, y_data: ndarray, e_data: ndarray,
                 func: Callable) -> ndarray:

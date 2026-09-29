@@ -82,7 +82,7 @@ class WorkflowTemplateTest(object):
         # setup workflow + generate data
         x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
-        self.wf.set_scipy_engine([0], [-9], [9])
+        self.wf.set_scipy_engine([0], [-9], [9], 220000)
         _ = self.wf.execute(1, self.func)
         # check parameters and errors updated
         params, errors = self.wf.get_parameters_and_errors
@@ -106,7 +106,7 @@ class WorkflowTemplateTest(object):
 
     def test_fails_if_no_data(self):
         with self.assertRaises(ValueError):
-            self.wf.set_scipy_engine([0], [-9], [9])
+            self.wf.set_scipy_engine([0], [-9], [9], 220000)
 
     def test_execute_no_engine(self):
         x, y, e = gen_model_selection_data()
@@ -117,28 +117,45 @@ class WorkflowTemplateTest(object):
     def test_add_second_engine_errors(self):
         x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
-        self.wf.set_scipy_engine([0], [-9], [9])
+        self.wf.set_scipy_engine([0], [-9], [9], 220000)
         with self.assertRaises(RuntimeError):
-            self.wf.set_scipy_engine([0], [-9], [9])
+            self.wf.set_scipy_engine([0], [-9], [9], 220000)
 
     def test_set_scipy_engine(self):
         self.assertEqual(self.wf.fit_engine, None)
         x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
-        self.wf.set_scipy_engine([], [], [])
+        self.wf.set_scipy_engine([], [], [], 220000)
         self.assertEqual(self.wf.fit_engine.name, 'scipy')
 
     def test_update_scipy_fit_engine(self):
         self.assertEqual(self.wf.fit_engine, None)
         x, y, e = gen_model_selection_data()
         self.wf.preprocess_data(x, y, e)
-        self.wf.set_scipy_engine([], [], [])
+        self.wf.set_scipy_engine([], [], [], 220000)
         self.assertEqual(self.wf.fit_engine._guess, [])
         self.assertEqual(self.wf.fit_engine._lower, [])
         self.assertEqual(self.wf.fit_engine._upper, [])
+        self.assertEqual(self.wf.fit_engine._max_iterations, 220000)
 
         bg = FlatBG()
         self.wf.update_fit_engine(bg, [2])
         self.assertEqual(self.wf.fit_engine._guess, [2])
         self.assertEqual(self.wf.fit_engine._lower, [-1])
         self.assertEqual(self.wf.fit_engine._upper, [1])
+
+    def test_set_max_iteration(self):
+        self.assertEqual(self.wf.fit_engine, None)
+        x, y, e = gen_model_selection_data()
+        self.wf.preprocess_data(x, y, e)
+        self.wf.set_scipy_engine([], [], [])
+        self.assertEqual(self.wf.fit_engine._max_iterations, 220000)
+        self.wf.fit_engine._set_max_iterations(5000)
+        self.assertEqual(self.wf.fit_engine._max_iterations, 5000)
+        self.wf.fit_engine._set_max_iterations(7000.0)
+        self.assertEqual(self.wf.fit_engine._max_iterations, 7000)
+        with self.assertRaisesRegex(ValueError,
+                                    "The max_iterations cannot be set"
+                                    " to 4000. Please provide an 'int'"
+                                    " or 'float' value instead."):
+            self.wf.fit_engine._set_max_iterations("4000")

@@ -98,7 +98,7 @@ class GridSearchTemplateTest(object):
         self.wf.set_x_axis(0, 1, 2, 'x')
         self.wf.set_y_axis(1, 2, 2, 'y')
         self.func.add_function(ExpDecay())
-        self.wf.set_scipy_engine([0, 0], [-9, -9], [9, 9])
+        self.wf.set_scipy_engine([0, 0], [-9, -9], [9, 9], 220000)
         X, Y = self.wf.execute(self.func)
 
         grid = self.wf.get_grid
@@ -120,7 +120,7 @@ class GridSearchTemplateTest(object):
         self.wf.set_x_axis(0, 1, 2, 'x')
         self.wf.set_y_axis(1, 2, 2, 'y')
         self.func.add_function(ExpDecay())
-        self.wf.set_scipy_engine([0, 0], [-9, -9], [9, 9])
+        self.wf.set_scipy_engine([0, 0], [-9, -9], [9, 9], 220000)
         _, _ = self.wf.execute(self.func)
 
         x, y = self.wf.get_slices()
@@ -141,7 +141,7 @@ class GridSearchTemplateTest(object):
     def test_fails_if_no_data(self):
         # same
         with self.assertRaises(ValueError):
-            self.wf.set_scipy_engine([0], [-9], [9])
+            self.wf.set_scipy_engine([0], [-9], [9], 220000)
 
     def test_execute_no_engine(self):
         x, y, e = gen_grid_search_data()
@@ -170,16 +170,16 @@ class GridSearchTemplateTest(object):
         self.wf.preprocess_data(x, y, e)
         self.wf.set_x_axis(0, 1, 2, 'x')
         self.wf.set_y_axis(1, 2, 2, 'y')
-        self.wf.set_scipy_engine([], [], [])
+        self.wf.set_scipy_engine([], [], [], 220000)
         with self.assertRaises(RuntimeError):
-            self.wf.set_scipy_engine([], [], [])
+            self.wf.set_scipy_engine([], [], [], 220000)
 
     def test_set_scipy_engine(self):
         # same
         self.assertEqual(self.wf.fit_engine, None)
         x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
-        self.wf.set_scipy_engine([], [], [])
+        self.wf.set_scipy_engine([], [], [], 220000)
         self.assertEqual(self.wf.fit_engine.name, 'scipy')
 
     def test_update_scipy_fit_engine(self):
@@ -187,10 +187,11 @@ class GridSearchTemplateTest(object):
         self.assertEqual(self.wf.fit_engine, None)
         x, y, e = gen_grid_search_data()
         self.wf.preprocess_data(x, y, e)
-        self.wf.set_scipy_engine([1.], [-4], [4])
+        self.wf.set_scipy_engine([1.], [-4], [4], 220000)
         self.assertEqual(self.wf.fit_engine._guess, [1.])
         self.assertEqual(self.wf.fit_engine._lower, [-4])
         self.assertEqual(self.wf.fit_engine._upper, [4])
+        self.assertEqual(self.wf.fit_engine._max_iterations, 220000)
 
         bg = FlatBG()
         self.wf.update_fit_engine(bg, [2])
